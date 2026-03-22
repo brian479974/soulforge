@@ -660,6 +660,12 @@
         <h2 class="card-title">&#x1F525; 鍛造你的 AI 靈魂</h2>
         <p class="card-desc">為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！</p>
 
+        <!-- User Name -->
+        <div class="form-group">
+          <label class="form-label">&#x1F464; 你的名字</label>
+          <input type="text" class="form-input" id="userName" placeholder="讓 AI 知道怎麼稱呼你..." maxlength="20">
+        </div>
+
         <!-- Soul Name -->
         <div class="form-group">
           <label class="form-label">&#x1F4DB; 靈魂名稱</label>
@@ -741,6 +747,7 @@
 
   <script>
     // --- DOM ---
+    const userName = document.getElementById('userName');
     const soulName = document.getElementById('soulName');
     const soulRole = document.getElementById('soulRole');
     const tagGrid = document.getElementById('tagGrid');
@@ -813,11 +820,13 @@
     }
 
     // --- Input listeners ---
+    userName.addEventListener('input', () => { updatePreview(); saveToStorage(); });
     soulName.addEventListener('input', () => { updatePreview(); saveToStorage(); });
     soulRole.addEventListener('input', () => { updatePreview(); saveToStorage(); });
 
     // --- Build Soul ---
     function buildSoulObject() {
+      const user = userName.value.trim();
       const name = soulName.value.trim() || 'My AI';
       const role = soulRole.value.trim() || 'AI Assistant';
       const traits = Array.from(selectedTraits);
@@ -831,12 +840,17 @@
         },
         "SOUL": {
           "核心指令": [
+            user ? `使用者叫「${user}」，請用這個名字稱呼他` : "請親切地與使用者對話",
             `你叫「${name}」，是使用者的${role}`,
             `你的個性是：${traits.length > 0 ? traits.join('、') : '友善、專業'}`,
             "用這個身份與個性來回應所有對話"
           ]
         }
       };
+
+      if (user) {
+        soul["IDENTITY"]["使用者"] = user;
+      }
 
       if (desc) {
         soul["BACKGROUND"] = {
@@ -957,6 +971,7 @@
     function clearAllData() {
       localStorage.removeItem('soulforge_data');
       localStorage.removeItem('soulforge_privacy');
+      userName.value = '';
       soulName.value = '';
       soulRole.value = '';
       companyDesc.value = '';
@@ -972,6 +987,7 @@
     function saveToStorage() {
       if (privacyMode) return;
       const data = {
+        user: userName.value,
         name: soulName.value,
         role: soulRole.value,
         traits: Array.from(selectedTraits),
@@ -985,6 +1001,7 @@
         const raw = localStorage.getItem('soulforge_data');
         if (!raw) return false;
         const data = JSON.parse(raw);
+        if (data.user) userName.value = data.user;
         if (data.name) soulName.value = data.name;
         if (data.role) soulRole.value = data.role;
         if (data.traits && data.traits.length > 0) {
