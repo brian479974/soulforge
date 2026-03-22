@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SoulForge - 打造你的專屬 AI 靈魂，一鍵帶入 Google AI / Gemini / ChatGPT / Claude">
+  <meta name="keywords" content="AI, soul, persona, prompt, SoulForge, Google AI, ChatGPT, Claude, Gemini">
+  <meta property="og:title" content="SoulForge | 鍛造你的 AI 靈魂">
+  <meta property="og:description" content="免費開源工具：取名、選個性、描述背景，一鍵帶靈魂進入任何 AI 平台">
+  <title>SoulForge | 鍛造你的 AI 靈魂</title>
+  <style>
+    :root {
+      --primary: #FF4500;
+      --primary-light: #ff8c00;
+      --bg: #050505;
+      --card: #121212;
+      --card-border: #2a2a2a;
+      --neon: #00ffcc;
+      --text-muted: #888;
+      --text-dim: #666;
+      --sidebar-bg: #000;
+      --radius: 16px;
+      --transition: 0.3s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: #fff;
+      font-family: "微軟正黑體", "Noto Sans TC", system-ui, sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ========== Mobile Top Bar ========== */
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 997;
+      height: 56px;
+      background: #000;
+      border-bottom: 2px solid var(--primary);
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+    }
+
+    .mobile-topbar .sidebar-toggle { position: static; flex-shrink: 0; }
+
+    .mobile-topbar-brand {
+      color: var(--primary);
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .mobile-topbar-sub {
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      margin-left: auto;
+    }
+
+    /* ========== Sidebar ========== */
+    .sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      padding: 32px 20px;
+      border-right: 2px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      color: var(--primary);
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .sidebar-sub {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      margin-top: 4px;
+    }
+
+    .status-box {
+      background: #0d0d0d;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid #222;
+      margin-top: 24px;
+      font-size: 0.88rem;
+      line-height: 2;
+    }
+
+    .neon-text {
+      color: var(--neon);
+      text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 20px;
+      font-size: 0.78rem;
+      color: #444;
+      line-height: 1.6;
+    }
+
+    .sidebar-footer a {
+      color: var(--neon);
+      text-decoration: none;
+    }
+    .sidebar-footer a:hover { text-decoration: underline; }
+
+    .sidebar-toggle {
+      display: none;
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 69, 0, 0.4);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 998;
+    }
+
+    /* ========== Main Content ========== */
+    .main {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      background: radial-gradient(ellipse at top right, #1a0a00 0%, var(--bg) 60%);
+      min-height: 100vh;
+    }
+
+    .main-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ========== Cards ========== */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 28px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: border-color var(--transition);
+    }
+
+    .card:hover { border-color: #3a3a3a; }
+
+    .card-title {
+      color: var(--primary);
+      margin-bottom: 12px;
+      font-size: 1.3rem;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    /* ========== Soul Builder Form ========== */
+    .form-group { margin-bottom: 20px; }
+
+    .form-label {
+      display: block;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #080808;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--neon);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.15);
+    }
+
+    .form-input::placeholder { color: #555; }
+
+    /* Personality Tags */
+    .tag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 1px solid #444;
+      background: #1a1a1a;
+      color: #aaa;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      user-select: none;
+    }
+
+    .tag:hover {
+      border-color: #666;
+      color: #ddd;
+    }
+
+    .tag.selected {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(255, 69, 0, 0.3);
+    }
+
+    /* Company Description */
+    .desc-textarea {
+      width: 100%;
+      height: 150px;
+      background: #080808;
+      color: var(--neon);
+      border: 1px solid #333;
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .desc-textarea:focus {
+      outline: none;
+      border-color: var(--neon);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.15);
+    }
+
+    .desc-textarea::placeholder { color: #444; }
+
+    .char-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 0.78rem;
+    }
+
+    .char-bar-count { color: var(--text-dim); }
+    .char-bar-count.warning { color: var(--primary); }
+    .char-bar-count.over { color: #ff3333; }
+    .char-bar-hint { color: #444; }
+
+    .char-progress {
+      width: 100%;
+      height: 3px;
+      background: #222;
+      border-radius: 2px;
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .char-progress-fill {
+      height: 100%;
+      background: var(--neon);
+      border-radius: 2px;
+      transition: width 0.2s ease, background 0.3s ease;
+    }
+
+    .char-progress-fill.warning { background: var(--primary); }
+    .char-progress-fill.over { background: #ff3333; }
+
+    /* ========== Preview ========== */
+    .preview-box {
+      background: #080808;
+      border: 1px solid #333;
+      border-radius: var(--radius);
+      padding: 16px;
+      font-family: 'Courier New', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: var(--neon);
+      max-height: 200px;
+      overflow-y: auto;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    /* ========== Buttons ========== */
+    .section-label {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    .btn-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 14px 12px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+      color: #fff;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-file {
+      background: #1e1e1e;
+      border: 1px solid #444;
+    }
+    .btn-file:hover { border-color: #666; }
+
+    .btn-launch {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid var(--neon);
+      color: var(--neon);
+      text-shadow: 0 0 4px rgba(0, 255, 204, 0.3);
+    }
+    .btn-launch:hover {
+      background: linear-gradient(135deg, #16213e, #0f3460);
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.25);
+      border-color: #fff;
+    }
+
+    .btn-google-big {
+      background: linear-gradient(135deg, #4285f4, #34a853);
+      box-shadow: 0 0 20px rgba(66, 133, 244, 0.3);
+      font-size: 1rem;
+      padding: 16px 24px;
+    }
+    .btn-google-big:hover {
+      box-shadow: 0 0 30px rgba(66, 133, 244, 0.5);
+    }
+
+    .btn-danger {
+      background: #1a1a1a;
+      border: 1px solid #ff3333;
+      color: #ff3333;
+    }
+    .btn-danger:hover {
+      background: #2a0a0a;
+      box-shadow: 0 0 16px rgba(255, 51, 51, 0.25);
+    }
+
+    /* ========== Privacy Bar ========== */
+    .privacy-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: #0a0a0a;
+      border: 1px solid #222;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .privacy-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .privacy-label {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .privacy-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .privacy-badge.on {
+      background: rgba(0, 255, 204, 0.15);
+      color: var(--neon);
+      border: 1px solid rgba(0, 255, 204, 0.3);
+    }
+
+    .privacy-badge.off {
+      background: rgba(255, 69, 0, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(255, 69, 0, 0.3);
+    }
+
+    /* Toggle Switch */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-track {
+      width: 44px;
+      height: 24px;
+      background: #333;
+      border-radius: 12px;
+      position: relative;
+      transition: background var(--transition);
+    }
+
+    .toggle-track.active {
+      background: var(--neon);
+      box-shadow: 0 0 8px rgba(0, 255, 204, 0.3);
+    }
+
+    .toggle-thumb {
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: left var(--transition);
+    }
+
+    .toggle-track.active .toggle-thumb {
+      left: 23px;
+    }
+
+    .toggle-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .privacy-hint {
+      width: 100%;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(0, 255, 204, 0.05);
+      border: 1px solid rgba(0, 255, 204, 0.1);
+      border-radius: 10px;
+      font-size: 0.75rem;
+      color: #777;
+      line-height: 1.5;
+    }
+
+    .privacy-hint kbd {
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 0.72rem;
+      color: #ccc;
+      font-family: inherit;
+    }
+
+    /* ========== Toast ========== */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #1a1a1a;
+      border: 1px solid var(--neon);
+      color: #fff;
+      padding: 16px 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      font-size: 0.9rem;
+      z-index: 2000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+      max-width: 400px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ========== Instructions ========== */
+    .instructions { opacity: 0.75; transition: opacity var(--transition); }
+    .instructions:hover { opacity: 1; }
+    .instructions ol { color: #aaa; font-size: 0.88rem; padding-left: 20px; line-height: 2; }
+
+    /* ========== Responsive: Tablet ========== */
+    @media (max-width: 1024px) {
+      .sidebar { width: 240px; padding: 24px 16px; }
+      .sidebar-brand { font-size: 1.35rem; }
+      .main { padding: 32px 24px; }
+    }
+
+    /* ========== Responsive: Mobile ========== */
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+
+      .mobile-topbar { display: flex; }
+      .sidebar-toggle { display: flex; }
+
+      .sidebar {
+        position: fixed;
+        left: -300px;
+        top: 0;
+        height: 100vh;
+        z-index: 999;
+        transition: left 0.3s ease;
+        width: 280px;
+      }
+      .sidebar.open { left: 0; }
+      .sidebar-overlay.show { display: block; z-index: 998; }
+
+      .main {
+        padding: 20px 16px;
+        padding-top: 72px;
+      }
+
+      .card { padding: 20px; border-radius: 16px; }
+      .card-title { font-size: 1.15rem; }
+
+      .btn-grid-2 { grid-template-columns: 1fr; }
+      .btn { padding: 13px 16px; font-size: 0.85rem; }
+
+      .tag { font-size: 0.8rem; padding: 7px 14px; }
+
+      .toast { left: 16px; right: 16px; bottom: 20px; max-width: none; }
+    }
+
+    /* ========== Responsive: Small Phone ========== */
+    @media (max-width: 480px) {
+      .main { padding: 14px 10px; padding-top: 68px; }
+      .card { padding: 16px; border-radius: 14px; }
+      .card-title { font-size: 1.05rem; }
+      .card-desc { font-size: 0.88rem; }
+      .btn { font-size: 0.8rem; padding: 12px 10px; border-radius: 40px; }
+      .section-label { font-size: 0.72rem; }
+      .desc-textarea { height: 120px; font-size: 0.85rem; }
+    }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card { animation: fadeInUp 0.5s ease both; }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.2s; }
+  </style>
+</head>
+<body>
+  <!-- Mobile top bar -->
+  <header class="mobile-topbar">
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu">&#9776;</button>
+    <span class="mobile-topbar-brand">SOULFORGE</span>
+    <span class="mobile-topbar-sub">AI Soul Builder</span>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar" role="complementary">
+    <h1 class="sidebar-brand">SOULFORGE</h1>
+    <p class="sidebar-sub">Forge Your AI Soul</p>
+
+    <div class="status-box">
+      <p>&#x1F525; 用途：<span class="neon-text">鍛造專屬 AI 靈魂</span></p>
+      <p>&#x1F3AF; 模式：<span style="color: #fff;">取名 + 個性 + 背景</span></p>
+      <p>&#x1F680; 平台：<span class="neon-text">Google / Gemini / ChatGPT / Claude</span></p>
+    </div>
+
+    <div class="sidebar-footer">
+      開源免費，任何人都能使用。<br>
+      取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" role="main">
+    <div class="main-inner">
+
+      <!-- Privacy Bar -->
+      <div class="privacy-bar" id="privacyBar">
+        <div class="privacy-left">
+          <span class="privacy-label">&#x1F512; 隱私模式</span>
+          <span class="privacy-badge on" id="privacyBadge">已啟用 - 不儲存資料</span>
+          <div class="toggle-wrap" id="privacyToggle">
+            <div class="toggle-track active" id="privacyTrack">
+              <div class="toggle-thumb"></div>
+            </div>
+            <span class="toggle-text" id="privacyToggleText">關閉頁面即清除一切</span>
+          </div>
+        </div>
+        <button class="btn btn-danger" style="padding: 8px 18px; font-size: 0.78rem;" onclick="clearAllData()">&#x1F5D1; 立即清除所有資料</button>
+        <div class="privacy-hint" id="privacyHint">
+          建議使用無痕模式瀏覽以獲得最佳隱私保護：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）
+        </div>
+      </div>
+
+      <!-- Soul Builder Card -->
+      <div class="card">
+        <h2 class="card-title">&#x1F525; 鍛造你的 AI 靈魂</h2>
+        <p class="card-desc">為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！</p>
+
+        <!-- Soul Name -->
+        <div class="form-group">
+          <label class="form-label">&#x1F4DB; 靈魂名稱</label>
+          <input type="text" class="form-input" id="soulName" placeholder="例如：CoCo、小智、Luna、Jarvis..." maxlength="20">
+        </div>
+
+        <!-- Role -->
+        <div class="form-group">
+          <label class="form-label">&#x1F3AD; 角色定位</label>
+          <input type="text" class="form-input" id="soulRole" placeholder="例如：AI 業務助理、技術顧問、創意夥伴..." maxlength="30">
+        </div>
+
+        <!-- Personality Tags -->
+        <div class="form-group">
+          <label class="form-label">&#x2728; 個性選擇（可多選）</label>
+          <div class="tag-grid" id="tagGrid">
+            <span class="tag" data-trait="活潑開朗">活潑開朗</span>
+            <span class="tag" data-trait="專業嚴謹">專業嚴謹</span>
+            <span class="tag" data-trait="溫柔體貼">溫柔體貼</span>
+            <span class="tag" data-trait="幽默風趣">幽默風趣</span>
+            <span class="tag" data-trait="冷靜理性">冷靜理性</span>
+            <span class="tag" data-trait="熱情積極">熱情積極</span>
+            <span class="tag" data-trait="創意無限">創意無限</span>
+            <span class="tag" data-trait="簡潔有力">簡潔有力</span>
+            <span class="tag" data-trait="知心夥伴">知心夥伴</span>
+            <span class="tag" data-trait="策略思維">策略思維</span>
+            <span class="tag" data-trait="耐心傾聽">耐心傾聽</span>
+            <span class="tag" data-trait="行動派">行動派</span>
+          </div>
+        </div>
+
+        <!-- Company / Product Description -->
+        <div class="form-group">
+          <label class="form-label">&#x1F3E2; 公司與產品描述（選填，最多 500 字）</label>
+          <textarea class="desc-textarea" id="companyDesc"
+                    placeholder="描述你的公司、職位、主要產品型號與功能...&#10;&#10;範例：&#10;我是 ABC 公司的業務經理，主要銷售工業級 3D 印表機，產品線包括 X7（碳纖維列印）、FX20（大型連續纖維）等，客戶遍及台灣與東南亞製造業。"
+                    maxlength="500"></textarea>
+          <div class="char-progress"><div class="char-progress-fill" id="descProgressFill"></div></div>
+          <div class="char-bar">
+            <span class="char-bar-count" id="descCharCount">0 / 500</span>
+            <span class="char-bar-hint">讓 AI 更了解你的工作背景</span>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="form-group">
+          <label class="form-label">&#x1F4CB; 靈魂預覽</label>
+          <div class="preview-box" id="soulPreview">填寫上方資料後，即時預覽你的靈魂碼...</div>
+        </div>
+
+        <!-- Launch Buttons -->
+        <p class="section-label">&#x1F680; 帶靈魂開啟 AI</p>
+        <button class="btn btn-google-big" style="width:100%; margin-bottom: 12px;" onclick="launchGoogle()">&#x1F50D; 一鍵開啟 Google AI 搜尋模式</button>
+        <div class="btn-grid-2">
+          <button class="btn btn-launch" onclick="launchWithSoul('gemini')">&#x2728; Gemini</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('chatgpt')">&#x1F30F; ChatGPT</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('claude')">&#x1F4AC; Claude</button>
+          <button class="btn btn-file" onclick="exportSoulJSON()">&#x1F4BE; 匯出靈魂 .json</button>
+        </div>
+      </div>
+
+      <!-- Instructions Card -->
+      <div class="card instructions">
+        <h3 style="margin-bottom: 12px;">&#x1F4CC; 使用說明</h3>
+        <ol>
+          <li>為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。</li>
+          <li>在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。</li>
+          <li>點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。</li>
+          <li>也可選擇 Gemini / ChatGPT / Claude，靈魂碼會自動複製到剪貼簿，貼上即可。</li>
+          <li>匯出 .json 可備份你的靈魂設定，隨時載入使用。</li>
+          <li>預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。</li>
+        </ol>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script>
+    // --- DOM ---
+    const soulName = document.getElementById('soulName');
+    const soulRole = document.getElementById('soulRole');
+    const tagGrid = document.getElementById('tagGrid');
+    const companyDesc = document.getElementById('companyDesc');
+    const descCharCount = document.getElementById('descCharCount');
+    const descProgressFill = document.getElementById('descProgressFill');
+    const soulPreview = document.getElementById('soulPreview');
+    const toastEl = document.getElementById('toast');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    const privacyToggle = document.getElementById('privacyToggle');
+    const privacyTrack = document.getElementById('privacyTrack');
+    const privacyBadge = document.getElementById('privacyBadge');
+    const privacyToggleText = document.getElementById('privacyToggleText');
+
+    const MAX_DESC = 500;
+    const selectedTraits = new Set();
+    let privacyMode = true; // Default: ON (no storage)
+
+    // --- Toast ---
+    function showToast(message, duration = 3500) {
+      toastEl.textContent = message;
+      toastEl.classList.add('show');
+      clearTimeout(toastEl._timer);
+      toastEl._timer = setTimeout(() => toastEl.classList.remove('show'), duration);
+    }
+
+    // --- Tag Selection ---
+    tagGrid.addEventListener('click', (e) => {
+      const tag = e.target.closest('.tag');
+      if (!tag) return;
+      const trait = tag.dataset.trait;
+      if (selectedTraits.has(trait)) {
+        selectedTraits.delete(trait);
+        tag.classList.remove('selected');
+      } else {
+        selectedTraits.add(trait);
+        tag.classList.add('selected');
+      }
+      updatePreview();
+      saveToStorage();
+    });
+
+    // --- Char Count ---
+    companyDesc.addEventListener('input', () => {
+      updateDescCounter();
+      updatePreview();
+      saveToStorage();
+    });
+
+    function updateDescCounter() {
+      const len = companyDesc.value.length;
+      const pct = Math.min((len / MAX_DESC) * 100, 100);
+      descCharCount.textContent = `${len} / ${MAX_DESC}`;
+      descProgressFill.style.width = pct + '%';
+
+      descCharCount.className = 'char-bar-count';
+      descProgressFill.className = 'char-progress-fill';
+
+      if (len > MAX_DESC * 0.9) {
+        descCharCount.classList.add('warning');
+        descProgressFill.classList.add('warning');
+      }
+      if (len >= MAX_DESC) {
+        descCharCount.classList.add('over');
+        descProgressFill.classList.add('over');
+      }
+    }
+
+    // --- Input listeners ---
+    soulName.addEventListener('input', () => { updatePreview(); saveToStorage(); });
+    soulRole.addEventListener('input', () => { updatePreview(); saveToStorage(); });
+
+    // --- Build Soul ---
+    function buildSoulObject() {
+      const name = soulName.value.trim() || 'My AI';
+      const role = soulRole.value.trim() || 'AI Assistant';
+      const traits = Array.from(selectedTraits);
+      const desc = companyDesc.value.trim();
+
+      const soul = {
+        "IDENTITY": {
+          "名稱": name,
+          "角色": role,
+          "個性": traits.length > 0 ? traits.join('、') : '友善、專業'
+        },
+        "SOUL": {
+          "核心指令": [
+            `你叫「${name}」，是使用者的${role}`,
+            `你的個性是：${traits.length > 0 ? traits.join('、') : '友善、專業'}`,
+            "用這個身份與個性來回應所有對話"
+          ]
+        }
+      };
+
+      if (desc) {
+        soul["BACKGROUND"] = {
+          "使用者背景": desc
+        };
+      }
+
+      return soul;
+    }
+
+    function buildSoulPrompt() {
+      const soul = buildSoulObject();
+      return `以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：\n\n${JSON.stringify(soul, null, 2)}\n\n請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！`;
+    }
+
+    // --- Preview ---
+    function updatePreview() {
+      const soul = buildSoulObject();
+      soulPreview.textContent = JSON.stringify(soul, null, 2);
+    }
+
+    // --- Google AI ---
+    function launchGoogle() {
+      const prompt = buildSoulPrompt();
+      const url = `https://www.google.com/search?q=${encodeURIComponent(prompt)}&udm=50`;
+      copyToClipboard(prompt);
+      showToast('靈魂已注入 Google AI 搜尋模式！');
+      setTimeout(() => window.open(url, '_blank'), 300);
+    }
+
+    // --- Other Platforms ---
+    const AI_URLS = {
+      gemini: 'https://gemini.google.com/app',
+      chatgpt: 'https://chatgpt.com/',
+      claude: 'https://claude.ai/new'
+    };
+
+    const AI_LABELS = {
+      gemini: 'Gemini',
+      chatgpt: 'ChatGPT',
+      claude: 'Claude'
+    };
+
+    async function launchWithSoul(platform) {
+      const prompt = buildSoulPrompt();
+      await copyToClipboard(prompt);
+      showToast(`靈魂已複製！正在開啟 ${AI_LABELS[platform]}，貼上即可`);
+      setTimeout(() => window.open(AI_URLS[platform], '_blank'), 300);
+    }
+
+    // --- Clipboard ---
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    // --- Export ---
+    function exportSoulJSON() {
+      const soul = buildSoulObject();
+      const name = soulName.value.trim() || 'SoulForge';
+      const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const fileName = `${name}_Soul_${ts}.json`;
+      const blob = new Blob([JSON.stringify(soul, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(`${fileName} 已匯出！`);
+    }
+
+    // --- Privacy Mode ---
+    function setPrivacyMode(on) {
+      privacyMode = on;
+      if (on) {
+        privacyTrack.classList.add('active');
+        privacyBadge.textContent = '已啟用 - 不儲存資料';
+        privacyBadge.className = 'privacy-badge on';
+        privacyToggleText.textContent = '關閉頁面即清除一切';
+        localStorage.removeItem('soulforge_data');
+        localStorage.setItem('soulforge_privacy', 'on');
+      } else {
+        privacyTrack.classList.remove('active');
+        privacyBadge.textContent = '已關閉 - 資料會保留';
+        privacyBadge.className = 'privacy-badge off';
+        privacyToggleText.textContent = '下次開啟會保留設定';
+        localStorage.setItem('soulforge_privacy', 'off');
+        saveToStorage();
+      }
+    }
+
+    privacyToggle.addEventListener('click', () => {
+      setPrivacyMode(!privacyMode);
+    });
+
+    function clearAllData() {
+      localStorage.removeItem('soulforge_data');
+      localStorage.removeItem('soulforge_privacy');
+      soulName.value = '';
+      soulRole.value = '';
+      companyDesc.value = '';
+      selectedTraits.clear();
+      tagGrid.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+      updateDescCounter();
+      updatePreview();
+      setPrivacyMode(true);
+      showToast('所有資料已清除！你的隱私已受保護。');
+    }
+
+    // --- localStorage ---
+    function saveToStorage() {
+      if (privacyMode) return;
+      const data = {
+        name: soulName.value,
+        role: soulRole.value,
+        traits: Array.from(selectedTraits),
+        desc: companyDesc.value
+      };
+      localStorage.setItem('soulforge_data', JSON.stringify(data));
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem('soulforge_data');
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (data.name) soulName.value = data.name;
+        if (data.role) soulRole.value = data.role;
+        if (data.traits && data.traits.length > 0) {
+          data.traits.forEach(trait => {
+            selectedTraits.add(trait);
+            const tag = tagGrid.querySelector(`[data-trait="${trait}"]`);
+            if (tag) tag.classList.add('selected');
+          });
+        }
+        if (data.desc) companyDesc.value = data.desc;
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // --- Mobile sidebar ---
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('show');
+    });
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('show');
+    });
+
+    // --- Init ---
+    window.addEventListener('load', () => {
+      const savedPrivacy = localStorage.getItem('soulforge_privacy');
+      if (savedPrivacy === 'off') {
+        privacyMode = false;
+        setPrivacyMode(false);
+        loadFromStorage();
+      } else {
+        privacyMode = true;
+        setPrivacyMode(true);
+      }
+      updateDescCounter();
+      updatePreview();
+    });
+  </script>
+</body>
+</html>
