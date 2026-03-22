@@ -406,12 +406,48 @@
       font-family: 'Courier New', 'Fira Code', monospace;
       font-size: 0.85rem;
       color: var(--neon);
-      max-height: 200px;
+      min-height: 120px;
+      max-height: 300px;
       overflow-y: auto;
       line-height: 1.6;
       white-space: pre-wrap;
       word-break: break-all;
+      width: 100%;
+      box-sizing: border-box;
+      resize: vertical;
     }
+    .preview-box:focus {
+      outline: none;
+      border-color: var(--neon);
+      box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+    }
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .preview-edited-badge {
+      font-size: 0.7rem;
+      color: var(--primary);
+      background: rgba(255, 170, 0, 0.15);
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: none;
+    }
+    .preview-edited-badge.show { display: inline-block; }
+    .btn-reset-preview {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid var(--text-dim);
+      border-radius: 10px;
+      padding: 2px 10px;
+      cursor: pointer;
+      display: none;
+      transition: all 0.2s;
+    }
+    .btn-reset-preview.show { display: inline-block; }
+    .btn-reset-preview:hover { color: var(--neon); border-color: var(--neon); }
 
     /* ========== Buttons ========== */
     .section-label {
@@ -739,6 +775,9 @@
 
     /* Preview */
     [data-theme="light"] .preview-box { background: #f8f8f8; color: var(--neon); border-color: #ddd; }
+    [data-theme="light"] .preview-box:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(0, 180, 80, 0.2); }
+    [data-theme="light"] .btn-reset-preview { color: #888; border-color: #ccc; }
+    [data-theme="light"] .btn-reset-preview:hover { color: var(--neon); border-color: var(--neon); }
 
     /* Buttons */
     [data-theme="light"] .section-label { color: #666; }
@@ -907,7 +946,7 @@
 
       <div class="guide-step">
         <div class="guide-icon">5️⃣</div>
-        <div class="guide-text" data-i18n="guide_s5"><strong>預覽 → 一鍵啟動</strong><br>確認靈魂預覽無誤後，點擊 Google AI / ChatGPT / Grok 按鈕，靈魂自動帶入！</div>
+        <div class="guide-text" data-i18n="guide_s5"><strong>預覽 → 即時修改 → 啟動</strong><br>靈魂預覽區可直接編輯微調，修改後點「重新產生」可還原。確認無誤後一鍵啟動！</div>
       </div>
 
       <hr class="guide-divider">
@@ -1032,8 +1071,14 @@
 
         <!-- Preview -->
         <div class="form-group">
-          <label class="form-label" data-i18n="label_preview">&#x1F4CB; 靈魂預覽</label>
-          <div class="preview-box" id="soulPreview" data-i18n-default="preview_default">填寫上方資料後，即時預覽你的靈魂碼...</div>
+          <div class="preview-header">
+            <label class="form-label" data-i18n="label_preview" style="margin-bottom:0">&#x1F4CB; 靈魂預覽</label>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="preview-edited-badge" id="previewEditedBadge" data-i18n="preview_edited">已手動修改</span>
+              <button class="btn-reset-preview" id="btnResetPreview" onclick="resetPreview()" data-i18n="preview_reset">↻ 重新產生</button>
+            </div>
+          </div>
+          <textarea class="preview-box" id="soulPreview" data-i18n-ph="preview_default" placeholder="填寫上方資料後，即時預覽你的靈魂碼..." spellcheck="false"></textarea>
         </div>
 
         <!-- Launch Buttons -->
@@ -1122,7 +1167,7 @@
         guide_s2: '<strong>為 AI 取名 &amp; 選角色</strong><br>取個名字（預設 CoCo），設定角色定位。不填會自動使用 CoCo 預設靈魂。<br>🎨 <em>角色可以天馬行空！例如：毒舌閨蜜、星際導航員、時間旅行嚮導、貓咪管家、哲學辯論對手⋯⋯想到什麼就寫什麼！</em>',
         guide_s3: '<strong>挑選個性標籤</strong><br>點選多個個性標籤，讓 AI 的回應風格更貼近你的喜好。',
         guide_s4: '<strong>描述你的背景</strong>（選填）<br>簡述公司、產品、職位等資訊，AI 就能更精準地協助你。',
-        guide_s5: '<strong>預覽 → 一鍵啟動</strong><br>確認靈魂預覽無誤後，點擊 Google AI / ChatGPT / Grok 按鈕，靈魂自動帶入！',
+        guide_s5: '<strong>預覽 → 即時修改 → 啟動</strong><br>靈魂預覽區可直接編輯微調，修改後點「重新產生」可還原。確認無誤後一鍵啟動！',
         guide_s6: '<strong>匯出備份</strong><br>點「匯出靈魂 .json」可下載設定檔，方便日後重複使用。',
         guide_s7: '<strong>隱私保護</strong><br>預設開啟隱私模式，關閉頁面自動清除所有資料。可切換為保留模式。',
         guide_s8: '<strong>多國語言</strong><br>頁面頂端可切換繁中 / 简中 / English / 한국어 / 日本語，所有內容即時翻譯。',
@@ -1144,6 +1189,7 @@
         ph_desc: '描述你的公司、職位、主要產品型號與功能...\n\n範例：\n我是 ABC 公司的業務經理，主要銷售工業級 3D 印表機，產品線包括 X7（碳纖維列印）、FX20（大型連續纖維）等，客戶遍及台灣與東南亞製造業。',
         desc_hint: '讓 AI 更了解你的工作背景',
         label_preview: '📋 靈魂預覽', preview_default: '填寫上方資料後，即時預覽你的靈魂碼...',
+        preview_edited: '已手動修改', preview_reset: '↻ 重新產生',
         launch_label: '🚀 帶靈魂開啟 AI',
         btn_google: '🔍 一鍵開啟 Google AI 搜尋模式',
         btn_export: '💾 匯出靈魂 .json',
@@ -1185,7 +1231,7 @@
         guide_s2: '<strong>为 AI 取名 &amp; 选角色</strong><br>取个名字（默认 CoCo），设定角色定位。不填会自动使用 CoCo 默认灵魂。<br>🎨 <em>角色可以天马行空！例如：毒舌闺蜜、星际导航员、时间旅行向导、猫咪管家、哲学辩论对手⋯⋯想到什么就写什么！</em>',
         guide_s3: '<strong>挑选个性标签</strong><br>点选多个个性标签，让 AI 的回应风格更贴近你的喜好。',
         guide_s4: '<strong>描述你的背景</strong>（选填）<br>简述公司、产品、职位等信息，AI 就能更精准地协助你。',
-        guide_s5: '<strong>预览 → 一键启动</strong><br>确认灵魂预览无误后，点击 Google AI / ChatGPT / Grok 按钮，灵魂自动带入！',
+        guide_s5: '<strong>预览 → 即时修改 → 启动</strong><br>灵魂预览区可直接编辑微调，修改后点「重新生成」可还原。确认无误后一键启动！',
         guide_s6: '<strong>导出备份</strong><br>点「导出灵魂 .json」可下载设定文件，方便日后重复使用。',
         guide_s7: '<strong>隐私保护</strong><br>默认开启隐私模式，关闭页面自动清除所有数据。可切换为保留模式。',
         guide_s8: '<strong>多国语言</strong><br>页面顶端可切换繁中 / 简中 / English / 한국어 / 日本語，所有内容即时翻译。',
@@ -1207,6 +1253,7 @@
         ph_desc: '描述你的公司、职位、主要产品型号与功能...\n\n范例：\n我是 ABC 公司的业务经理，主要销售工业级 3D 打印机，产品线包括 X7（碳纤维打印）、FX20（大型连续纤维）等，客户遍及东南亚制造业。',
         desc_hint: '让 AI 更了解你的工作背景',
         label_preview: '📋 灵魂预览', preview_default: '填写上方资料后，即时预览你的灵魂码...',
+        preview_edited: '已手动修改', preview_reset: '↻ 重新生成',
         launch_label: '🚀 带灵魂开启 AI',
         btn_google: '🔍 一键开启 Google AI 搜索模式',
         btn_export: '💾 导出灵魂 .json',
@@ -1248,7 +1295,7 @@
         guide_s2: '<strong>Name your AI &amp; set a role</strong><br>Give it a name (default: CoCo) and set its role. Leave blank to use the default CoCo soul.<br>🎨 <em>Go wild with the role! e.g. Sarcastic BFF, Space Navigator, Time Travel Guide, Cat Butler, Philosophy Debate Rival... anything you can imagine!</em>',
         guide_s3: '<strong>Pick personality tags</strong><br>Select multiple tags to customize how your AI responds.',
         guide_s4: '<strong>Describe your background</strong> (optional)<br>Add your company, products, or role so AI can assist you more accurately.',
-        guide_s5: '<strong>Preview → Launch</strong><br>Check the soul preview, then click Google AI / ChatGPT / Grok to auto-inject your soul!',
+        guide_s5: '<strong>Preview → Edit → Launch</strong><br>The soul preview is fully editable — tweak it directly! Click "Regenerate" to restore. Then launch!',
         guide_s6: '<strong>Export backup</strong><br>Click "Export Soul .json" to download your config for future use.',
         guide_s7: '<strong>Privacy protection</strong><br>Privacy mode is on by default — closing the page erases everything. Toggle to save mode if needed.',
         guide_s8: '<strong>Multi-language</strong><br>Switch between 繁中 / 简中 / English / 한국어 / 日本語 at the top. All content translates instantly.',
@@ -1270,6 +1317,7 @@
         ph_desc: 'Describe your company, role, main products & features...\n\nExample:\nI\'m a sales manager at ABC Corp, selling industrial 3D printers. Our product line includes X7 (carbon fiber), FX20 (large-scale continuous fiber), serving manufacturers across Southeast Asia.',
         desc_hint: 'Help your AI understand your work background',
         label_preview: '📋 Soul Preview', preview_default: 'Fill in the fields above to preview your soul code...',
+        preview_edited: 'Manually edited', preview_reset: '↻ Regenerate',
         launch_label: '🚀 Launch AI with Soul',
         btn_google: '🔍 Launch Google AI Search',
         btn_export: '💾 Export Soul .json',
@@ -1311,7 +1359,7 @@
         guide_s2: '<strong>AI 이름 &amp; 역할 설정</strong><br>이름을 지어주세요 (기본: CoCo). 비워두면 CoCo 기본 소울이 자동 적용됩니다.<br>🎨 <em>역할은 마음껏 상상하세요! 예: 독설 친구, 우주 항해사, 타임머신 가이드, 고양이 집사, 철학 토론 상대... 뭐든 가능해요!</em>',
         guide_s3: '<strong>성격 태그 선택</strong><br>여러 태그를 선택하여 AI 응답 스타일을 맞춤 설정하세요.',
         guide_s4: '<strong>배경 설명</strong> (선택사항)<br>회사, 제품, 직책 등을 입력하면 AI가 더 정확하게 도울 수 있습니다.',
-        guide_s5: '<strong>미리보기 → 시작</strong><br>소울 미리보기를 확인한 후, Google AI / ChatGPT / Grok 버튼을 클릭하면 소울이 자동 주입됩니다!',
+        guide_s5: '<strong>미리보기 → 수정 → 시작</strong><br>소울 미리보기를 직접 편집할 수 있습니다. "다시 생성"을 클릭하면 복원됩니다. 확인 후 시작!',
         guide_s6: '<strong>내보내기</strong><br>"소울 .json 내보내기"를 클릭하면 설정 파일을 다운로드하여 나중에 재사용할 수 있습니다.',
         guide_s7: '<strong>개인정보 보호</strong><br>기본적으로 개인정보 모드가 켜져 있어 페이지를 닫으면 모든 데이터가 삭제됩니다. 저장 모드로 전환 가능합니다.',
         guide_s8: '<strong>다국어 지원</strong><br>상단에서 繁中 / 简中 / English / 한국어 / 日本語를 전환하면 모든 콘텐츠가 즉시 번역됩니다.',
@@ -1333,6 +1381,7 @@
         ph_desc: '회사, 직책, 주요 제품 및 기능을 설명하세요...\n\n예시:\nABC 회사의 영업 매니저로, 산업용 3D 프린터를 판매합니다. 제품 라인에는 X7(탄소 섬유), FX20(대형 연속 섬유) 등이 있습니다.',
         desc_hint: 'AI가 당신의 업무 배경을 이해하도록 돕습니다',
         label_preview: '📋 소울 미리보기', preview_default: '위의 필드를 입력하면 소울 코드를 미리 볼 수 있습니다...',
+        preview_edited: '수동 수정됨', preview_reset: '↻ 다시 생성',
         launch_label: '🚀 소울과 함께 AI 시작',
         btn_google: '🔍 Google AI 검색 시작',
         btn_export: '💾 소울 .json 내보내기',
@@ -1374,7 +1423,7 @@
         guide_s2: '<strong>AIに名前 &amp; 役割を設定</strong><br>名前をつけてください（デフォルト: CoCo）。空欄のままだとCoCoのデフォルトソウルが自動適用されます。<br>🎨 <em>役割は自由に想像を膨らませて！例：毒舌親友、宇宙ナビゲーター、タイムトラベルガイド、猫バトラー、哲学ディベート相手⋯⋯思いつくままに！</em>',
         guide_s3: '<strong>個性タグを選択</strong><br>複数のタグを選んで、AIの応答スタイルをカスタマイズしましょう。',
         guide_s4: '<strong>背景を記述</strong>（任意）<br>会社、製品、役職などを入力すると、AIがより正確にサポートできます。',
-        guide_s5: '<strong>プレビュー → 起動</strong><br>ソウルプレビューを確認したら、Google AI / ChatGPT / Grok ボタンをクリックしてソウルを自動注入！',
+        guide_s5: '<strong>プレビュー → 編集 → 起動</strong><br>ソウルプレビューは直接編集できます。「再生成」をクリックすると復元されます。確認後に起動！',
         guide_s6: '<strong>エクスポート</strong><br>「ソウル .json エクスポート」をクリックして設定ファイルをダウンロード。後で再利用できます。',
         guide_s7: '<strong>プライバシー保護</strong><br>デフォルトでプライバシーモードがオン。ページを閉じるとすべて消去されます。保存モードに切り替え可能。',
         guide_s8: '<strong>多言語対応</strong><br>ページ上部で 繁中 / 简中 / English / 한국어 / 日本語 を切り替え。すべてのコンテンツが即座に翻訳されます。',
@@ -1396,6 +1445,7 @@
         ph_desc: '会社、役職、主要製品と機能を記述してください...\n\n例：\nABC社のセールスマネージャーで、産業用3Dプリンターを販売。製品ラインにはX7（カーボンファイバー）、FX20（大型連続繊維）などがあります。',
         desc_hint: 'AIがあなたの仕事の背景を理解するのに役立ちます',
         label_preview: '📋 ソウルプレビュー', preview_default: '上のフィールドに入力すると、ソウルコードをプレビューできます...',
+        preview_edited: '手動編集済み', preview_reset: '↻ 再生成',
         launch_label: '🚀 ソウルとAIを起動',
         btn_google: '🔍 Google AI検索を起動',
         btn_export: '💾 ソウル .json をエクスポート',
@@ -1736,10 +1786,10 @@
     }
 
     function buildSoulPrompt(options) {
-      const soul = buildSoulObject();
       const prefix = t('soul_prompt_prefix');
-      const suffix = isDefaultState() ? t('soul_prompt_coco') : t('soul_prompt_suffix');
-      let prompt = `${prefix}\n\n${JSON.stringify(soul, null, 2)}`;
+      const suffix = isDefaultState() && !previewManuallyEdited ? t('soul_prompt_coco') : t('soul_prompt_suffix');
+      const soulJson = previewManuallyEdited ? soulPreview.value.trim() : JSON.stringify(buildSoulObject(), null, 2);
+      let prompt = `${prefix}\n\n${soulJson}`;
 
       // Append previous conversation memory if available
       if (lastImportedMemory) {
@@ -1757,10 +1807,30 @@
     }
 
     // --- Preview ---
+    let previewManuallyEdited = false;
+
     function updatePreview() {
+      if (previewManuallyEdited) return;
       const soul = buildSoulObject();
-      soulPreview.textContent = JSON.stringify(soul, null, 2);
+      soulPreview.value = JSON.stringify(soul, null, 2);
     }
+
+    function markPreviewEdited() {
+      previewManuallyEdited = true;
+      document.getElementById('previewEditedBadge').classList.add('show');
+      document.getElementById('btnResetPreview').classList.add('show');
+    }
+
+    function resetPreview() {
+      previewManuallyEdited = false;
+      document.getElementById('previewEditedBadge').classList.remove('show');
+      document.getElementById('btnResetPreview').classList.remove('show');
+      updatePreview();
+    }
+
+    soulPreview.addEventListener('input', () => {
+      if (!previewManuallyEdited) markPreviewEdited();
+    });
 
     // --- Google AI ---
     function launchGoogle() {
@@ -1820,11 +1890,11 @@
 
     // --- Export ---
     function exportSoulJSON() {
-      const soul = buildSoulObject();
+      const soulJson = previewManuallyEdited ? soulPreview.value.trim() : JSON.stringify(buildSoulObject(), null, 2);
       const name = soulName.value.trim() || 'SoulForge';
       const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
       const fileName = `${name}_Soul_${ts}.json`;
-      const blob = new Blob([JSON.stringify(soul, null, 2)], { type: 'application/json' });
+      const blob = new Blob([soulJson], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
