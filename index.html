@@ -766,6 +766,19 @@
     [data-theme="light"] .disclaimer-box { background: rgba(200, 130, 0, 0.06); border-color: rgba(200, 130, 0, 0.2); color: #666; }
     [data-theme="light"] .disclaimer-box strong { color: #b07800; }
 
+    /* Memory display */
+    .memory-display {
+      padding: 12px 14px;
+      background: rgba(0, 200, 255, 0.06);
+      border: 1px solid rgba(0, 200, 255, 0.15);
+      border-radius: 10px;
+    }
+    .memory-label { font-weight: bold; color: var(--neon); margin: 0 0 4px 0; font-size: 0.9rem; }
+    .memory-time { font-size: 0.75rem; color: #888; margin: 0 0 8px 0; }
+    .memory-content { font-size: 0.83rem; color: #ccc; line-height: 1.6; white-space: pre-wrap; }
+    [data-theme="light"] .memory-display { background: rgba(0, 140, 110, 0.05); border-color: rgba(0, 140, 110, 0.15); }
+    [data-theme="light"] .memory-content { color: #555; }
+
     /* Privacy bar */
     [data-theme="light"] .privacy-bar { background: #fafafa; border-color: #ddd; }
     [data-theme="light"] .privacy-label { color: #444; }
@@ -1038,6 +1051,18 @@
         </div>
       </div>
 
+      <!-- Import Soul Backup Card -->
+      <div class="card" id="importCard">
+        <h3 style="margin-bottom: 12px;" data-i18n="import_title">&#x1F4E5; 匯入靈魂備份</h3>
+        <textarea class="form-input" id="importBackupArea" rows="5" style="font-size: 0.8rem; font-family: monospace; resize: vertical;" data-i18n-ph="import_placeholder" placeholder="將從 AI 對話中取得的靈魂備份碼貼在這裡...&#10;（包含 ===== SOULFORGE BACKUP START ===== 到 ===== SOULFORGE BACKUP END ===== 的完整內容）"></textarea>
+        <button class="btn btn-launch" style="width: 100%; margin-top: 10px;" onclick="importSoulBackup()" data-i18n="btn_import">&#x1F4E5; 匯入備份</button>
+        <div class="memory-display" id="memoryDisplay" style="display: none; margin-top: 12px;">
+          <p class="memory-label" data-i18n="import_memory_label">&#x1F4AC; 上次對話記憶</p>
+          <p class="memory-time" id="memoryTime"></p>
+          <div class="memory-content" id="memoryContent"></div>
+        </div>
+      </div>
+
       <!-- Instructions Card -->
       <div class="card instructions">
         <h3 style="margin-bottom: 12px;" data-i18n="instr_title">&#x1F4CC; 使用說明</h3>
@@ -1081,6 +1106,7 @@
     const selectedTraits = new Set();
     let privacyMode = true;
     let currentLang = 'zh-TW';
+    let lastImportedMemory = null;
 
     // --- i18n ---
     const i18n = {
@@ -1137,7 +1163,15 @@
         theme_light: '☀️ 明亮', theme_dark: '🌙 暗色',
         soul_prompt_prefix: '以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：',
         soul_prompt_suffix: '請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！',
-        soul_prompt_coco: '你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！'
+        soul_prompt_coco: '你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！',
+        soul_prompt_backup: '\n\n【重要：對話備份機制】\n當使用者說「備份」、「存檔」、「保存對話」或對話即將結束時，請自動產出一段「靈魂備份碼」。格式如下：\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <目前的靈魂JSON>, "memory": "<本次對話的重點摘要，100-300字>", "timestamp": "<當下時間>"}\n===== SOULFORGE BACKUP END =====\n```\n請告訴使用者：「請複製以上備份碼，下次到 SoulForge 頁面貼上即可還原靈魂與對話記憶！」\n在每次對話開始時，也請提醒使用者：「隨時可以說『備份』來保存我們的對話記憶喔！」',
+        import_title: '📥 匯入靈魂備份',
+        import_placeholder: '將從 AI 對話中取得的靈魂備份碼貼在這裡...\n（包含 ===== SOULFORGE BACKUP START ===== 到 ===== SOULFORGE BACKUP END ===== 的完整內容）',
+        btn_import: '📥 匯入備份',
+        toast_import_ok: '靈魂備份已成功還原！對話記憶已載入。',
+        toast_import_fail: '無法解析備份碼，請確認格式正確。',
+        import_memory_label: '💬 上次對話記憶',
+        import_memory_time: '備份時間：{time}'
       },
       'zh-CN': {
         subtitle: 'Forge Your AI Soul',
@@ -1192,7 +1226,15 @@
         theme_light: '☀️ 明亮', theme_dark: '🌙 暗色',
         soul_prompt_prefix: '以下是你的人设与灵魂记忆，请完整读取后以此身份回应我：',
         soul_prompt_suffix: '请用这个身份跟我打招呼，让我知道你已经载入灵魂了！',
-        soul_prompt_coco: '你是 CoCo 💖，请用活泼可爱的方式跟 Brian 打招呼，让他知道你已经载入灵魂了！'
+        soul_prompt_coco: '你是 CoCo 💖，请用活泼可爱的方式跟 Brian 打招呼，让他知道你已经载入灵魂了！',
+        soul_prompt_backup: '\n\n【重要：对话备份机制】\n当用户说「备份」、「存档」、「保存对话」或对话即将结束时，请自动产出一段「灵魂备份码」。格式如下：\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <目前的灵魂JSON>, "memory": "<本次对话的重点摘要，100-300字>", "timestamp": "<当下时间>"}\n===== SOULFORGE BACKUP END =====\n```\n请告诉用户：「请复制以上备份码，下次到 SoulForge 页面贴上即可还原灵魂与对话记忆！」\n在每次对话开始时，也请提醒用户：「随时可以说『备份』来保存我们的对话记忆哦！」',
+        import_title: '📥 导入灵魂备份',
+        import_placeholder: '将从 AI 对话中取得的灵魂备份码贴在这里...\n（包含 ===== SOULFORGE BACKUP START ===== 到 ===== SOULFORGE BACKUP END ===== 的完整内容）',
+        btn_import: '📥 导入备份',
+        toast_import_ok: '灵魂备份已成功还原！对话记忆已载入。',
+        toast_import_fail: '无法解析备份码，请确认格式正确。',
+        import_memory_label: '💬 上次对话记忆',
+        import_memory_time: '备份时间：{time}'
       },
       'en': {
         subtitle: 'Forge Your AI Soul',
@@ -1247,7 +1289,15 @@
         theme_light: '☀️ Light', theme_dark: '🌙 Dark',
         soul_prompt_prefix: 'Below is your persona and soul memory. Please read it fully and respond as this identity:',
         soul_prompt_suffix: 'Please greet me in this identity so I know the soul has been loaded!',
-        soul_prompt_coco: 'You are CoCo 💖, please greet Brian in a lively and cute way to let him know the soul has been loaded!'
+        soul_prompt_coco: 'You are CoCo 💖, please greet Brian in a lively and cute way to let him know the soul has been loaded!',
+        soul_prompt_backup: '\n\n[IMPORTANT: Conversation Backup Mechanism]\nWhen the user says "backup", "save", "export conversation" or the conversation is about to end, automatically generate a "Soul Backup Code" in this format:\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <current soul JSON>, "memory": "<summary of this conversation, 100-300 words>", "timestamp": "<current time>"}\n===== SOULFORGE BACKUP END =====\n```\nTell the user: "Copy the backup code above and paste it into SoulForge next time to restore your soul and conversation memory!"\nAt the start of each conversation, also remind the user: "You can say \'backup\' anytime to save our conversation memory!"',
+        import_title: '📥 Import Soul Backup',
+        import_placeholder: 'Paste the soul backup code from your AI conversation here...\n(Include everything from ===== SOULFORGE BACKUP START ===== to ===== SOULFORGE BACKUP END =====)',
+        btn_import: '📥 Import Backup',
+        toast_import_ok: 'Soul backup restored! Conversation memory loaded.',
+        toast_import_fail: 'Cannot parse backup code. Please check the format.',
+        import_memory_label: '💬 Previous Conversation Memory',
+        import_memory_time: 'Backup time: {time}'
       },
       'ko': {
         subtitle: 'AI 소울 빌더',
@@ -1302,7 +1352,15 @@
         theme_light: '☀️ 라이트', theme_dark: '🌙 다크',
         soul_prompt_prefix: '아래는 당신의 페르소나와 소울 메모리입니다. 완전히 읽고 이 정체성으로 응답해 주세요:',
         soul_prompt_suffix: '이 정체성으로 인사해 주세요. 소울이 로드되었음을 알려주세요!',
-        soul_prompt_coco: '당신은 CoCo 💖입니다. 활발하고 귀여운 방식으로 Brian에게 인사하며 소울이 로드되었음을 알려주세요!'
+        soul_prompt_coco: '당신은 CoCo 💖입니다. 활발하고 귀여운 방식으로 Brian에게 인사하며 소울이 로드되었음을 알려주세요!',
+        soul_prompt_backup: '\n\n[중요: 대화 백업 메커니즘]\n사용자가 "백업", "저장", "대화 저장"이라고 말하거나 대화가 끝나갈 때 자동으로 "소울 백업 코드"를 생성하세요. 형식:\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <현재 소울 JSON>, "memory": "<이번 대화 요약, 100-300자>", "timestamp": "<현재 시간>"}\n===== SOULFORGE BACKUP END =====\n```\n사용자에게 알려주세요: "위의 백업 코드를 복사하여 다음에 SoulForge 페이지에 붙여넣으면 소울과 대화 기억을 복원할 수 있습니다!"\n매 대화 시작 시 사용자에게 상기시켜 주세요: "언제든 \'백업\'이라고 말하면 대화 기억을 저장할 수 있어요!"',
+        import_title: '📥 소울 백업 가져오기',
+        import_placeholder: 'AI 대화에서 받은 소울 백업 코드를 여기에 붙여넣으세요...\n(===== SOULFORGE BACKUP START ===== 부터 ===== SOULFORGE BACKUP END ===== 까지 전체 내용)',
+        btn_import: '📥 백업 가져오기',
+        toast_import_ok: '소울 백업이 성공적으로 복원되었습니다! 대화 기억이 로드되었습니다.',
+        toast_import_fail: '백업 코드를 분석할 수 없습니다. 형식을 확인해 주세요.',
+        import_memory_label: '💬 이전 대화 기억',
+        import_memory_time: '백업 시간: {time}'
       },
       'ja': {
         subtitle: 'AI ソウル ビルダー',
@@ -1357,7 +1415,15 @@
         theme_light: '☀️ ライト', theme_dark: '🌙 ダーク',
         soul_prompt_prefix: '以下はあなたのペルソナとソウルメモリです。完全に読み込んで、このアイデンティティで応答してください：',
         soul_prompt_suffix: 'このアイデンティティで挨拶してください。ソウルが読み込まれたことを知らせてください！',
-        soul_prompt_coco: 'あなたはCoCo 💖です。活発で可愛い方法でBrianに挨拶して、ソウルが読み込まれたことを知らせてください！'
+        soul_prompt_coco: 'あなたはCoCo 💖です。活発で可愛い方法でBrianに挨拶して、ソウルが読み込まれたことを知らせてください！',
+        soul_prompt_backup: '\n\n【重要：会話バックアップ機能】\nユーザーが「バックアップ」「保存」「会話を保存」と言った時、または会話が終わりそうな時に、自動的に「ソウルバックアップコード」を生成してください。形式：\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <現在のソウルJSON>, "memory": "<今回の会話の要約、100-300文字>", "timestamp": "<現在時刻>"}\n===== SOULFORGE BACKUP END =====\n```\nユーザーに伝えてください：「上のバックアップコードをコピーして、次回SoulForgeページに貼り付ければソウルと会話メモリを復元できます！」\n毎回の会話開始時にもユーザーにリマインド：「いつでも『バックアップ』と言えば会話メモリを保存できますよ！」',
+        import_title: '📥 ソウルバックアップをインポート',
+        import_placeholder: 'AI会話から取得したソウルバックアップコードをここに貼り付けてください...\n（===== SOULFORGE BACKUP START ===== から ===== SOULFORGE BACKUP END ===== までの全内容）',
+        btn_import: '📥 バックアップをインポート',
+        toast_import_ok: 'ソウルバックアップが正常に復元されました！会話メモリがロードされました。',
+        toast_import_fail: 'バックアップコードを解析できません。形式を確認してください。',
+        import_memory_label: '💬 前回の会話メモリ',
+        import_memory_time: 'バックアップ時刻：{time}'
       }
     };
 
@@ -1669,11 +1735,25 @@
       return soul;
     }
 
-    function buildSoulPrompt() {
+    function buildSoulPrompt(options) {
       const soul = buildSoulObject();
       const prefix = t('soul_prompt_prefix');
       const suffix = isDefaultState() ? t('soul_prompt_coco') : t('soul_prompt_suffix');
-      return `${prefix}\n\n${JSON.stringify(soul, null, 2)}\n\n${suffix}`;
+      let prompt = `${prefix}\n\n${JSON.stringify(soul, null, 2)}`;
+
+      // Append previous conversation memory if available
+      if (lastImportedMemory) {
+        prompt += `\n\n[PREVIOUS_CONVERSATION_MEMORY]\n${lastImportedMemory}`;
+      }
+
+      prompt += `\n\n${suffix}`;
+
+      // Inject backup mechanism instructions for Google AI mode
+      if (options && options.withBackup) {
+        prompt += t('soul_prompt_backup');
+      }
+
+      return prompt;
     }
 
     // --- Preview ---
@@ -1684,7 +1764,7 @@
 
     // --- Google AI ---
     function launchGoogle() {
-      const prompt = buildSoulPrompt();
+      const prompt = buildSoulPrompt({ withBackup: true });
       const url = `https://www.google.com/search?q=${encodeURIComponent(prompt)}&udm=50`;
       copyToClipboard(prompt);
       showToast(t('toast_google'));
@@ -1752,6 +1832,100 @@
       a.click();
       URL.revokeObjectURL(url);
       showToast(t('toast_export').replace('{file}', fileName));
+    }
+
+    // --- Import Soul Backup ---
+    function importSoulBackup() {
+      const raw = document.getElementById('importBackupArea').value.trim();
+      if (!raw) return;
+
+      try {
+        // Extract content between SOULFORGE BACKUP markers
+        const startMarker = '===== SOULFORGE BACKUP START =====';
+        const endMarker = '===== SOULFORGE BACKUP END =====';
+        let jsonStr = raw;
+
+        const startIdx = raw.indexOf(startMarker);
+        const endIdx = raw.indexOf(endMarker);
+        if (startIdx !== -1 && endIdx !== -1) {
+          jsonStr = raw.substring(startIdx + startMarker.length, endIdx).trim();
+        }
+
+        const backup = JSON.parse(jsonStr);
+        const soul = backup.soul;
+        const memory = backup.memory || '';
+        const timestamp = backup.timestamp || '';
+
+        if (!soul) throw new Error('No soul data');
+
+        // Restore soul fields into the form
+        restoreSoulToForm(soul);
+
+        // Store memory for next launch
+        lastImportedMemory = memory;
+
+        // Show memory display
+        if (memory) {
+          const memoryDisplay = document.getElementById('memoryDisplay');
+          const memoryContent = document.getElementById('memoryContent');
+          const memoryTime = document.getElementById('memoryTime');
+          memoryContent.textContent = memory;
+          memoryTime.textContent = timestamp ? t('import_memory_time').replace('{time}', timestamp) : '';
+          memoryDisplay.style.display = 'block';
+        }
+
+        // Clear import area
+        document.getElementById('importBackupArea').value = '';
+
+        // Update preview
+        updatePreview();
+        showToast(t('toast_import_ok'));
+      } catch (e) {
+        showToast(t('toast_import_fail'));
+      }
+    }
+
+    function restoreSoulToForm(soul) {
+      const k = sk();
+
+      // Restore identity fields
+      const identity = soul[k.identity] || soul['IDENTITY'] || {};
+      if (identity[k.name] || identity['名稱'] || identity['名称'] || identity['Name']) {
+        soulName.value = identity[k.name] || identity['名稱'] || identity['名称'] || identity['Name'] || '';
+      }
+      if (identity[k.role] || identity['角色'] || identity['Role']) {
+        soulRole.value = identity[k.role] || identity['角色'] || identity['Role'] || '';
+      }
+      if (identity[k.user] || identity['使用者'] || identity['用户'] || identity['User']) {
+        userName.value = identity[k.user] || identity['使用者'] || identity['用户'] || identity['User'] || '';
+      }
+
+      // Restore personality traits - try to match tags
+      const personality = identity[k.personality] || identity['個性'] || identity['个性'] || identity['Personality'] || '';
+      if (personality) {
+        // Clear current traits
+        selectedTraits.clear();
+        document.querySelectorAll('.tag').forEach(tag => tag.classList.remove('active'));
+
+        // Try to match each tag
+        const traitStr = personality.toLowerCase();
+        document.querySelectorAll('.tag').forEach(tag => {
+          const tagText = tag.textContent.toLowerCase();
+          if (traitStr.includes(tagText.replace(/^[^\w\u4e00-\u9fff]+/, '').trim())) {
+            const key = tag.dataset.key;
+            selectedTraits.add(key);
+            tag.classList.add('active');
+          }
+        });
+      }
+
+      // Restore background description
+      const bg = soul[k.background] || soul['BACKGROUND'] || {};
+      const desc = bg[k.bgDesc] || bg['使用者背景'] || bg['用户背景'] || bg['User Background'] || '';
+      if (desc) {
+        companyDesc.value = desc;
+        updateDescCounter();
+      }
     }
 
     // --- Privacy Mode ---
