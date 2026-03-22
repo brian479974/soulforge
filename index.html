@@ -105,9 +105,64 @@
       text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
     }
 
+    .sidebar-guide {
+      margin-top: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .sidebar-guide h3 {
+      color: var(--primary);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .guide-step {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+    }
+    .guide-icon {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .guide-text {
+      font-size: 0.78rem;
+      color: #bbb;
+      line-height: 1.5;
+    }
+    .guide-text strong {
+      color: var(--neon);
+      font-weight: 700;
+    }
+    .guide-divider {
+      border: none;
+      border-top: 1px solid #222;
+      margin: 16px 0;
+    }
+    .guide-tip {
+      background: rgba(0, 255, 204, 0.05);
+      border: 1px solid rgba(0, 255, 204, 0.15);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.75rem;
+      color: #888;
+      line-height: 1.5;
+    }
+    .guide-tip strong { color: var(--neon); }
+
     .sidebar-footer {
-      margin-top: auto;
-      padding-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #222;
+      margin-top: 16px;
       font-size: 0.78rem;
       color: #444;
       line-height: 1.6;
@@ -652,6 +707,56 @@
       <p>&#x1F680; <span data-i18n="sb_platform_label">平台：</span><span class="neon-text">Google / ChatGPT / Grok</span></p>
     </div>
 
+    <div class="sidebar-guide">
+      <h3 data-i18n="guide_title">📖 操作說明</h3>
+
+      <div class="guide-step">
+        <div class="guide-icon">1️⃣</div>
+        <div class="guide-text" data-i18n="guide_s1"><strong>填寫你的名字</strong><br>讓 AI 知道怎麼稱呼你，對話更有溫度。</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-icon">2️⃣</div>
+        <div class="guide-text" data-i18n="guide_s2"><strong>為 AI 取名 & 選角色</strong><br>取個名字（預設 CoCo），設定角色定位。不填會自動使用 CoCo 預設靈魂。</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-icon">3️⃣</div>
+        <div class="guide-text" data-i18n="guide_s3"><strong>挑選個性標籤</strong><br>點選多個個性標籤，讓 AI 的回應風格更貼近你的喜好。</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-icon">4️⃣</div>
+        <div class="guide-text" data-i18n="guide_s4"><strong>描述你的背景</strong>（選填）<br>簡述公司、產品、職位等資訊，AI 就能更精準地協助你。</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-icon">5️⃣</div>
+        <div class="guide-text" data-i18n="guide_s5"><strong>預覽 → 一鍵啟動</strong><br>確認靈魂預覽無誤後，點擊 Google AI / ChatGPT / Grok 按鈕，靈魂自動帶入！</div>
+      </div>
+
+      <hr class="guide-divider">
+
+      <div class="guide-step">
+        <div class="guide-icon">💾</div>
+        <div class="guide-text" data-i18n="guide_s6"><strong>匯出備份</strong><br>點「匯出靈魂 .json」可下載設定檔，方便日後重複使用。</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-icon">🔒</div>
+        <div class="guide-text" data-i18n="guide_s7"><strong>隱私保護</strong><br>預設開啟隱私模式，關閉頁面自動清除所有資料。可切換為保留模式。</div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-icon">🌐</div>
+        <div class="guide-text" data-i18n="guide_s8"><strong>多國語言</strong><br>頁面頂端可切換繁中 / 简中 / English / 한국어 / 日本語，所有內容即時翻譯。</div>
+      </div>
+
+      <hr class="guide-divider">
+
+      <div class="guide-tip" data-i18n="guide_tip">💡 <strong>小提示：</strong>什麼都不填直接按啟動按鈕，就會使用 CoCo 預設靈魂，立即體驗！</div>
+    </div>
+
     <div class="sidebar-footer">
       <span data-i18n="sb_footer">開源免費，任何人都能使用。<br>取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。</span><br><br>
       <span style="color: var(--neon);">v1.0</span><br>
@@ -816,6 +921,16 @@
         sb_platform_label: '平台：',
         sb_footer: '開源免費，任何人都能使用。<br>取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。',
         sb_created: '創作：', sb_guided: '指導：',
+        guide_title: '📖 操作說明',
+        guide_s1: '<strong>填寫你的名字</strong><br>讓 AI 知道怎麼稱呼你，對話更有溫度。',
+        guide_s2: '<strong>為 AI 取名 &amp; 選角色</strong><br>取個名字（預設 CoCo），設定角色定位。不填會自動使用 CoCo 預設靈魂。',
+        guide_s3: '<strong>挑選個性標籤</strong><br>點選多個個性標籤，讓 AI 的回應風格更貼近你的喜好。',
+        guide_s4: '<strong>描述你的背景</strong>（選填）<br>簡述公司、產品、職位等資訊，AI 就能更精準地協助你。',
+        guide_s5: '<strong>預覽 → 一鍵啟動</strong><br>確認靈魂預覽無誤後，點擊 Google AI / ChatGPT / Grok 按鈕，靈魂自動帶入！',
+        guide_s6: '<strong>匯出備份</strong><br>點「匯出靈魂 .json」可下載設定檔，方便日後重複使用。',
+        guide_s7: '<strong>隱私保護</strong><br>預設開啟隱私模式，關閉頁面自動清除所有資料。可切換為保留模式。',
+        guide_s8: '<strong>多國語言</strong><br>頁面頂端可切換繁中 / 简中 / English / 한국어 / 日本語，所有內容即時翻譯。',
+        guide_tip: '💡 <strong>小提示：</strong>什麼都不填直接按啟動按鈕，就會使用 CoCo 預設靈魂，立即體驗！',
         privacy_label: '隱私模式', privacy_on: '已啟用 - 不儲存資料', privacy_off: '已關閉 - 資料會保留',
         privacy_hint_on: '關閉頁面即清除一切', privacy_hint_off: '下次開啟會保留設定',
         clear_all: '🗑 立即清除所有資料',
@@ -859,6 +974,16 @@
         sb_platform_label: '平台：',
         sb_footer: '开源免费，任何人都能使用。<br>取个名字、选个性、描述背景，<br>一键带灵魂进入 AI 对话。',
         sb_created: '创作：', sb_guided: '指导：',
+        guide_title: '📖 操作说明',
+        guide_s1: '<strong>填写你的名字</strong><br>让 AI 知道怎么称呼你，对话更有温度。',
+        guide_s2: '<strong>为 AI 取名 &amp; 选角色</strong><br>取个名字（默认 CoCo），设定角色定位。不填会自动使用 CoCo 默认灵魂。',
+        guide_s3: '<strong>挑选个性标签</strong><br>点选多个个性标签，让 AI 的回应风格更贴近你的喜好。',
+        guide_s4: '<strong>描述你的背景</strong>（选填）<br>简述公司、产品、职位等信息，AI 就能更精准地协助你。',
+        guide_s5: '<strong>预览 → 一键启动</strong><br>确认灵魂预览无误后，点击 Google AI / ChatGPT / Grok 按钮，灵魂自动带入！',
+        guide_s6: '<strong>导出备份</strong><br>点「导出灵魂 .json」可下载设定文件，方便日后重复使用。',
+        guide_s7: '<strong>隐私保护</strong><br>默认开启隐私模式，关闭页面自动清除所有数据。可切换为保留模式。',
+        guide_s8: '<strong>多国语言</strong><br>页面顶端可切换繁中 / 简中 / English / 한국어 / 日本語，所有内容即时翻译。',
+        guide_tip: '💡 <strong>小提示：</strong>什么都不填直接按启动按钮，就会使用 CoCo 默认灵魂，立即体验！',
         privacy_label: '隐私模式', privacy_on: '已启用 - 不储存数据', privacy_off: '已关闭 - 数据会保留',
         privacy_hint_on: '关闭页面即清除一切', privacy_hint_off: '下次打开会保留设置',
         clear_all: '🗑 立即清除所有数据',
@@ -902,6 +1027,16 @@
         sb_platform_label: 'Platforms: ',
         sb_footer: 'Open source &amp; free for everyone.<br>Name it, pick a personality, describe your background,<br>and launch your soul into any AI.',
         sb_created: 'Created by: ', sb_guided: 'Guided by: ',
+        guide_title: '📖 How to Use',
+        guide_s1: '<strong>Enter your name</strong><br>Let AI know what to call you for a more personal experience.',
+        guide_s2: '<strong>Name your AI &amp; set a role</strong><br>Give it a name (default: CoCo) and set its role. Leave blank to use the default CoCo soul.',
+        guide_s3: '<strong>Pick personality tags</strong><br>Select multiple tags to customize how your AI responds.',
+        guide_s4: '<strong>Describe your background</strong> (optional)<br>Add your company, products, or role so AI can assist you more accurately.',
+        guide_s5: '<strong>Preview → Launch</strong><br>Check the soul preview, then click Google AI / ChatGPT / Grok to auto-inject your soul!',
+        guide_s6: '<strong>Export backup</strong><br>Click "Export Soul .json" to download your config for future use.',
+        guide_s7: '<strong>Privacy protection</strong><br>Privacy mode is on by default — closing the page erases everything. Toggle to save mode if needed.',
+        guide_s8: '<strong>Multi-language</strong><br>Switch between 繁中 / 简中 / English / 한국어 / 日本語 at the top. All content translates instantly.',
+        guide_tip: '💡 <strong>Pro tip:</strong> Leave everything blank and hit launch to instantly experience the default CoCo soul!',
         privacy_label: 'Privacy Mode', privacy_on: 'Enabled - No data stored', privacy_off: 'Disabled - Data will be saved',
         privacy_hint_on: 'Closing the page clears everything', privacy_hint_off: 'Settings will be saved for next visit',
         clear_all: '🗑 Clear All Data Now',
@@ -945,6 +1080,16 @@
         sb_platform_label: '플랫폼: ',
         sb_footer: '오픈소스 무료 도구.<br>이름을 짓고, 성격을 고르고, 배경을 설명하고,<br>AI 대화에 소울을 주입하세요.',
         sb_created: '제작: ', sb_guided: '지도: ',
+        guide_title: '📖 사용 가이드',
+        guide_s1: '<strong>이름을 입력하세요</strong><br>AI가 당신을 어떻게 부를지 알려주면 대화가 더 따뜻해집니다.',
+        guide_s2: '<strong>AI 이름 &amp; 역할 설정</strong><br>이름을 지어주세요 (기본: CoCo). 비워두면 CoCo 기본 소울이 자동 적용됩니다.',
+        guide_s3: '<strong>성격 태그 선택</strong><br>여러 태그를 선택하여 AI 응답 스타일을 맞춤 설정하세요.',
+        guide_s4: '<strong>배경 설명</strong> (선택사항)<br>회사, 제품, 직책 등을 입력하면 AI가 더 정확하게 도울 수 있습니다.',
+        guide_s5: '<strong>미리보기 → 시작</strong><br>소울 미리보기를 확인한 후, Google AI / ChatGPT / Grok 버튼을 클릭하면 소울이 자동 주입됩니다!',
+        guide_s6: '<strong>내보내기</strong><br>"소울 .json 내보내기"를 클릭하면 설정 파일을 다운로드하여 나중에 재사용할 수 있습니다.',
+        guide_s7: '<strong>개인정보 보호</strong><br>기본적으로 개인정보 모드가 켜져 있어 페이지를 닫으면 모든 데이터가 삭제됩니다. 저장 모드로 전환 가능합니다.',
+        guide_s8: '<strong>다국어 지원</strong><br>상단에서 繁中 / 简中 / English / 한국어 / 日本語를 전환하면 모든 콘텐츠가 즉시 번역됩니다.',
+        guide_tip: '💡 <strong>꿀팁:</strong> 아무것도 입력하지 않고 바로 시작 버튼을 누르면 CoCo 기본 소울을 즉시 체험할 수 있습니다!',
         privacy_label: '개인정보 모드', privacy_on: '활성화 - 데이터 저장 안 함', privacy_off: '비활성화 - 데이터 저장됨',
         privacy_hint_on: '페이지를 닫으면 모든 것이 삭제됩니다', privacy_hint_off: '다음 방문 시 설정이 유지됩니다',
         clear_all: '🗑 모든 데이터 즉시 삭제',
@@ -988,6 +1133,16 @@
         sb_platform_label: 'プラットフォーム：',
         sb_footer: 'オープンソース＆無料。<br>名前をつけて、個性を選んで、背景を記述して、<br>ワンクリックでAI対話にソウルを注入。',
         sb_created: '制作：', sb_guided: '監修：',
+        guide_title: '📖 使い方ガイド',
+        guide_s1: '<strong>名前を入力</strong><br>AIがあなたをどう呼ぶか知ることで、より温かい対話になります。',
+        guide_s2: '<strong>AIに名前 &amp; 役割を設定</strong><br>名前をつけてください（デフォルト: CoCo）。空欄のままだとCoCoのデフォルトソウルが自動適用されます。',
+        guide_s3: '<strong>個性タグを選択</strong><br>複数のタグを選んで、AIの応答スタイルをカスタマイズしましょう。',
+        guide_s4: '<strong>背景を記述</strong>（任意）<br>会社、製品、役職などを入力すると、AIがより正確にサポートできます。',
+        guide_s5: '<strong>プレビュー → 起動</strong><br>ソウルプレビューを確認したら、Google AI / ChatGPT / Grok ボタンをクリックしてソウルを自動注入！',
+        guide_s6: '<strong>エクスポート</strong><br>「ソウル .json エクスポート」をクリックして設定ファイルをダウンロード。後で再利用できます。',
+        guide_s7: '<strong>プライバシー保護</strong><br>デフォルトでプライバシーモードがオン。ページを閉じるとすべて消去されます。保存モードに切り替え可能。',
+        guide_s8: '<strong>多言語対応</strong><br>ページ上部で 繁中 / 简中 / English / 한국어 / 日本語 を切り替え。すべてのコンテンツが即座に翻訳されます。',
+        guide_tip: '💡 <strong>ヒント：</strong>何も入力せずに起動ボタンを押すだけで、CoCoのデフォルトソウルをすぐに体験できます！',
         privacy_label: 'プライバシーモード', privacy_on: '有効 - データ保存なし', privacy_off: '無効 - データ保存あり',
         privacy_hint_on: 'ページを閉じるとすべて消去されます', privacy_hint_off: '次回訪問時に設定が保持されます',
         clear_all: '🗑 すべてのデータを今すぐ消去',
