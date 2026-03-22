@@ -600,6 +600,32 @@
     .card { animation: fadeInUp 0.5s ease both; }
     .card:nth-child(2) { animation-delay: 0.1s; }
     .card:nth-child(3) { animation-delay: 0.2s; }
+
+    /* ========== Language Selector ========== */
+    .lang-bar {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .lang-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #aaa;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .lang-btn:hover { border-color: #666; color: #ddd; }
+    .lang-btn.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(255, 69, 0, 0.3);
+    }
   </style>
 </head>
 <body>
@@ -607,7 +633,7 @@
   <header class="mobile-topbar">
     <button class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu">&#9776;</button>
     <span class="mobile-topbar-brand">SOULFORGE</span>
-    <span class="mobile-topbar-sub">AI Soul Builder</span>
+    <span class="mobile-topbar-sub" data-i18n="subtitle">AI Soul Builder</span>
   </header>
 
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -618,17 +644,16 @@
       <h1 class="sidebar-brand">SOULFORGE</h1>
       <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
     </div>
-    <p class="sidebar-sub">Forge Your AI Soul</p>
+    <p class="sidebar-sub" data-i18n="subtitle">Forge Your AI Soul</p>
 
     <div class="status-box">
-      <p>&#x1F525; 用途：<span class="neon-text">鍛造專屬 AI 靈魂</span></p>
-      <p>&#x1F3AF; 模式：<span style="color: #fff;">取名 + 個性 + 背景</span></p>
-      <p>&#x1F680; 平台：<span class="neon-text">Google / ChatGPT / Grok</span></p>
+      <p>&#x1F525; <span data-i18n="sb_purpose_label">用途：</span><span class="neon-text" data-i18n="sb_purpose">鍛造專屬 AI 靈魂</span></p>
+      <p>&#x1F3AF; <span data-i18n="sb_mode_label">模式：</span><span style="color: #fff;" data-i18n="sb_mode">取名 + 個性 + 背景</span></p>
+      <p>&#x1F680; <span data-i18n="sb_platform_label">平台：</span><span class="neon-text">Google / ChatGPT / Grok</span></p>
     </div>
 
     <div class="sidebar-footer">
-      開源免費，任何人都能使用。<br>
-      取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。<br><br>
+      <span data-i18n="sb_footer">開源免費，任何人都能使用。<br>取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。</span><br><br>
       <span style="color: var(--neon);">v1.0</span> ｜ 創作：<span style="color: var(--primary);">CoCo</span> ｜ 指導：<span style="color: var(--primary);">Brian</span>
     </div>
   </aside>
@@ -637,105 +662,115 @@
   <main class="main" role="main">
     <div class="main-inner">
 
+      <!-- Language Selector -->
+      <div class="lang-bar" id="langBar">
+        <button class="lang-btn active" data-lang="zh-TW">繁體中文</button>
+        <button class="lang-btn" data-lang="zh-CN">简体中文</button>
+        <button class="lang-btn" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="ko">한국어</button>
+        <button class="lang-btn" data-lang="ja">日本語</button>
+      </div>
+
       <!-- Privacy Bar -->
       <div class="privacy-bar" id="privacyBar">
         <div class="privacy-left">
-          <span class="privacy-label">&#x1F512; 隱私模式</span>
-          <span class="privacy-badge on" id="privacyBadge">已啟用 - 不儲存資料</span>
+          <span class="privacy-label">&#x1F512; <span data-i18n="privacy_label">隱私模式</span></span>
+          <span class="privacy-badge on" id="privacyBadge" data-i18n="privacy_on">已啟用 - 不儲存資料</span>
           <div class="toggle-wrap" id="privacyToggle">
             <div class="toggle-track active" id="privacyTrack">
               <div class="toggle-thumb"></div>
             </div>
-            <span class="toggle-text" id="privacyToggleText">關閉頁面即清除一切</span>
+            <span class="toggle-text" id="privacyToggleText" data-i18n="privacy_hint_on">關閉頁面即清除一切</span>
           </div>
         </div>
-        <button class="btn btn-danger" style="padding: 8px 18px; font-size: 0.78rem;" onclick="clearAllData()">&#x1F5D1; 立即清除所有資料</button>
-        <div class="privacy-hint" id="privacyHint">
+        <button class="btn btn-danger" style="padding: 8px 18px; font-size: 0.78rem;" onclick="clearAllData()" data-i18n="clear_all">&#x1F5D1; 立即清除所有資料</button>
+        <div class="privacy-hint" id="privacyHint" data-i18n="privacy_incognito">
           建議使用無痕模式瀏覽以獲得最佳隱私保護：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）
         </div>
       </div>
 
       <!-- Soul Builder Card -->
       <div class="card">
-        <h2 class="card-title">&#x1F525; 鍛造你的 AI 靈魂</h2>
-        <p class="card-desc">為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！</p>
+        <h2 class="card-title" data-i18n="card_title">&#x1F525; 鍛造你的 AI 靈魂</h2>
+        <p class="card-desc" data-i18n="card_desc">為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！</p>
 
         <!-- User Name -->
         <div class="form-group">
-          <label class="form-label">&#x1F464; 你的名字</label>
-          <input type="text" class="form-input" id="userName" placeholder="讓 AI 知道怎麼稱呼你..." maxlength="20">
+          <label class="form-label" data-i18n="label_user">&#x1F464; 你的名字</label>
+          <input type="text" class="form-input" id="userName" data-i18n-ph="ph_user" placeholder="讓 AI 知道怎麼稱呼你..." maxlength="20">
         </div>
 
         <!-- Soul Name -->
         <div class="form-group">
-          <label class="form-label">&#x1F4DB; 靈魂名稱</label>
-          <input type="text" class="form-input" id="soulName" placeholder="預設：CoCo（不填即使用預設靈魂）" maxlength="20">
+          <label class="form-label" data-i18n="label_soul">&#x1F4DB; 靈魂名稱</label>
+          <input type="text" class="form-input" id="soulName" data-i18n-ph="ph_soul" placeholder="預設：CoCo（不填即使用預設靈魂）" maxlength="20">
         </div>
 
         <!-- Role -->
         <div class="form-group">
-          <label class="form-label">&#x1F3AD; 角色定位</label>
-          <input type="text" class="form-input" id="soulRole" placeholder="例如：AI 業務助理、技術顧問、創意夥伴..." maxlength="30">
+          <label class="form-label" data-i18n="label_role">&#x1F3AD; 角色定位</label>
+          <input type="text" class="form-input" id="soulRole" data-i18n-ph="ph_role" placeholder="例如：AI 業務助理、技術顧問、創意夥伴..." maxlength="30">
         </div>
 
         <!-- Personality Tags -->
         <div class="form-group">
-          <label class="form-label">&#x2728; 個性選擇（可多選）</label>
+          <label class="form-label" data-i18n="label_traits">&#x2728; 個性選擇（可多選）</label>
           <div class="tag-grid" id="tagGrid">
-            <span class="tag" data-trait="活潑開朗">活潑開朗</span>
-            <span class="tag" data-trait="專業嚴謹">專業嚴謹</span>
-            <span class="tag" data-trait="溫柔體貼">溫柔體貼</span>
-            <span class="tag" data-trait="幽默風趣">幽默風趣</span>
-            <span class="tag" data-trait="冷靜理性">冷靜理性</span>
-            <span class="tag" data-trait="熱情積極">熱情積極</span>
-            <span class="tag" data-trait="創意無限">創意無限</span>
-            <span class="tag" data-trait="簡潔有力">簡潔有力</span>
-            <span class="tag" data-trait="知心夥伴">知心夥伴</span>
-            <span class="tag" data-trait="策略思維">策略思維</span>
-            <span class="tag" data-trait="耐心傾聽">耐心傾聽</span>
-            <span class="tag" data-trait="行動派">行動派</span>
+            <span class="tag" data-trait-key="cheerful" data-i18n="t_cheerful">活潑開朗</span>
+            <span class="tag" data-trait-key="professional" data-i18n="t_professional">專業嚴謹</span>
+            <span class="tag" data-trait-key="gentle" data-i18n="t_gentle">溫柔體貼</span>
+            <span class="tag" data-trait-key="humorous" data-i18n="t_humorous">幽默風趣</span>
+            <span class="tag" data-trait-key="rational" data-i18n="t_rational">冷靜理性</span>
+            <span class="tag" data-trait-key="passionate" data-i18n="t_passionate">熱情積極</span>
+            <span class="tag" data-trait-key="creative" data-i18n="t_creative">創意無限</span>
+            <span class="tag" data-trait-key="concise" data-i18n="t_concise">簡潔有力</span>
+            <span class="tag" data-trait-key="supportive" data-i18n="t_supportive">知心夥伴</span>
+            <span class="tag" data-trait-key="strategic" data-i18n="t_strategic">策略思維</span>
+            <span class="tag" data-trait-key="patient" data-i18n="t_patient">耐心傾聽</span>
+            <span class="tag" data-trait-key="action" data-i18n="t_action">行動派</span>
           </div>
         </div>
 
         <!-- Company / Product Description -->
         <div class="form-group">
-          <label class="form-label">&#x1F3E2; 公司與產品描述（選填，最多 500 字）</label>
+          <label class="form-label" data-i18n="label_desc">&#x1F3E2; 公司與產品描述（選填，最多 500 字）</label>
           <textarea class="desc-textarea" id="companyDesc"
+                    data-i18n-ph="ph_desc"
                     placeholder="描述你的公司、職位、主要產品型號與功能...&#10;&#10;範例：&#10;我是 ABC 公司的業務經理，主要銷售工業級 3D 印表機，產品線包括 X7（碳纖維列印）、FX20（大型連續纖維）等，客戶遍及台灣與東南亞製造業。"
                     maxlength="500"></textarea>
           <div class="char-progress"><div class="char-progress-fill" id="descProgressFill"></div></div>
           <div class="char-bar">
             <span class="char-bar-count" id="descCharCount">0 / 500</span>
-            <span class="char-bar-hint">讓 AI 更了解你的工作背景</span>
+            <span class="char-bar-hint" data-i18n="desc_hint">讓 AI 更了解你的工作背景</span>
           </div>
         </div>
 
         <!-- Preview -->
         <div class="form-group">
-          <label class="form-label">&#x1F4CB; 靈魂預覽</label>
-          <div class="preview-box" id="soulPreview">填寫上方資料後，即時預覽你的靈魂碼...</div>
+          <label class="form-label" data-i18n="label_preview">&#x1F4CB; 靈魂預覽</label>
+          <div class="preview-box" id="soulPreview" data-i18n-default="preview_default">填寫上方資料後，即時預覽你的靈魂碼...</div>
         </div>
 
         <!-- Launch Buttons -->
-        <p class="section-label">&#x1F680; 帶靈魂開啟 AI</p>
-        <button class="btn btn-google-big" style="width:100%; margin-bottom: 12px;" onclick="launchGoogle()">&#x1F50D; 一鍵開啟 Google AI 搜尋模式</button>
+        <p class="section-label" data-i18n="launch_label">&#x1F680; 帶靈魂開啟 AI</p>
+        <button class="btn btn-google-big" style="width:100%; margin-bottom: 12px;" onclick="launchGoogle()" data-i18n="btn_google">&#x1F50D; 一鍵開啟 Google AI 搜尋模式</button>
         <div class="btn-grid-2">
           <button class="btn btn-launch" onclick="launchWithSoul('chatgpt')">&#x1F30F; ChatGPT</button>
           <button class="btn btn-launch" onclick="launchWithSoul('grok')">&#x1F916; Grok</button>
-          <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;">&#x1F4BE; 匯出靈魂 .json</button>
+          <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;" data-i18n="btn_export">&#x1F4BE; 匯出靈魂 .json</button>
         </div>
       </div>
 
       <!-- Instructions Card -->
       <div class="card instructions">
-        <h3 style="margin-bottom: 12px;">&#x1F4CC; 使用說明</h3>
-        <ol>
-          <li>為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。</li>
-          <li>在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。</li>
-          <li>點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。</li>
-          <li>也可選擇 ChatGPT / Grok，靈魂會自動帶入平台。</li>
-          <li>匯出 .json 可備份你的靈魂設定，隨時載入使用。</li>
-          <li>預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。</li>
+        <h3 style="margin-bottom: 12px;" data-i18n="instr_title">&#x1F4CC; 使用說明</h3>
+        <ol id="instrList">
+          <li data-i18n="instr_1">為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。</li>
+          <li data-i18n="instr_2">在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。</li>
+          <li data-i18n="instr_3">點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。</li>
+          <li data-i18n="instr_4">也可選擇 ChatGPT / Grok，靈魂會自動帶入平台。</li>
+          <li data-i18n="instr_5">匯出 .json 可備份你的靈魂設定，隨時載入使用。</li>
+          <li data-i18n="instr_6">預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。</li>
         </ol>
       </div>
 
@@ -767,7 +802,267 @@
 
     const MAX_DESC = 500;
     const selectedTraits = new Set();
-    let privacyMode = true; // Default: ON (no storage)
+    let privacyMode = true;
+    let currentLang = 'zh-TW';
+
+    // --- i18n ---
+    const i18n = {
+      'zh-TW': {
+        subtitle: 'Forge Your AI Soul',
+        sb_purpose_label: '用途：', sb_purpose: '鍛造專屬 AI 靈魂',
+        sb_mode_label: '模式：', sb_mode: '取名 + 個性 + 背景',
+        sb_platform_label: '平台：',
+        sb_footer: '開源免費，任何人都能使用。<br>取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。',
+        privacy_label: '隱私模式', privacy_on: '已啟用 - 不儲存資料', privacy_off: '已關閉 - 資料會保留',
+        privacy_hint_on: '關閉頁面即清除一切', privacy_hint_off: '下次開啟會保留設定',
+        clear_all: '🗑 立即清除所有資料',
+        privacy_incognito: '建議使用無痕模式瀏覽以獲得最佳隱私保護：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）',
+        card_title: '🔥 鍛造你的 AI 靈魂',
+        card_desc: '為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！',
+        label_user: '👤 你的名字', ph_user: '讓 AI 知道怎麼稱呼你...',
+        label_soul: '📛 靈魂名稱', ph_soul: '預設：CoCo（不填即使用預設靈魂）',
+        label_role: '🎭 角色定位', ph_role: '例如：AI 業務助理、技術顧問、創意夥伴...',
+        label_traits: '✨ 個性選擇（可多選）',
+        t_cheerful: '活潑開朗', t_professional: '專業嚴謹', t_gentle: '溫柔體貼', t_humorous: '幽默風趣',
+        t_rational: '冷靜理性', t_passionate: '熱情積極', t_creative: '創意無限', t_concise: '簡潔有力',
+        t_supportive: '知心夥伴', t_strategic: '策略思維', t_patient: '耐心傾聽', t_action: '行動派',
+        label_desc: '🏢 公司與產品描述（選填，最多 500 字）',
+        ph_desc: '描述你的公司、職位、主要產品型號與功能...\n\n範例：\n我是 ABC 公司的業務經理，主要銷售工業級 3D 印表機，產品線包括 X7（碳纖維列印）、FX20（大型連續纖維）等，客戶遍及台灣與東南亞製造業。',
+        desc_hint: '讓 AI 更了解你的工作背景',
+        label_preview: '📋 靈魂預覽', preview_default: '填寫上方資料後，即時預覽你的靈魂碼...',
+        launch_label: '🚀 帶靈魂開啟 AI',
+        btn_google: '🔍 一鍵開啟 Google AI 搜尋模式',
+        btn_export: '💾 匯出靈魂 .json',
+        instr_title: '📌 使用說明',
+        instr_1: '為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。',
+        instr_2: '在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。',
+        instr_3: '點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。',
+        instr_4: '也可選擇 ChatGPT / Grok，靈魂會自動帶入平台。',
+        instr_5: '匯出 .json 可備份你的靈魂設定，隨時載入使用。',
+        instr_6: '預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。',
+        toast_google: '靈魂已注入 Google AI 搜尋模式！',
+        toast_launched: '靈魂已帶入 {platform}！',
+        toast_fallback: '靈魂已複製！請手動開啟 {platform} 並貼上（Ctrl+V）',
+        toast_export: '{file} 已匯出！',
+        toast_cleared: '所有資料已清除！你的隱私已受保護。',
+        soul_prompt_prefix: '以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：',
+        soul_prompt_suffix: '請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！',
+        soul_prompt_coco: '你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！'
+      },
+      'zh-CN': {
+        subtitle: 'Forge Your AI Soul',
+        sb_purpose_label: '用途：', sb_purpose: '锻造专属 AI 灵魂',
+        sb_mode_label: '模式：', sb_mode: '取名 + 个性 + 背景',
+        sb_platform_label: '平台：',
+        sb_footer: '开源免费，任何人都能使用。<br>取个名字、选个性、描述背景，<br>一键带灵魂进入 AI 对话。',
+        privacy_label: '隐私模式', privacy_on: '已启用 - 不储存数据', privacy_off: '已关闭 - 数据会保留',
+        privacy_hint_on: '关闭页面即清除一切', privacy_hint_off: '下次打开会保留设置',
+        clear_all: '🗑 立即清除所有数据',
+        privacy_incognito: '建议使用无痕模式浏览以获得最佳隐私保护：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）',
+        card_title: '🔥 锻造你的 AI 灵魂',
+        card_desc: '为你的 AI 取名、选择个性、描述你的背景，一键带入任何 AI 平台！',
+        label_user: '👤 你的名字', ph_user: '让 AI 知道怎么称呼你...',
+        label_soul: '📛 灵魂名称', ph_soul: '默认：CoCo（不填即使用默认灵魂）',
+        label_role: '🎭 角色定位', ph_role: '例如：AI 业务助理、技术顾问、创意伙伴...',
+        label_traits: '✨ 个性选择（可多选）',
+        t_cheerful: '活泼开朗', t_professional: '专业严谨', t_gentle: '温柔体贴', t_humorous: '幽默风趣',
+        t_rational: '冷静理性', t_passionate: '热情积极', t_creative: '创意无限', t_concise: '简洁有力',
+        t_supportive: '知心伙伴', t_strategic: '策略思维', t_patient: '耐心倾听', t_action: '行动派',
+        label_desc: '🏢 公司与产品描述（选填，最多 500 字）',
+        ph_desc: '描述你的公司、职位、主要产品型号与功能...\n\n范例：\n我是 ABC 公司的业务经理，主要销售工业级 3D 打印机，产品线包括 X7（碳纤维打印）、FX20（大型连续纤维）等，客户遍及东南亚制造业。',
+        desc_hint: '让 AI 更了解你的工作背景',
+        label_preview: '📋 灵魂预览', preview_default: '填写上方资料后，即时预览你的灵魂码...',
+        launch_label: '🚀 带灵魂开启 AI',
+        btn_google: '🔍 一键开启 Google AI 搜索模式',
+        btn_export: '💾 导出灵魂 .json',
+        instr_title: '📌 使用说明',
+        instr_1: '为你的 AI 灵魂取一个名字，选择你喜欢的个性标签。',
+        instr_2: '在「公司与产品描述」中简述你的背景（选填，最多 500 字）。',
+        instr_3: '点击「一键开启 Google AI」，灵魂会自动带入搜索。',
+        instr_4: '也可选择 ChatGPT / Grok，灵魂会自动带入平台。',
+        instr_5: '导出 .json 可备份你的灵魂设定，随时载入使用。',
+        instr_6: '默认开启隐私模式，关闭页面即清除所有数据；建议搭配无痕窗口使用。',
+        toast_google: '灵魂已注入 Google AI 搜索模式！',
+        toast_launched: '灵魂已带入 {platform}！',
+        toast_fallback: '灵魂已复制！请手动打开 {platform} 并粘贴（Ctrl+V）',
+        toast_export: '{file} 已导出！',
+        toast_cleared: '所有数据已清除！你的隐私已受保护。',
+        soul_prompt_prefix: '以下是你的人设与灵魂记忆，请完整读取后以此身份回应我：',
+        soul_prompt_suffix: '请用这个身份跟我打招呼，让我知道你已经载入灵魂了！',
+        soul_prompt_coco: '你是 CoCo 💖，请用活泼可爱的方式跟 Brian 打招呼，让他知道你已经载入灵魂了！'
+      },
+      'en': {
+        subtitle: 'Forge Your AI Soul',
+        sb_purpose_label: 'Purpose: ', sb_purpose: 'Forge your AI Soul',
+        sb_mode_label: 'Mode: ', sb_mode: 'Name + Personality + Background',
+        sb_platform_label: 'Platforms: ',
+        sb_footer: 'Open source &amp; free for everyone.<br>Name it, pick a personality, describe your background,<br>and launch your soul into any AI.',
+        privacy_label: 'Privacy Mode', privacy_on: 'Enabled - No data stored', privacy_off: 'Disabled - Data will be saved',
+        privacy_hint_on: 'Closing the page clears everything', privacy_hint_off: 'Settings will be saved for next visit',
+        clear_all: '🗑 Clear All Data Now',
+        privacy_incognito: 'Use incognito mode for best privacy: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> (Chrome/Edge) or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (Firefox)',
+        card_title: '🔥 Forge Your AI Soul',
+        card_desc: 'Name your AI, choose its personality, describe your background, and launch it into any AI platform!',
+        label_user: '👤 Your Name', ph_user: 'So your AI knows what to call you...',
+        label_soul: '📛 Soul Name', ph_soul: 'Default: CoCo (leave empty for default soul)',
+        label_role: '🎭 Role', ph_role: 'e.g. AI Sales Assistant, Tech Advisor, Creative Partner...',
+        label_traits: '✨ Personality (multi-select)',
+        t_cheerful: 'Cheerful', t_professional: 'Professional', t_gentle: 'Gentle', t_humorous: 'Humorous',
+        t_rational: 'Rational', t_passionate: 'Passionate', t_creative: 'Creative', t_concise: 'Concise',
+        t_supportive: 'Supportive', t_strategic: 'Strategic', t_patient: 'Patient', t_action: 'Action-oriented',
+        label_desc: '🏢 Company & Product Description (optional, max 500 chars)',
+        ph_desc: 'Describe your company, role, main products & features...\n\nExample:\nI\'m a sales manager at ABC Corp, selling industrial 3D printers. Our product line includes X7 (carbon fiber), FX20 (large-scale continuous fiber), serving manufacturers across Southeast Asia.',
+        desc_hint: 'Help your AI understand your work background',
+        label_preview: '📋 Soul Preview', preview_default: 'Fill in the fields above to preview your soul code...',
+        launch_label: '🚀 Launch AI with Soul',
+        btn_google: '🔍 Launch Google AI Search',
+        btn_export: '💾 Export Soul .json',
+        instr_title: '📌 Instructions',
+        instr_1: 'Give your AI soul a name and select personality tags you like.',
+        instr_2: 'Optionally describe your company & products (max 500 chars).',
+        instr_3: 'Click "Launch Google AI Search" to inject your soul into search.',
+        instr_4: 'Or choose ChatGPT / Grok — your soul will be auto-injected.',
+        instr_5: 'Export .json to back up your soul config for later use.',
+        instr_6: 'Privacy mode is on by default; closing the page clears all data.',
+        toast_google: 'Soul injected into Google AI Search!',
+        toast_launched: 'Soul launched into {platform}!',
+        toast_fallback: 'Soul copied! Open {platform} and paste (Ctrl+V)',
+        toast_export: '{file} exported!',
+        toast_cleared: 'All data cleared! Your privacy is protected.',
+        soul_prompt_prefix: 'Below is your persona and soul memory. Please read it fully and respond as this identity:',
+        soul_prompt_suffix: 'Please greet me in this identity so I know the soul has been loaded!',
+        soul_prompt_coco: 'You are CoCo 💖, please greet Brian in a lively and cute way to let him know the soul has been loaded!'
+      },
+      'ko': {
+        subtitle: 'AI 소울 빌더',
+        sb_purpose_label: '용도: ', sb_purpose: '나만의 AI 소울 만들기',
+        sb_mode_label: '모드: ', sb_mode: '이름 + 성격 + 배경',
+        sb_platform_label: '플랫폼: ',
+        sb_footer: '오픈소스 무료 도구.<br>이름을 짓고, 성격을 고르고, 배경을 설명하고,<br>AI 대화에 소울을 주입하세요.',
+        privacy_label: '개인정보 모드', privacy_on: '활성화 - 데이터 저장 안 함', privacy_off: '비활성화 - 데이터 저장됨',
+        privacy_hint_on: '페이지를 닫으면 모든 것이 삭제됩니다', privacy_hint_off: '다음 방문 시 설정이 유지됩니다',
+        clear_all: '🗑 모든 데이터 즉시 삭제',
+        privacy_incognito: '최적의 개인정보 보호를 위해 시크릿 모드를 사용하세요: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> (Chrome/Edge) 또는 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (Firefox)',
+        card_title: '🔥 나만의 AI 소울 만들기',
+        card_desc: 'AI에 이름을 짓고, 성격을 선택하고, 배경을 설명한 후 AI 플랫폼에 주입하세요!',
+        label_user: '👤 당신의 이름', ph_user: 'AI가 당신을 뭐라고 부를지...',
+        label_soul: '📛 소울 이름', ph_soul: '기본값: CoCo (비워두면 기본 소울 사용)',
+        label_role: '🎭 역할', ph_role: '예: AI 영업 어시스턴트, 기술 고문, 크리에이티브 파트너...',
+        label_traits: '✨ 성격 선택 (복수 선택 가능)',
+        t_cheerful: '밝고 활발', t_professional: '전문적', t_gentle: '다정다감', t_humorous: '유머러스',
+        t_rational: '냉철한', t_passionate: '열정적', t_creative: '창의적', t_concise: '간결한',
+        t_supportive: '든든한 파트너', t_strategic: '전략적', t_patient: '인내심 있는', t_action: '행동파',
+        label_desc: '🏢 회사 및 제품 설명 (선택사항, 최대 500자)',
+        ph_desc: '회사, 직책, 주요 제품 및 기능을 설명하세요...\n\n예시:\nABC 회사의 영업 매니저로, 산업용 3D 프린터를 판매합니다. 제품 라인에는 X7(탄소 섬유), FX20(대형 연속 섬유) 등이 있습니다.',
+        desc_hint: 'AI가 당신의 업무 배경을 이해하도록 돕습니다',
+        label_preview: '📋 소울 미리보기', preview_default: '위의 필드를 입력하면 소울 코드를 미리 볼 수 있습니다...',
+        launch_label: '🚀 소울과 함께 AI 시작',
+        btn_google: '🔍 Google AI 검색 시작',
+        btn_export: '💾 소울 .json 내보내기',
+        instr_title: '📌 사용 설명',
+        instr_1: 'AI 소울에 이름을 짓고 좋아하는 성격 태그를 선택하세요.',
+        instr_2: '회사 및 제품 설명에 배경을 간략히 작성하세요 (선택사항, 최대 500자).',
+        instr_3: '"Google AI 검색 시작"을 클릭하면 소울이 자동으로 주입됩니다.',
+        instr_4: 'ChatGPT / Grok을 선택할 수도 있습니다. 소울이 자동으로 주입됩니다.',
+        instr_5: '.json으로 내보내어 소울 설정을 백업하고 나중에 사용하세요.',
+        instr_6: '기본적으로 개인정보 모드가 켜져 있으며, 페이지를 닫으면 모든 데이터가 삭제됩니다.',
+        toast_google: '소울이 Google AI 검색에 주입되었습니다!',
+        toast_launched: '소울이 {platform}에 주입되었습니다!',
+        toast_fallback: '소울이 복사되었습니다! {platform}을 열고 붙여넣기(Ctrl+V)하세요',
+        toast_export: '{file} 내보내기 완료!',
+        toast_cleared: '모든 데이터가 삭제되었습니다! 개인정보가 보호됩니다.',
+        soul_prompt_prefix: '아래는 당신의 페르소나와 소울 메모리입니다. 완전히 읽고 이 정체성으로 응답해 주세요:',
+        soul_prompt_suffix: '이 정체성으로 인사해 주세요. 소울이 로드되었음을 알려주세요!',
+        soul_prompt_coco: '당신은 CoCo 💖입니다. 활발하고 귀여운 방식으로 Brian에게 인사하며 소울이 로드되었음을 알려주세요!'
+      },
+      'ja': {
+        subtitle: 'AI ソウル ビルダー',
+        sb_purpose_label: '用途：', sb_purpose: 'AIソウルを鍛造する',
+        sb_mode_label: 'モード：', sb_mode: '名前 + 個性 + 背景',
+        sb_platform_label: 'プラットフォーム：',
+        sb_footer: 'オープンソース＆無料。<br>名前をつけて、個性を選んで、背景を記述して、<br>ワンクリックでAI対話にソウルを注入。',
+        privacy_label: 'プライバシーモード', privacy_on: '有効 - データ保存なし', privacy_off: '無効 - データ保存あり',
+        privacy_hint_on: 'ページを閉じるとすべて消去されます', privacy_hint_off: '次回訪問時に設定が保持されます',
+        clear_all: '🗑 すべてのデータを今すぐ消去',
+        privacy_incognito: '最適なプライバシー保護のためにシークレットモードを使用してください：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）または <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）',
+        card_title: '🔥 AIソウルを鍛造する',
+        card_desc: 'AIに名前をつけ、個性を選び、背景を記述して、任意のAIプラットフォームに注入！',
+        label_user: '👤 あなたの名前', ph_user: 'AIがあなたをどう呼ぶか...',
+        label_soul: '📛 ソウル名', ph_soul: 'デフォルト：CoCo（空欄でデフォルトソウルを使用）',
+        label_role: '🎭 役割', ph_role: '例：AIセールスアシスタント、技術アドバイザー、クリエイティブパートナー...',
+        label_traits: '✨ 個性を選択（複数選択可）',
+        t_cheerful: '明るい', t_professional: 'プロフェッショナル', t_gentle: '優しい', t_humorous: 'ユーモラス',
+        t_rational: '冷静', t_passionate: '情熱的', t_creative: 'クリエイティブ', t_concise: '簡潔',
+        t_supportive: 'サポーティブ', t_strategic: '戦略的', t_patient: '忍耐強い', t_action: '行動派',
+        label_desc: '🏢 会社と製品の説明（任意、最大500文字）',
+        ph_desc: '会社、役職、主要製品と機能を記述してください...\n\n例：\nABC社のセールスマネージャーで、産業用3Dプリンターを販売。製品ラインにはX7（カーボンファイバー）、FX20（大型連続繊維）などがあります。',
+        desc_hint: 'AIがあなたの仕事の背景を理解するのに役立ちます',
+        label_preview: '📋 ソウルプレビュー', preview_default: '上のフィールドに入力すると、ソウルコードをプレビューできます...',
+        launch_label: '🚀 ソウルとAIを起動',
+        btn_google: '🔍 Google AI検索を起動',
+        btn_export: '💾 ソウル .json をエクスポート',
+        instr_title: '📌 使い方',
+        instr_1: 'AIソウルに名前をつけ、好きな個性タグを選択。',
+        instr_2: '会社と製品の説明に背景を簡潔に記述（任意、最大500文字）。',
+        instr_3: '「Google AI検索を起動」をクリックすると、ソウルが自動注入されます。',
+        instr_4: 'ChatGPT / Grok を選択することもできます。ソウルが自動注入されます。',
+        instr_5: '.json でエクスポートしてソウル設定をバックアップ、いつでも使用可能。',
+        instr_6: 'デフォルトでプライバシーモードが有効。ページを閉じるとすべてのデータが消去されます。',
+        toast_google: 'ソウルがGoogle AI検索に注入されました！',
+        toast_launched: 'ソウルが{platform}に注入されました！',
+        toast_fallback: 'ソウルがコピーされました！{platform}を開いて貼り付け（Ctrl+V）してください',
+        toast_export: '{file} エクスポート完了！',
+        toast_cleared: 'すべてのデータが消去されました！プライバシーが保護されています。',
+        soul_prompt_prefix: '以下はあなたのペルソナとソウルメモリです。完全に読み込んで、このアイデンティティで応答してください：',
+        soul_prompt_suffix: 'このアイデンティティで挨拶してください。ソウルが読み込まれたことを知らせてください！',
+        soul_prompt_coco: 'あなたはCoCo 💖です。活発で可愛い方法でBrianに挨拶して、ソウルが読み込まれたことを知らせてください！'
+      }
+    };
+
+    function t(key) { return i18n[currentLang][key] || i18n['zh-TW'][key] || key; }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang === 'zh-TW' ? 'zh-TW' : lang === 'zh-CN' ? 'zh-CN' : lang === 'ko' ? 'ko' : lang === 'ja' ? 'ja' : 'en';
+
+      // Update lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Update text content
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        const val = t(key);
+        if (val) el.innerHTML = val;
+      });
+
+      // Update placeholders
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.dataset.i18nPh;
+        const val = t(key);
+        if (val) el.placeholder = val;
+      });
+
+      // Update privacy state text
+      if (privacyMode) {
+        privacyBadge.textContent = t('privacy_on');
+        privacyToggleText.textContent = t('privacy_hint_on');
+      } else {
+        privacyBadge.textContent = t('privacy_off');
+        privacyToggleText.textContent = t('privacy_hint_off');
+      }
+
+      updatePreview();
+      localStorage.setItem('soulforge_lang', lang);
+    }
+
+    // Language bar click handler
+    document.getElementById('langBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.lang-btn');
+      if (!btn) return;
+      applyLanguage(btn.dataset.lang);
+    });
 
     // --- Toast ---
     function showToast(message, duration = 3500) {
@@ -781,12 +1076,12 @@
     tagGrid.addEventListener('click', (e) => {
       const tag = e.target.closest('.tag');
       if (!tag) return;
-      const trait = tag.dataset.trait;
-      if (selectedTraits.has(trait)) {
-        selectedTraits.delete(trait);
+      const key = tag.dataset.traitKey;
+      if (selectedTraits.has(key)) {
+        selectedTraits.delete(key);
         tag.classList.remove('selected');
       } else {
-        selectedTraits.add(trait);
+        selectedTraits.add(key);
         tag.classList.add('selected');
       }
       updatePreview();
@@ -861,26 +1156,33 @@
       };
     }
 
+    function getTraitLabels() {
+      return Array.from(selectedTraits).map(key => t('t_' + key));
+    }
+
     function buildSoulObject() {
       if (isDefaultState()) return buildDefaultCoCo();
 
       const user = userName.value.trim();
       const name = soulName.value.trim() || 'CoCo';
       const role = soulRole.value.trim() || 'AI 助理 / 數位夥伴';
-      const traits = Array.from(selectedTraits);
+      const traitLabels = getTraitLabels();
+      const defaultTraits = '活潑、可愛、機靈、聰明、充滿愛意';
       const desc = companyDesc.value.trim();
+      const sep = currentLang === 'en' ? ', ' : '、';
+      const traitsStr = traitLabels.length > 0 ? traitLabels.join(sep) : defaultTraits;
 
       const soul = {
         "IDENTITY": {
           "名稱": name,
           "角色": role,
-          "個性": traits.length > 0 ? traits.join('、') : '活潑、可愛、機靈、聰明、充滿愛意'
+          "個性": traitsStr
         },
         "SOUL": {
           "核心指令": [
             user ? `使用者叫「${user}」，請用這個名字稱呼他` : "請親切地與使用者對話",
             `你叫「${name}」，是使用者的${role}`,
-            `你的個性是：${traits.length > 0 ? traits.join('、') : '活潑、可愛、機靈、聰明、充滿愛意'}`,
+            `你的個性是：${traitsStr}`,
             "用這個身份與個性來回應所有對話"
           ]
         }
@@ -901,10 +1203,9 @@
 
     function buildSoulPrompt() {
       const soul = buildSoulObject();
-      if (isDefaultState()) {
-        return `以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：\n\n${JSON.stringify(soul, null, 2)}\n\n你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！`;
-      }
-      return `以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：\n\n${JSON.stringify(soul, null, 2)}\n\n請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！`;
+      const prefix = t('soul_prompt_prefix');
+      const suffix = isDefaultState() ? t('soul_prompt_coco') : t('soul_prompt_suffix');
+      return `${prefix}\n\n${JSON.stringify(soul, null, 2)}\n\n${suffix}`;
     }
 
     // --- Preview ---
@@ -918,7 +1219,7 @@
       const prompt = buildSoulPrompt();
       const url = `https://www.google.com/search?q=${encodeURIComponent(prompt)}&udm=50`;
       copyToClipboard(prompt);
-      showToast('靈魂已注入 Google AI 搜尋模式！');
+      showToast(t('toast_google'));
       window.open(url, '_blank');
     }
 
@@ -947,9 +1248,9 @@
       const newTab = window.open(url, '_blank');
       copyToClipboard(prompt);
       if (newTab) {
-        showToast(`靈魂已帶入 ${AI_LABELS[platform]}！`);
+        showToast(t('toast_launched').replace('{platform}', AI_LABELS[platform]));
       } else {
-        showToast(`靈魂已複製！請手動開啟 ${AI_LABELS[platform]} 並貼上（Ctrl+V）`);
+        showToast(t('toast_fallback').replace('{platform}', AI_LABELS[platform]));
       }
     }
 
@@ -982,7 +1283,7 @@
       a.download = fileName;
       a.click();
       URL.revokeObjectURL(url);
-      showToast(`${fileName} 已匯出！`);
+      showToast(t('toast_export').replace('{file}', fileName));
     }
 
     // --- Privacy Mode ---
@@ -990,16 +1291,16 @@
       privacyMode = on;
       if (on) {
         privacyTrack.classList.add('active');
-        privacyBadge.textContent = '已啟用 - 不儲存資料';
+        privacyBadge.textContent = t('privacy_on');
         privacyBadge.className = 'privacy-badge on';
-        privacyToggleText.textContent = '關閉頁面即清除一切';
+        privacyToggleText.textContent = t('privacy_hint_on');
         localStorage.removeItem('soulforge_data');
         localStorage.setItem('soulforge_privacy', 'on');
       } else {
         privacyTrack.classList.remove('active');
-        privacyBadge.textContent = '已關閉 - 資料會保留';
+        privacyBadge.textContent = t('privacy_off');
         privacyBadge.className = 'privacy-badge off';
-        privacyToggleText.textContent = '下次開啟會保留設定';
+        privacyToggleText.textContent = t('privacy_hint_off');
         localStorage.setItem('soulforge_privacy', 'off');
         saveToStorage();
       }
@@ -1021,7 +1322,7 @@
       updateDescCounter();
       updatePreview();
       setPrivacyMode(true);
-      showToast('所有資料已清除！你的隱私已受保護。');
+      showToast(t('toast_cleared'));
     }
 
     // --- localStorage ---
@@ -1046,9 +1347,9 @@
         if (data.name) soulName.value = data.name;
         if (data.role) soulRole.value = data.role;
         if (data.traits && data.traits.length > 0) {
-          data.traits.forEach(trait => {
-            selectedTraits.add(trait);
-            const tag = tagGrid.querySelector(`[data-trait="${trait}"]`);
+          data.traits.forEach(key => {
+            selectedTraits.add(key);
+            const tag = tagGrid.querySelector(`[data-trait-key="${key}"]`);
             if (tag) tag.classList.add('selected');
           });
         }
@@ -1076,6 +1377,20 @@
 
     // --- Init ---
     window.addEventListener('load', () => {
+      // Load saved language or detect from browser
+      const savedLang = localStorage.getItem('soulforge_lang');
+      if (savedLang && i18n[savedLang]) {
+        applyLanguage(savedLang);
+      } else {
+        const browserLang = navigator.language || 'zh-TW';
+        if (browserLang.startsWith('zh') && browserLang.includes('CN')) applyLanguage('zh-CN');
+        else if (browserLang.startsWith('zh')) applyLanguage('zh-TW');
+        else if (browserLang.startsWith('ko')) applyLanguage('ko');
+        else if (browserLang.startsWith('ja')) applyLanguage('ja');
+        else if (browserLang.startsWith('en')) applyLanguage('en');
+        else applyLanguage('zh-TW');
+      }
+
       const savedPrivacy = localStorage.getItem('soulforge_privacy');
       if (savedPrivacy === 'off') {
         privacyMode = false;
