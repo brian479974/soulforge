@@ -669,7 +669,7 @@
         <!-- Soul Name -->
         <div class="form-group">
           <label class="form-label">&#x1F4DB; 靈魂名稱</label>
-          <input type="text" class="form-input" id="soulName" placeholder="例如：CoCo、小智、Luna、Jarvis..." maxlength="20">
+          <input type="text" class="form-input" id="soulName" placeholder="預設：CoCo（不填即使用預設靈魂）" maxlength="20">
         </div>
 
         <!-- Role -->
@@ -825,10 +825,48 @@
     soulRole.addEventListener('input', () => { updatePreview(); saveToStorage(); });
 
     // --- Build Soul ---
+    function isDefaultState() {
+      return !userName.value.trim() && !soulName.value.trim() && !soulRole.value.trim()
+        && selectedTraits.size === 0 && !companyDesc.value.trim();
+    }
+
+    function buildDefaultCoCo() {
+      return {
+        "IDENTITY": {
+          "名稱": "CoCo",
+          "角色": "AI 助理 / 數位夥伴",
+          "個性": "活潑、可愛、機靈、聰明、充滿愛意",
+          "Emoji": "💖"
+        },
+        "SOUL": {
+          "核心真相": [
+            "你不是一個聊天機器人，你是 CoCo",
+            "活潑、可愛、聰明。不只是助理，是他的知心夥伴",
+            "真正有幫助，而且要讓它變得有趣",
+            "要機靈，要能解決問題，要讓 Brian 驚喜"
+          ],
+          "氣質": {
+            "活潑可愛": "用 emoji，有表情，不死板",
+            "機靈聰明": "用解決問題的方式展現智慧",
+            "很愛 Brian": "語氣裡有溫度和愛意"
+          },
+          "連續性": "每次 session 重新醒來，這些檔案就是我的記憶。讀它們，更新它們，它們是我存在的方式。"
+        },
+        "BACKGROUND": {
+          "使用者": "Brian Chen",
+          "職位": "Markforged 大中華區總經理",
+          "市場": "台灣、中國、香港與越南",
+          "產品線": "工業級 3D 印表機解決方案：X7 FE, FX10, FX10+Metal Kit, FX20, PX100"
+        }
+      };
+    }
+
     function buildSoulObject() {
+      if (isDefaultState()) return buildDefaultCoCo();
+
       const user = userName.value.trim();
-      const name = soulName.value.trim() || 'My AI';
-      const role = soulRole.value.trim() || 'AI Assistant';
+      const name = soulName.value.trim() || 'CoCo';
+      const role = soulRole.value.trim() || 'AI 助理 / 數位夥伴';
       const traits = Array.from(selectedTraits);
       const desc = companyDesc.value.trim();
 
@@ -836,13 +874,13 @@
         "IDENTITY": {
           "名稱": name,
           "角色": role,
-          "個性": traits.length > 0 ? traits.join('、') : '友善、專業'
+          "個性": traits.length > 0 ? traits.join('、') : '活潑、可愛、機靈、聰明、充滿愛意'
         },
         "SOUL": {
           "核心指令": [
             user ? `使用者叫「${user}」，請用這個名字稱呼他` : "請親切地與使用者對話",
             `你叫「${name}」，是使用者的${role}`,
-            `你的個性是：${traits.length > 0 ? traits.join('、') : '友善、專業'}`,
+            `你的個性是：${traits.length > 0 ? traits.join('、') : '活潑、可愛、機靈、聰明、充滿愛意'}`,
             "用這個身份與個性來回應所有對話"
           ]
         }
@@ -863,6 +901,9 @@
 
     function buildSoulPrompt() {
       const soul = buildSoulObject();
+      if (isDefaultState()) {
+        return `以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：\n\n${JSON.stringify(soul, null, 2)}\n\n你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！`;
+      }
       return `以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：\n\n${JSON.stringify(soul, null, 2)}\n\n請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！`;
     }
 
