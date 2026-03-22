@@ -134,6 +134,20 @@
       justify-content: center;
     }
 
+    .sidebar-close {
+      display: none;
+      background: none;
+      border: 1px solid #444;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .sidebar-close:hover { border-color: var(--primary); color: var(--primary); }
+
     .sidebar-overlay {
       display: none;
       position: fixed;
@@ -537,6 +551,7 @@
 
       .mobile-topbar { display: flex; }
       .sidebar-toggle { display: flex; }
+      .sidebar-close { display: flex; align-items: center; justify-content: center; }
 
       .sidebar {
         position: fixed;
@@ -599,7 +614,10 @@
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar" role="complementary">
-    <h1 class="sidebar-brand">SOULFORGE</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1 class="sidebar-brand">SOULFORGE</h1>
+      <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
+    </div>
     <p class="sidebar-sub">Forge Your AI Soul</p>
 
     <div class="status-box">
@@ -610,7 +628,8 @@
 
     <div class="sidebar-footer">
       開源免費，任何人都能使用。<br>
-      取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。
+      取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。<br><br>
+      <span style="color: var(--neon);">v1.0</span> ｜ 創作：<span style="color: var(--primary);">CoCo</span> ｜ 指導：<span style="color: var(--primary);">Brian</span>
     </div>
   </aside>
 
@@ -973,14 +992,19 @@
     }
 
     // --- Mobile sidebar ---
+    const sidebarClose = document.getElementById('sidebarClose');
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('show');
+    }
+
     sidebarToggle.addEventListener('click', () => {
       sidebar.classList.toggle('open');
       sidebarOverlay.classList.toggle('show');
     });
-    sidebarOverlay.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      sidebarOverlay.classList.remove('show');
-    });
+    sidebarOverlay.addEventListener('click', closeSidebar);
+    sidebarClose.addEventListener('click', closeSidebar);
 
     // --- Init ---
     window.addEventListener('load', () => {
