@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SoulForge - 打造你的專屬 AI 靈魂，一鍵帶入 Google AI / Gemini / ChatGPT / Claude">
-  <meta name="keywords" content="AI, soul, persona, prompt, SoulForge, Google AI, ChatGPT, Claude, Gemini">
+  <meta name="description" content="SoulForge - 打造你的專屬 AI 靈魂，一鍵帶入 Google AI / ChatGPT / Grok">
+  <meta name="keywords" content="AI, soul, persona, prompt, SoulForge, Google AI, ChatGPT, Grok">
   <meta property="og:title" content="SoulForge | 鍛造你的 AI 靈魂">
   <meta property="og:description" content="免費開源工具：取名、選個性、描述背景，一鍵帶靈魂進入任何 AI 平台">
   <title>SoulForge | 鍛造你的 AI 靈魂</title>
@@ -623,7 +623,7 @@
     <div class="status-box">
       <p>&#x1F525; 用途：<span class="neon-text">鍛造專屬 AI 靈魂</span></p>
       <p>&#x1F3AF; 模式：<span style="color: #fff;">取名 + 個性 + 背景</span></p>
-      <p>&#x1F680; 平台：<span class="neon-text">Google / Gemini / ChatGPT / Claude</span></p>
+      <p>&#x1F680; 平台：<span class="neon-text">Google / ChatGPT / Grok</span></p>
     </div>
 
     <div class="sidebar-footer">
@@ -714,10 +714,9 @@
         <p class="section-label">&#x1F680; 帶靈魂開啟 AI</p>
         <button class="btn btn-google-big" style="width:100%; margin-bottom: 12px;" onclick="launchGoogle()">&#x1F50D; 一鍵開啟 Google AI 搜尋模式</button>
         <div class="btn-grid-2">
-          <button class="btn btn-launch" onclick="launchWithSoul('gemini')">&#x2728; Gemini</button>
           <button class="btn btn-launch" onclick="launchWithSoul('chatgpt')">&#x1F30F; ChatGPT</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('claude')">&#x1F4AC; Claude</button>
-          <button class="btn btn-file" onclick="exportSoulJSON()">&#x1F4BE; 匯出靈魂 .json</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('grok')">&#x1F916; Grok</button>
+          <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;">&#x1F4BE; 匯出靈魂 .json</button>
         </div>
       </div>
 
@@ -728,7 +727,7 @@
           <li>為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。</li>
           <li>在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。</li>
           <li>點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。</li>
-          <li>也可選擇 Gemini / ChatGPT / Claude，靈魂碼會自動複製到剪貼簿，貼上即可。</li>
+          <li>也可選擇 ChatGPT / Grok，靈魂會自動帶入平台。</li>
           <li>匯出 .json 可備份你的靈魂設定，隨時載入使用。</li>
           <li>預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。</li>
         </ol>
@@ -870,20 +869,17 @@
 
     // --- Other Platforms ---
     const AI_LABELS = {
-      gemini: 'Gemini',
       chatgpt: 'ChatGPT',
-      claude: 'Claude'
+      grok: 'Grok'
     };
 
     function buildPlatformURL(platform, prompt) {
       const encoded = encodeURIComponent(prompt);
       switch (platform) {
-        case 'gemini':
-          return `https://gemini.google.com/app?prompt=${encoded}`;
         case 'chatgpt':
           return `https://chatgpt.com/?q=${encoded}`;
-        case 'claude':
-          return `https://claude.ai/new?q=${encoded}`;
+        case 'grok':
+          return `https://grok.com/?q=${encoded}`;
         default:
           return '';
       }
