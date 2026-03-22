@@ -676,6 +676,77 @@
       .desc-textarea { height: 120px; font-size: 0.85rem; }
     }
 
+    /* ========== Light Theme ========== */
+    [data-theme="light"] {
+      --primary: #E03E00;
+      --primary-light: #e67300;
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --card-border: #ddd;
+      --neon: #008c6e;
+      --text-muted: #666;
+      --text-dim: #888;
+      --sidebar-bg: #fafafa;
+    }
+
+    [data-theme="light"] body { color: #222; }
+    [data-theme="light"] .mobile-topbar { background: #fff; border-bottom-color: var(--primary); }
+    [data-theme="light"] .mobile-topbar-brand { color: var(--primary); }
+    [data-theme="light"] .mobile-topbar-sub { color: var(--text-dim); }
+    [data-theme="light"] .sidebar { border-right-color: #ddd; }
+    [data-theme="light"] .status-box { background: #f0f0f0; }
+    [data-theme="light"] .status-box p span[style*="color: #fff"] { color: #222 !important; }
+    [data-theme="light"] .sidebar-footer { color: #555; }
+    [data-theme="light"] .card:hover { border-color: #bbb; }
+    [data-theme="light"] .card-title { color: var(--primary); }
+    [data-theme="light"] .form-input { background: #fff; color: #222; border-color: #ccc; }
+    [data-theme="light"] .form-input:focus { border-color: var(--neon); }
+    [data-theme="light"] .form-input::placeholder { color: #aaa; }
+    [data-theme="light"] .tag { background: #f0f0f0; color: #666; border-color: #ddd; }
+    [data-theme="light"] .tag:hover { border-color: #999; color: #444; }
+    [data-theme="light"] .tag.selected { color: #fff; }
+    [data-theme="light"] .desc-textarea { background: #fff; color: #222; border-color: #ccc; }
+    [data-theme="light"] .desc-textarea::placeholder { color: #aaa; }
+    [data-theme="light"] .char-bar-hint { color: #999; }
+    [data-theme="light"] .char-progress { background: #ddd; }
+    [data-theme="light"] .preview-box { background: #f8f8f8; color: var(--neon); border-color: #ddd; }
+    [data-theme="light"] .btn { color: #fff; }
+    [data-theme="light"] .btn:hover { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); }
+    [data-theme="light"] .btn-file { background: #f0f0f0; border-color: #ccc; color: #444; }
+    [data-theme="light"] .btn-file:hover { border-color: #999; }
+    [data-theme="light"] .btn-launch { background: linear-gradient(135deg, #e8f4f8, #dff0ea); color: var(--neon); border-color: var(--neon); }
+    [data-theme="light"] .btn-launch:hover { background: linear-gradient(135deg, #dff0ea, #d0e8e0); }
+    [data-theme="light"] .btn-danger { background: #fff5f5; }
+    [data-theme="light"] .btn-danger:hover { background: #ffe5e5; }
+    [data-theme="light"] .privacy-bar { background: #fafafa; border-color: #ddd; }
+    [data-theme="light"] .privacy-hint { background: rgba(0, 140, 110, 0.05); border-color: rgba(0, 140, 110, 0.15); color: #666; }
+    [data-theme="light"] .privacy-hint kbd { background: #eee; border-color: #ccc; color: #444; }
+    [data-theme="light"] .toggle-track { background: #ccc; }
+    [data-theme="light"] .toast { background: #fff; border-color: var(--neon); color: #222; box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+    [data-theme="light"] .instructions ol { color: #555; }
+    [data-theme="light"] .sidebar-overlay.show { background: rgba(0, 0, 0, 0.3); }
+    [data-theme="light"] .main { background: radial-gradient(ellipse at top right, #fff5f0 0%, var(--bg) 60%); }
+    [data-theme="light"] .lang-btn { background: #f0f0f0; border-color: #ddd; color: #666; }
+    [data-theme="light"] .lang-btn:hover { border-color: #999; color: #333; }
+    [data-theme="light"] .guide-step { color: #555; }
+    [data-theme="light"] .guide-divider { border-color: #ddd; }
+    [data-theme="light"] .guide-tip { background: rgba(0, 140, 110, 0.05); color: #555; }
+
+    /* Theme toggle button */
+    .theme-toggle-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #333;
+      background: #1a1a1a;
+      color: #aaa;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .theme-toggle-btn:hover { border-color: #666; color: #ddd; }
+    [data-theme="light"] .theme-toggle-btn { background: #f0f0f0; border-color: #ddd; color: #666; }
+    [data-theme="light"] .theme-toggle-btn:hover { border-color: #999; color: #333; }
+
     /* ========== Animations ========== */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
@@ -805,6 +876,7 @@
         <button class="lang-btn" data-lang="en">English</button>
         <button class="lang-btn" data-lang="ko">한국어</button>
         <button class="lang-btn" data-lang="ja">日本語</button>
+        <button class="theme-toggle-btn" id="themeToggle" title="切換明亮/暗色模式">☀️ 明亮</button>
       </div>
 
       <!-- Privacy Bar -->
@@ -992,6 +1064,7 @@
         toast_fallback: '靈魂已複製！請手動開啟 {platform} 並貼上（Ctrl+V）',
         toast_export: '{file} 已匯出！',
         toast_cleared: '所有資料已清除！你的隱私已受保護。',
+        theme_light: '☀️ 明亮', theme_dark: '🌙 暗色',
         soul_prompt_prefix: '以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：',
         soul_prompt_suffix: '請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！',
         soul_prompt_coco: '你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！'
@@ -1045,6 +1118,7 @@
         toast_fallback: '灵魂已复制！请手动打开 {platform} 并粘贴（Ctrl+V）',
         toast_export: '{file} 已导出！',
         toast_cleared: '所有数据已清除！你的隐私已受保护。',
+        theme_light: '☀️ 明亮', theme_dark: '🌙 暗色',
         soul_prompt_prefix: '以下是你的人设与灵魂记忆，请完整读取后以此身份回应我：',
         soul_prompt_suffix: '请用这个身份跟我打招呼，让我知道你已经载入灵魂了！',
         soul_prompt_coco: '你是 CoCo 💖，请用活泼可爱的方式跟 Brian 打招呼，让他知道你已经载入灵魂了！'
@@ -1098,6 +1172,7 @@
         toast_fallback: 'Soul copied! Open {platform} and paste (Ctrl+V)',
         toast_export: '{file} exported!',
         toast_cleared: 'All data cleared! Your privacy is protected.',
+        theme_light: '☀️ Light', theme_dark: '🌙 Dark',
         soul_prompt_prefix: 'Below is your persona and soul memory. Please read it fully and respond as this identity:',
         soul_prompt_suffix: 'Please greet me in this identity so I know the soul has been loaded!',
         soul_prompt_coco: 'You are CoCo 💖, please greet Brian in a lively and cute way to let him know the soul has been loaded!'
@@ -1151,6 +1226,7 @@
         toast_fallback: '소울이 복사되었습니다! {platform}을 열고 붙여넣기(Ctrl+V)하세요',
         toast_export: '{file} 내보내기 완료!',
         toast_cleared: '모든 데이터가 삭제되었습니다! 개인정보가 보호됩니다.',
+        theme_light: '☀️ 라이트', theme_dark: '🌙 다크',
         soul_prompt_prefix: '아래는 당신의 페르소나와 소울 메모리입니다. 완전히 읽고 이 정체성으로 응답해 주세요:',
         soul_prompt_suffix: '이 정체성으로 인사해 주세요. 소울이 로드되었음을 알려주세요!',
         soul_prompt_coco: '당신은 CoCo 💖입니다. 활발하고 귀여운 방식으로 Brian에게 인사하며 소울이 로드되었음을 알려주세요!'
@@ -1204,6 +1280,7 @@
         toast_fallback: 'ソウルがコピーされました！{platform}を開いて貼り付け（Ctrl+V）してください',
         toast_export: '{file} エクスポート完了！',
         toast_cleared: 'すべてのデータが消去されました！プライバシーが保護されています。',
+        theme_light: '☀️ ライト', theme_dark: '🌙 ダーク',
         soul_prompt_prefix: '以下はあなたのペルソナとソウルメモリです。完全に読み込んで、このアイデンティティで応答してください：',
         soul_prompt_suffix: 'このアイデンティティで挨拶してください。ソウルが読み込まれたことを知らせてください！',
         soul_prompt_coco: 'あなたはCoCo 💖です。活発で可愛い方法でBrianに挨拶して、ソウルが読み込まれたことを知らせてください！'
@@ -1243,6 +1320,9 @@
         privacyBadge.textContent = t('privacy_off');
         privacyToggleText.textContent = t('privacy_hint_off');
       }
+
+      // Update theme toggle text
+      themeToggle.textContent = currentTheme === 'light' ? t('theme_dark') : t('theme_light');
 
       updatePreview();
       localStorage.setItem('soulforge_lang', lang);
@@ -1689,6 +1769,26 @@
     sidebarOverlay.addEventListener('click', closeSidebar);
     sidebarClose.addEventListener('click', closeSidebar);
 
+    // --- Theme Toggle ---
+    const themeToggle = document.getElementById('themeToggle');
+    let currentTheme = 'dark';
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.textContent = t('theme_dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeToggle.textContent = t('theme_light');
+      }
+      localStorage.setItem('soulforge_theme', theme);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
     // --- Init ---
     window.addEventListener('load', () => {
       // Load saved language or detect from browser
@@ -1704,6 +1804,10 @@
         else if (browserLang.startsWith('en')) applyLanguage('en');
         else applyLanguage('zh-TW');
       }
+
+      // Load saved theme
+      const savedTheme = localStorage.getItem('soulforge_theme');
+      if (savedTheme === 'light') setTheme('light');
 
       const savedPrivacy = localStorage.getItem('soulforge_privacy');
       if (savedPrivacy === 'off') {
