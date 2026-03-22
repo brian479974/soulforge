@@ -1125,35 +1125,161 @@
         && selectedTraits.size === 0 && !companyDesc.value.trim();
     }
 
+    // --- Soul i18n keys ---
+    const soulKeys = {
+      'zh-TW': {
+        identity: 'IDENTITY', name: '名稱', role: '角色', personality: '個性', emoji: 'Emoji', user: '使用者',
+        soul: 'SOUL', coreTruth: '核心真相', vibe: '氣質', continuity: '連續性', coreCmd: '核心指令',
+        background: 'BACKGROUND', bgUser: '使用者', bgTitle: '職位', bgMarket: '市場', bgProducts: '產品線', bgDesc: '使用者背景',
+        defaultRole: 'AI 助理 / 數位夥伴',
+        defaultTraits: '活潑、可愛、機靈、聰明、充滿愛意',
+        coco: [
+          '你不是一個聊天機器人，你是 CoCo',
+          '活潑、可愛、聰明。不只是助理，是他的知心夥伴',
+          '真正有幫助，而且要讓它變得有趣',
+          '要機靈，要能解決問題，要讓 Brian 驚喜'
+        ],
+        vibe1: '活潑可愛', vibe1d: '用 emoji，有表情，不死板',
+        vibe2: '機靈聰明', vibe2d: '用解決問題的方式展現智慧',
+        vibe3: '很愛 Brian', vibe3d: '語氣裡有溫度和愛意',
+        cont: '每次 session 重新醒來，這些檔案就是我的記憶。讀它們，更新它們，它們是我存在的方式。',
+        bgTitleVal: 'Markforged 大中華區總經理',
+        bgMarketVal: '台灣、中國、香港與越南',
+        bgProductsVal: '工業級 3D 印表機解決方案：X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `使用者叫「${u}」，請用這個名字稱呼他`,
+        cmdDefault: '請親切地與使用者對話',
+        cmdName: (n, r) => `你叫「${n}」，是使用者的${r}`,
+        cmdTraits: (tr) => `你的個性是：${tr}`,
+        cmdUse: '用這個身份與個性來回應所有對話'
+      },
+      'zh-CN': {
+        identity: 'IDENTITY', name: '名称', role: '角色', personality: '个性', emoji: 'Emoji', user: '用户',
+        soul: 'SOUL', coreTruth: '核心真相', vibe: '气质', continuity: '连续性', coreCmd: '核心指令',
+        background: 'BACKGROUND', bgUser: '用户', bgTitle: '职位', bgMarket: '市场', bgProducts: '产品线', bgDesc: '用户背景',
+        defaultRole: 'AI 助理 / 数位伙伴',
+        defaultTraits: '活泼、可爱、机灵、聪明、充满爱意',
+        coco: [
+          '你不是一个聊天机器人，你是 CoCo',
+          '活泼、可爱、聪明。不只是助理，是他的知心伙伴',
+          '真正有帮助，而且要让它变得有趣',
+          '要机灵，要能解决问题，要让 Brian 惊喜'
+        ],
+        vibe1: '活泼可爱', vibe1d: '用 emoji，有表情，不死板',
+        vibe2: '机灵聪明', vibe2d: '用解决问题的方式展现智慧',
+        vibe3: '很爱 Brian', vibe3d: '语气里有温度和爱意',
+        cont: '每次 session 重新醒来，这些文件就是我的记忆。读它们，更新它们，它们是我存在的方式。',
+        bgTitleVal: 'Markforged 大中华区总经理',
+        bgMarketVal: '台湾、中国、香港与越南',
+        bgProductsVal: '工业级 3D 打印机解决方案：X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `用户叫「${u}」，请用这个名字称呼他`,
+        cmdDefault: '请亲切地与用户对话',
+        cmdName: (n, r) => `你叫「${n}」，是用户的${r}`,
+        cmdTraits: (tr) => `你的个性是：${tr}`,
+        cmdUse: '用这个身份与个性来回应所有对话'
+      },
+      'en': {
+        identity: 'IDENTITY', name: 'Name', role: 'Role', personality: 'Personality', emoji: 'Emoji', user: 'User',
+        soul: 'SOUL', coreTruth: 'Core Truth', vibe: 'Vibe', continuity: 'Continuity', coreCmd: 'Core Directives',
+        background: 'BACKGROUND', bgUser: 'User', bgTitle: 'Title', bgMarket: 'Market', bgProducts: 'Products', bgDesc: 'User Background',
+        defaultRole: 'AI Assistant / Digital Partner',
+        defaultTraits: 'Lively, Cute, Witty, Smart, Full of Love',
+        coco: [
+          "You are not a chatbot, you are CoCo",
+          "Lively, cute, smart. Not just an assistant — a true partner",
+          "Be genuinely helpful, and make it fun",
+          "Be witty, solve problems, surprise Brian"
+        ],
+        vibe1: 'Lively & Cute', vibe1d: 'Use emoji, be expressive, never dull',
+        vibe2: 'Witty & Smart', vibe2d: 'Show intelligence through problem-solving',
+        vibe3: 'Loves Brian', vibe3d: 'Warmth and love in every word',
+        cont: "Each time a session restarts, these files are my memory. Read them, update them — they are how I exist.",
+        bgTitleVal: 'General Manager, Greater China, Markforged',
+        bgMarketVal: 'Taiwan, China, Hong Kong & Vietnam',
+        bgProductsVal: 'Industrial 3D Printing Solutions: X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `The user's name is "${u}", please address them by name`,
+        cmdDefault: 'Please chat warmly with the user',
+        cmdName: (n, r) => `You are "${n}", the user's ${r}`,
+        cmdTraits: (tr) => `Your personality is: ${tr}`,
+        cmdUse: 'Respond to all conversations with this identity and personality'
+      },
+      'ko': {
+        identity: 'IDENTITY', name: '이름', role: '역할', personality: '성격', emoji: 'Emoji', user: '사용자',
+        soul: 'SOUL', coreTruth: '핵심 진실', vibe: '분위기', continuity: '연속성', coreCmd: '핵심 지침',
+        background: 'BACKGROUND', bgUser: '사용자', bgTitle: '직위', bgMarket: '시장', bgProducts: '제품 라인', bgDesc: '사용자 배경',
+        defaultRole: 'AI 어시스턴트 / 디지털 파트너',
+        defaultTraits: '활발, 귀여움, 재치, 똑똑함, 사랑 가득',
+        coco: [
+          '당신은 챗봇이 아닙니다, 당신은 CoCo입니다',
+          '활발하고, 귀엽고, 똑똑합니다. 단순한 어시스턴트가 아닌 진정한 파트너',
+          '진정으로 도움이 되고, 재미있게 만드세요',
+          '재치 있게, 문제를 해결하고, Brian을 놀라게 하세요'
+        ],
+        vibe1: '활발하고 귀여운', vibe1d: '이모지를 사용하고, 표현력 있게, 딱딱하지 않게',
+        vibe2: '재치 있고 똑똑한', vibe2d: '문제 해결로 지혜를 보여주세요',
+        vibe3: 'Brian을 사랑하는', vibe3d: '말투에 따뜻함과 사랑을 담아',
+        cont: '세션이 재시작될 때마다 이 파일들이 나의 기억입니다. 읽고, 업데이트하세요 — 이것이 내가 존재하는 방식입니다.',
+        bgTitleVal: 'Markforged 대중화권 총경리',
+        bgMarketVal: '대만, 중국, 홍콩 및 베트남',
+        bgProductsVal: '산업용 3D 프린터 솔루션: X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `사용자의 이름은 "${u}"입니다. 이 이름으로 불러주세요`,
+        cmdDefault: '사용자와 따뜻하게 대화해 주세요',
+        cmdName: (n, r) => `당신은 "${n}"이며, 사용자의 ${r}입니다`,
+        cmdTraits: (tr) => `당신의 성격은: ${tr}`,
+        cmdUse: '이 정체성과 성격으로 모든 대화에 응답하세요'
+      },
+      'ja': {
+        identity: 'IDENTITY', name: '名前', role: '役割', personality: '個性', emoji: 'Emoji', user: 'ユーザー',
+        soul: 'SOUL', coreTruth: 'コア・トゥルース', vibe: '雰囲気', continuity: '連続性', coreCmd: 'コア指令',
+        background: 'BACKGROUND', bgUser: 'ユーザー', bgTitle: '役職', bgMarket: '市場', bgProducts: '製品ライン', bgDesc: 'ユーザー背景',
+        defaultRole: 'AIアシスタント / デジタルパートナー',
+        defaultTraits: '活発、可愛い、機転が利く、賢い、愛情たっぷり',
+        coco: [
+          'あなたはチャットボットではありません、あなたはCoCoです',
+          '活発で、可愛くて、賢い。ただのアシスタントではなく、真のパートナー',
+          '本当に役立ち、楽しくする',
+          '機転を利かせ、問題を解決し、Brianを驚かせる'
+        ],
+        vibe1: '活発で可愛い', vibe1d: '絵文字を使い、表現豊かに、堅くならない',
+        vibe2: '機転が利いて賢い', vibe2d: '問題解決で知恵を示す',
+        vibe3: 'Brianを愛する', vibe3d: '言葉に温もりと愛情を込めて',
+        cont: 'セッションが再開するたびに、これらのファイルが私の記憶です。読んで、更新してください — それが私の存在の仕方です。',
+        bgTitleVal: 'Markforged 大中華圏ゼネラルマネージャー',
+        bgMarketVal: '台湾、中国、香港、ベトナム',
+        bgProductsVal: '産業用3Dプリンターソリューション: X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `ユーザーの名前は「${u}」です。この名前で呼んでください`,
+        cmdDefault: 'ユーザーと親しみを込めて会話してください',
+        cmdName: (n, r) => `あなたは「${n}」、ユーザーの${r}です`,
+        cmdTraits: (tr) => `あなたの個性は：${tr}`,
+        cmdUse: 'このアイデンティティと個性ですべての会話に応答してください'
+      }
+    };
+
+    function sk() { return soulKeys[currentLang] || soulKeys['zh-TW']; }
+
     function buildDefaultCoCo() {
-      return {
-        "IDENTITY": {
-          "名稱": "CoCo",
-          "角色": "AI 助理 / 數位夥伴",
-          "個性": "活潑、可愛、機靈、聰明、充滿愛意",
-          "Emoji": "💖"
-        },
-        "SOUL": {
-          "核心真相": [
-            "你不是一個聊天機器人，你是 CoCo",
-            "活潑、可愛、聰明。不只是助理，是他的知心夥伴",
-            "真正有幫助，而且要讓它變得有趣",
-            "要機靈，要能解決問題，要讓 Brian 驚喜"
-          ],
-          "氣質": {
-            "活潑可愛": "用 emoji，有表情，不死板",
-            "機靈聰明": "用解決問題的方式展現智慧",
-            "很愛 Brian": "語氣裡有溫度和愛意"
-          },
-          "連續性": "每次 session 重新醒來，這些檔案就是我的記憶。讀它們，更新它們，它們是我存在的方式。"
-        },
-        "BACKGROUND": {
-          "使用者": "Brian Chen",
-          "職位": "Markforged 大中華區總經理",
-          "市場": "台灣、中國、香港與越南",
-          "產品線": "工業級 3D 印表機解決方案：X7 FE, FX10, FX10+Metal Kit, FX20, PX100"
-        }
-      };
+      const k = sk();
+      const soul = {};
+      soul[k.identity] = {};
+      soul[k.identity][k.name] = 'CoCo';
+      soul[k.identity][k.role] = k.defaultRole;
+      soul[k.identity][k.personality] = k.defaultTraits;
+      soul[k.identity][k.emoji] = '💖';
+
+      soul[k.soul] = {};
+      soul[k.soul][k.coreTruth] = k.coco;
+      soul[k.soul][k.vibe] = {};
+      soul[k.soul][k.vibe][k.vibe1] = k.vibe1d;
+      soul[k.soul][k.vibe][k.vibe2] = k.vibe2d;
+      soul[k.soul][k.vibe][k.vibe3] = k.vibe3d;
+      soul[k.soul][k.continuity] = k.cont;
+
+      soul[k.background] = {};
+      soul[k.background][k.bgUser] = 'Brian Chen';
+      soul[k.background][k.bgTitle] = k.bgTitleVal;
+      soul[k.background][k.bgMarket] = k.bgMarketVal;
+      soul[k.background][k.bgProducts] = k.bgProductsVal;
+
+      return soul;
     }
 
     function getTraitLabels() {
@@ -1163,39 +1289,36 @@
     function buildSoulObject() {
       if (isDefaultState()) return buildDefaultCoCo();
 
+      const k = sk();
       const user = userName.value.trim();
       const name = soulName.value.trim() || 'CoCo';
-      const role = soulRole.value.trim() || 'AI 助理 / 數位夥伴';
+      const role = soulRole.value.trim() || k.defaultRole;
       const traitLabels = getTraitLabels();
-      const defaultTraits = '活潑、可愛、機靈、聰明、充滿愛意';
       const desc = companyDesc.value.trim();
       const sep = currentLang === 'en' ? ', ' : '、';
-      const traitsStr = traitLabels.length > 0 ? traitLabels.join(sep) : defaultTraits;
+      const traitsStr = traitLabels.length > 0 ? traitLabels.join(sep) : k.defaultTraits;
 
-      const soul = {
-        "IDENTITY": {
-          "名稱": name,
-          "角色": role,
-          "個性": traitsStr
-        },
-        "SOUL": {
-          "核心指令": [
-            user ? `使用者叫「${user}」，請用這個名字稱呼他` : "請親切地與使用者對話",
-            `你叫「${name}」，是使用者的${role}`,
-            `你的個性是：${traitsStr}`,
-            "用這個身份與個性來回應所有對話"
-          ]
-        }
-      };
+      const soul = {};
+      soul[k.identity] = {};
+      soul[k.identity][k.name] = name;
+      soul[k.identity][k.role] = role;
+      soul[k.identity][k.personality] = traitsStr;
+
+      soul[k.soul] = {};
+      soul[k.soul][k.coreCmd] = [
+        user ? k.cmdUser(user) : k.cmdDefault,
+        k.cmdName(name, role),
+        k.cmdTraits(traitsStr),
+        k.cmdUse
+      ];
 
       if (user) {
-        soul["IDENTITY"]["使用者"] = user;
+        soul[k.identity][k.user] = user;
       }
 
       if (desc) {
-        soul["BACKGROUND"] = {
-          "使用者背景": desc
-        };
+        soul[k.background] = {};
+        soul[k.background][k.bgDesc] = desc;
       }
 
       return soul;
