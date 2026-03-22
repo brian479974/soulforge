@@ -865,27 +865,41 @@
       const url = `https://www.google.com/search?q=${encodeURIComponent(prompt)}&udm=50`;
       copyToClipboard(prompt);
       showToast('靈魂已注入 Google AI 搜尋模式！');
-      setTimeout(() => window.open(url, '_blank'), 300);
+      window.open(url, '_blank');
     }
 
     // --- Other Platforms ---
-    const AI_URLS = {
-      gemini: 'https://gemini.google.com/app',
-      chatgpt: 'https://chatgpt.com/',
-      claude: 'https://claude.ai/new'
-    };
-
     const AI_LABELS = {
       gemini: 'Gemini',
       chatgpt: 'ChatGPT',
       claude: 'Claude'
     };
 
-    async function launchWithSoul(platform) {
+    function buildPlatformURL(platform, prompt) {
+      const encoded = encodeURIComponent(prompt);
+      switch (platform) {
+        case 'gemini':
+          return `https://gemini.google.com/app?prompt=${encoded}`;
+        case 'chatgpt':
+          return `https://chatgpt.com/?q=${encoded}`;
+        case 'claude':
+          return `https://claude.ai/new?q=${encoded}`;
+        default:
+          return '';
+      }
+    }
+
+    function launchWithSoul(platform) {
       const prompt = buildSoulPrompt();
-      await copyToClipboard(prompt);
-      showToast(`靈魂已複製！正在開啟 ${AI_LABELS[platform]}，貼上即可`);
-      setTimeout(() => window.open(AI_URLS[platform], '_blank'), 300);
+      const url = buildPlatformURL(platform, prompt);
+      // Open immediately in user gesture context to avoid popup blockers
+      const newTab = window.open(url, '_blank');
+      copyToClipboard(prompt);
+      if (newTab) {
+        showToast(`靈魂已帶入 ${AI_LABELS[platform]}！`);
+      } else {
+        showToast(`靈魂已複製！請手動開啟 ${AI_LABELS[platform]} 並貼上（Ctrl+V）`);
+      }
     }
 
     // --- Clipboard ---
