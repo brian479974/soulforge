@@ -1087,6 +1087,9 @@
         <div class="btn-grid-2">
           <button class="btn btn-launch" onclick="launchWithSoul('chatgpt')">&#x1F30F; ChatGPT</button>
           <button class="btn btn-launch" onclick="launchWithSoul('grok')">&#x1F916; Grok</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('doubao')">&#x1F331; 豆包</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('deepseek')">&#x1F9E0; DeepSeek</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('perplexity')">&#x1F50D; Perplexity</button>
           <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;" data-i18n="btn_export">&#x1F4BE; 匯出靈魂 .json</button>
         </div>
 
@@ -1844,7 +1847,10 @@
     // --- Other Platforms ---
     const AI_LABELS = {
       chatgpt: 'ChatGPT',
-      grok: 'Grok'
+      grok: 'Grok',
+      doubao: '豆包',
+      deepseek: 'DeepSeek',
+      perplexity: 'Perplexity'
     };
 
     function buildPlatformURL(platform, prompt) {
@@ -1854,6 +1860,12 @@
           return `https://chatgpt.com/?q=${encoded}`;
         case 'grok':
           return `https://grok.com/?q=${encoded}`;
+        case 'doubao':
+          return `https://www.doubao.com/chat/?q=${encoded}`;
+        case 'deepseek':
+          return `https://chat.deepseek.com/?q=${encoded}`;
+        case 'perplexity':
+          return `https://www.perplexity.ai/?q=${encoded}`;
         default:
           return '';
       }
