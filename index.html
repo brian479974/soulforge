@@ -1090,6 +1090,10 @@
           <button class="btn btn-launch" onclick="launchWithSoul('doubao')">&#x1F331; 豆包</button>
           <button class="btn btn-launch" onclick="launchWithSoul('deepseek')">&#x1F9E0; DeepSeek</button>
           <button class="btn btn-launch" onclick="launchWithSoul('perplexity')">&#x1F50D; Perplexity</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('copilot')">&#x1FA9F; Copilot</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('claude')">&#x1F9E0; Claude</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('gemini')">&#x2728; Gemini</button>
+          <button class="btn btn-launch" onclick="launchWithSoul('meta')">&#x1F999; Meta AI</button>
           <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;" data-i18n="btn_export">&#x1F4BE; 匯出靈魂 .json</button>
         </div>
 
@@ -1850,7 +1854,11 @@
       grok: 'Grok',
       doubao: '豆包',
       deepseek: 'DeepSeek',
-      perplexity: 'Perplexity'
+      perplexity: 'Perplexity',
+      copilot: 'Copilot',
+      claude: 'Claude',
+      gemini: 'Gemini',
+      meta: 'Meta AI'
     };
 
     function buildPlatformURL(platform, prompt) {
@@ -1866,6 +1874,14 @@
           return `https://chat.deepseek.com/?q=${encoded}`;
         case 'perplexity':
           return `https://www.perplexity.ai/?q=${encoded}`;
+        case 'copilot':
+          return `https://copilot.microsoft.com/?q=${encoded}`;
+        case 'claude':
+          return `https://claude.ai/new?q=${encoded}`;
+        case 'gemini':
+          return `https://gemini.google.com/app?q=${encoded}`;
+        case 'meta':
+          return `https://www.meta.ai/?q=${encoded}`;
         default:
           return '';
       }
