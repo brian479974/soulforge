@@ -6,14 +6,6 @@ export default defineConfig({
   base: '/',
   build: {
     outDir: 'dist',
-    sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'framer-motion': ['framer-motion'],
-          'lucide': ['lucide-react']
-        }
-      }
-    }
+    sourcemap: true
   }
 })
