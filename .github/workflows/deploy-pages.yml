@@ -24,13 +24,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd soulforge-v2
+          npm ci
+
+      - name: Build
+        run: |
+          cd soulforge-v2
+          npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: './soulforge-v2/dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
