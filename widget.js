@@ -5,8 +5,8 @@
 
   const script = document.currentScript;
   const defaults = {
-    api: (script && script.getAttribute('data-api')) || '/api',
-    chat: (script && script.getAttribute('data-chat')) || '/chat',
+    api: (script && script.getAttribute('data-api')) || 'https://soulforge-topaz.vercel.app/api',
+    chat: (script && script.getAttribute('data-chat')) || 'https://soulforge-topaz.vercel.app/chat',
     engine: (script && script.getAttribute('data-engine')) || 'ai-mode',
     soul: null,
     title: 'SoulForge',
