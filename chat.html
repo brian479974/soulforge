@@ -457,9 +457,11 @@
       </div>
     </div>
     <div class="panel-footer">
+      <button class="btn btn-secondary" id="panel-import">📤 匯入備份</button>
       <button class="btn btn-secondary" id="panel-clear">清空對話</button>
-      <button class="btn btn-primary" id="panel-save">儲存</button>
+      <button class="btn btn-primary" id="panel-save">套用</button>
     </div>
+    <input type="file" id="import-file" accept="application/json,.json" style="display:none">
   </aside>
 
   <script>
@@ -509,26 +511,11 @@
       if (p.get('api')) state.apiBase = p.get('api');
     }
 
-    // ---------- Storage ----------
-    function loadStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const data = JSON.parse(raw);
-        if (data.soul) Object.assign(state.soul, data.soul);
-        if (data.engine === 'gemini' || data.engine === 'ai-mode') state.engine = data.engine;
-        if (typeof data.apiBase === 'string' && /^\/?[\w\-./:]*$/.test(data.apiBase) && data.apiBase.length < 200) {
-          state.apiBase = data.apiBase;
-        }
-      } catch (e) { console.warn('localStorage 讀取失敗'); }
-    }
-    function saveStorage() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          soul: state.soul, engine: state.engine, apiBase: state.apiBase,
-        }));
-      } catch (e) {}
-    }
+    // ---------- Storage (disabled for public bot — no auto-persist) ----------
+    // Settings are ephemeral per session. Users who want to keep their custom
+    // soul must explicitly click 📥 backup to download. Import via the panel.
+    function loadStorage() { /* no-op by design */ }
+    function saveStorage() { /* no-op by design */ }
 
     // ---------- Markdown (basic) ----------
     function escapeHTML(s) {
@@ -785,6 +772,32 @@
     $('settings-btn').addEventListener('click', openPanel);
     $('panel-close').addEventListener('click', closePanel);
     $('panel-backdrop').addEventListener('click', closePanel);
+    $('panel-import').addEventListener('click', () => $('import-file').click());
+    $('import-file').addEventListener('change', (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          if (data.soul) Object.assign(state.soul, data.soul);
+          if (Array.isArray(data.history)) state.history = data.history.slice();
+          updateHeader();
+          renderTraits();
+          $('f-name').value = state.soul.name || '';
+          $('f-role').value = state.soul.role || '';
+          $('f-user').value = state.soul.userName || '';
+          $('f-bg').value = state.soul.background || '';
+          messagesEl.innerHTML = '';
+          state.history.forEach(m => appendMessage(m.role === 'assistant' ? 'ai' : 'user', m.content));
+          appendMessage('ai', `✅ **備份已載入** — 靈魂：${escapeHTML(state.soul.name)}${data.history ? `，對話 ${state.history.length} 則` : ''}`);
+        } catch (err) {
+          alert('備份檔解析失敗：' + err.message);
+        }
+      };
+      reader.readAsText(f);
+      e.target.value = '';
+    });
     $('panel-save').addEventListener('click', () => {
       state.soul.name = $('f-name').value.trim() || 'CoCo';
       state.soul.role = $('f-role').value.trim() || '你的 AI 數位夥伴';

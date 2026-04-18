@@ -38,22 +38,10 @@
     history: [],
   };
 
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const d = JSON.parse(raw);
-      if (d.soul) Object.assign(state.soul, d.soul);
-      if (d.engine) state.engine = d.engine;
-    }
-  } catch (e) {}
-
-  function saveStorage() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        soul: state.soul, engine: state.engine,
-      }));
-    } catch (e) {}
-  }
+  // Storage disabled by design — widget is public-facing, settings are ephemeral per page load.
+  // Users who want to keep a custom soul should use the 📥 backup button (chat.html) or
+  // pass soul via window.SOULFORGE_CONFIG / data-* attributes.
+  function saveStorage() { /* no-op by design */ }
 
   // -------- Styles (scoped via custom prefix) --------
   const css = `

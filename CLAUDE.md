@@ -87,6 +87,7 @@ Consistent across all frontends and the API:
 
 ## Gotchas that have bitten before
 
+- **Public bot — user settings are ephemeral by design.** `chat.html` and `widget.js` intentionally do **not** persist soul / engine / apiBase to `localStorage`. Each page load starts from the hardcoded default (Brian's CoCo). If a user wants to keep a custom soul, they export via the 📥 backup button and re-import via the settings panel. Do **not** re-enable `localStorage` persistence — it would cause one user's customization to leak to the next person on the same device.
 - **Don't truncate `systemPrompt` before sending to AI Mode.** `api/ai-mode.js` previously did `split('\n').slice(0, 3)` which silently dropped the background / Markforged context. Keep the full prompt (cap at ~1600 chars for URL length safety).
 - **Cross-origin fetch:** `chat.html` and `widget.js` default `apiBase` to the absolute Vercel URL (`https://soulforge-topaz.vercel.app/api`), not `/api`. If someone opens `chat.html` from a non-Vercel origin (GH Pages, local file, embedded iframe), relative paths 405 on the wrong host.
 - **Vercel root-dir detection:** If Vercel's "Root Directory" setting ever gets auto-set to `soulforge-v2` (because of the React app's `package.json`), the bot breaks — `api/` at repo root stops being detected. It must be empty / `.`.
