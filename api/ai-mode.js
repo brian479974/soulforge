@@ -52,16 +52,37 @@ module.exports = async function handler(req, res) {
   if (!provider) return res.status(500).json({ error: `不支援的 SERP 供應商: ${providerName}` });
 
   try {
-    const { systemPrompt, message } = parseSoulFromRequest(req.body);
+    const { systemPrompt, message, history } = parseSoulFromRequest(req.body);
     if (!message) return res.status(400).json({ error: '訊息不可為空' });
 
-    // 把完整 systemPrompt（含個性、背景、Brian 的 Markforged context）都餵進去。
-    // Google search URL limit ~2048 chars，這樣還有空間放 message。
-    const MAX_PROMPT = 1600;
+    // AI Mode 是無狀態搜尋引擎，沒有對話記憶。這裡手動把 history 塞進每次查詢，
+    // 讓使用者感覺「同一個視窗它一直記得」— 行為對齊 Google 官方 AI Mode web UI。
+    // Google search URL 上限 ~2048 chars，分三塊預算：prompt 1000 / history 600 / 新問題其餘
+    const MAX_PROMPT = 1000;
+    const MAX_HISTORY = 600;
     const promptForQuery = systemPrompt.length > MAX_PROMPT
       ? systemPrompt.slice(0, MAX_PROMPT)
       : systemPrompt;
-    const query = `${promptForQuery}\n\n使用者問題：${message}`;
+
+    let convoBlock = '';
+    if (Array.isArray(history) && history.length > 0) {
+      const lines = [];
+      // 從最新往回加，直到接近 MAX_HISTORY
+      for (let i = history.length - 1; i >= 0; i--) {
+        const m = history[i];
+        if (!m || !m.content) continue;
+        const who = m.role === 'assistant' ? 'CoCo' : '使用者';
+        const line = `${who}：${m.content}`;
+        const accumulated = lines.join('\n').length + line.length + 1;
+        if (accumulated > MAX_HISTORY) break;
+        lines.unshift(line);
+      }
+      if (lines.length > 0) {
+        convoBlock = `\n\n【先前的對話（請記得上下文）】\n${lines.join('\n')}`;
+      }
+    }
+
+    const query = `${promptForQuery}${convoBlock}\n\n使用者新問題：${message}`;
     const params = provider.buildParams(query, apiKey);
     const url = new URL(provider.url);
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
