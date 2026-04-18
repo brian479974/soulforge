@@ -393,9 +393,9 @@
       </div>
     </div>
     <div class="header-right">
-      <div class="engine-toggle" role="tablist" style="display:none" data-hidden="v2.0">
-        <button class="engine-btn" data-engine="gemini" title="Gemini API 直連">⚡ Gemini</button>
-        <button class="engine-btn active" data-engine="ai-mode" title="Google AI Mode (SERP)">🔍 AI Mode</button>
+      <div class="engine-toggle" role="tablist">
+        <button class="engine-btn active" data-engine="gemini" title="Gemini API 直連（多輪對話）">⚡ Gemini</button>
+        <button class="engine-btn" data-engine="ai-mode" title="Google AI Mode（單次搜尋）">🔍 AI Mode</button>
       </div>
       <button class="icon-btn" id="backup-btn" title="備份對話到本地">📥</button>
       <button class="icon-btn" id="settings-btn" title="設定">⚙️</button>
@@ -485,7 +485,7 @@
 
     const state = {
       soul: { ...DEFAULT_SOUL },
-      engine: 'ai-mode',
+      engine: 'gemini',
       apiBase: 'https://soulforge-topaz.vercel.app/api',
       history: [],
       sending: false,

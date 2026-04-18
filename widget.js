@@ -7,7 +7,7 @@
   const defaults = {
     api: (script && script.getAttribute('data-api')) || 'https://soulforge-topaz.vercel.app/api',
     chat: (script && script.getAttribute('data-chat')) || 'https://soulforge-topaz.vercel.app/chat',
-    engine: (script && script.getAttribute('data-engine')) || 'ai-mode',
+    engine: (script && script.getAttribute('data-engine')) || 'gemini',
     soul: null,
     title: 'SoulForge',
     position: 'bottom-right',
@@ -245,9 +245,9 @@
           </div>
         </div>
         <div class="sf-hr">
-          <div class="sf-toggle" id="sf-toggle" style="display:none" data-hidden="v2.0">
-            <button class="sf-etab" data-engine="gemini">⚡</button>
-            <button class="sf-etab sf-active" data-engine="ai-mode">🔍</button>
+          <div class="sf-toggle" id="sf-toggle">
+            <button class="sf-etab sf-active" data-engine="gemini">⚡</button>
+            <button class="sf-etab" data-engine="ai-mode">🔍</button>
           </div>
           <button class="sf-icon" id="sf-backup" title="備份對話到本地">📥</button>
           <button class="sf-icon" id="sf-close" title="關閉">✕</button>
