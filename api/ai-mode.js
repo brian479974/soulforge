@@ -55,8 +55,13 @@ module.exports = async function handler(req, res) {
     const { systemPrompt, message } = parseSoulFromRequest(req.body);
     if (!message) return res.status(400).json({ error: '訊息不可為空' });
 
-    const soulPrefix = systemPrompt.split('\n').slice(0, 3).join(' ').substring(0, 200);
-    const query = `${soulPrefix}\n\n使用者問題：${message}`;
+    // 把完整 systemPrompt（含個性、背景、Brian 的 Markforged context）都餵進去。
+    // Google search URL limit ~2048 chars，這樣還有空間放 message。
+    const MAX_PROMPT = 1600;
+    const promptForQuery = systemPrompt.length > MAX_PROMPT
+      ? systemPrompt.slice(0, MAX_PROMPT)
+      : systemPrompt;
+    const query = `${promptForQuery}\n\n使用者問題：${message}`;
     const params = provider.buildParams(query, apiKey);
     const url = new URL(provider.url);
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
