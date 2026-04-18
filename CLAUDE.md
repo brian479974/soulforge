@@ -83,7 +83,7 @@ Consistent across all frontends and the API:
 }
 ```
 
-`chat.html` has a default soul hardcoded for Brian (Markforged GC, X7 FE/FX10/FX20/PX100 product line). `widget.js` has a bland default and expects callers to pass a soul via `window.SOULFORGE_CONFIG` or `data-*` attributes.
+`chat.html` has a default soul hardcoded for Brian (Markforged GCR, X7 FE/FX10/FX20/PX100 product line). `widget.js` has a bland default and expects callers to pass a soul via `window.SOULFORGE_CONFIG` or `data-*` attributes.
 
 ## Gotchas that have bitten before
 
@@ -102,6 +102,6 @@ Consistent across all frontends and the API:
 
 ## Context
 
-- **Owner:** Brian Chen (`brian479974` on GitHub) — Markforged 大中華區總經理 (Taiwan/China/HK/Vietnam). The default soul in `chat.html` reflects this.
+- **Owner:** Brian Chen (`brian479974` on GitHub) — Markforged GCR General Manager (Taiwan / China / Hong Kong / Vietnam). The default soul in `chat.html` reflects this.
 - **Language:** UI and docs are mostly Traditional Chinese (`zh-TW`). AI responses default to 繁體中文 per `soul-engine.js` guardrails.
 - See `docs/DEPLOY.md` for detailed deploy / domain binding / troubleshooting.
