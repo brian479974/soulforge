@@ -57,6 +57,19 @@ function App() {
     window.open(urls[platform], '_blank')
   }
 
+  const launchBot = () => {
+    const params = new URLSearchParams()
+    if (formData.soulName) params.set('name', formData.soulName)
+    if (formData.role) params.set('role', formData.role)
+    if (formData.userName) params.set('user', formData.userName)
+    if (formData.description) params.set('bg', formData.description)
+    if (formData.personalities && formData.personalities.length > 0) {
+      params.set('traits', formData.personalities.join(','))
+    }
+    const qs = params.toString()
+    window.open(`https://soulforge-topaz.vercel.app/chat${qs ? '?' + qs : ''}`, '_blank')
+  }
+
   const exportSoul = () => {
     const data = JSON.stringify(formData, null, 2)
     const blob = new Blob([data], { type: 'application/json' })
@@ -224,6 +237,16 @@ function App() {
 
           {/* Action Buttons */}
           <div className="action-buttons">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={launchBot}
+              className="btn btn-bot"
+            >
+              🔥 直接跟 SoulForge Bot 對話
+              <span className="btn-badge">NEW</span>
+            </motion.button>
+
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
