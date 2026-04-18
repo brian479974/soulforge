@@ -1,6 +1,8 @@
 const { parseSoulFromRequest } = require('./lib/soul-engine');
 
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+// gemini-2.5-flash 有較新的免費額度，若你改過 env var `GEMINI_MODEL` 會以那個為準
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -83,7 +85,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({
       reply: reply + sources,
       engine: 'gemini',
-      model: 'gemini-2.0-flash',
+      model: GEMINI_MODEL,
       grounded: chunks.length > 0,
     });
   } catch (err) {
