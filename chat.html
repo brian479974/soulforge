@@ -2,837 +2,157 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="SoulForge Chat — 跟你鍛造的 AI 靈魂對話">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
-  <title>SoulForge Chat — 與你的 AI 靈魂對話</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
+  <title>SoulForge Chat — 帶靈魂進入 Google AI Mode</title>
   <style>
-    :root {
-      --primary: #FF4500;
-      --primary-light: #ff8c00;
-      --bg: #050505;
-      --bg-elevated: #0e0e0e;
-      --card: #121212;
-      --card-border: #2a2a2a;
-      --neon: #00ffcc;
-      --text: #f0f0f0;
-      --text-muted: #888;
-      --text-dim: #555;
-      --user-bubble: #1a1a1a;
-      --ai-bubble: #1a0f08;
-      --ai-bubble-border: #3d2410;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
     body {
-      display: flex;
-      flex-direction: column;
-    }
-    /* Header */
-    .header {
-      flex-shrink: 0;
+      margin: 0;
+      min-height: 100vh;
+      background: #050505;
+      color: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 12px 20px;
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--card-border);
-      z-index: 10;
-    }
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .avatar {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      box-shadow: 0 0 12px rgba(255, 69, 0, 0.4);
-    }
-    .soul-info { display: flex; flex-direction: column; line-height: 1.2; }
-    .soul-name { font-weight: 600; font-size: 15px; }
-    .soul-status { font-size: 11px; color: var(--text-muted); }
-    .status-dot {
-      display: inline-block; width: 6px; height: 6px;
-      background: var(--neon); border-radius: 50%;
-      margin-right: 4px;
-      box-shadow: 0 0 6px var(--neon);
-    }
-    .header-right { display: flex; align-items: center; gap: 8px; }
-    .engine-toggle {
-      display: flex;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 2px;
-      font-size: 12px;
-    }
-    .engine-btn {
-      padding: 6px 10px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: 6px;
-      transition: all .2s;
-      font-size: 12px;
-    }
-    .engine-btn.active {
-      background: var(--primary);
-      color: white;
-    }
-    .engine-btn:hover:not(.active) { color: var(--text); }
-    .icon-btn {
-      width: 36px; height: 36px;
-      background: transparent;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      color: var(--text-muted);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .2s;
-      font-size: 16px;
-    }
-    .icon-btn:hover { color: var(--text); border-color: var(--primary); }
-    /* Messages */
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      scroll-behavior: smooth;
-    }
-    .messages::-webkit-scrollbar { width: 6px; }
-    .messages::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 3px; }
-    .welcome {
-      max-width: 640px;
-      margin: 40px auto;
+      justify-content: center;
       text-align: center;
       padding: 20px;
     }
-    .welcome-emoji { font-size: 48px; margin-bottom: 12px; }
-    .welcome h1 {
-      font-size: 24px;
-      margin-bottom: 8px;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    .card {
+      max-width: 520px;
+    }
+    .emoji { font-size: 56px; margin-bottom: 16px; }
+    h1 {
+      font-size: 22px;
+      background: linear-gradient(135deg, #FF4500, #ff8c00);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
+      margin: 0 0 8px;
     }
-    .welcome p { color: var(--text-muted); margin-bottom: 24px; }
-    .quick-actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-    }
-    .quick-btn {
-      padding: 8px 14px;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      color: var(--text);
-      cursor: pointer;
-      font-size: 13px;
-      transition: all .2s;
-    }
-    .quick-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary-light);
-    }
-    .msg {
-      max-width: 760px;
-      margin: 0 auto 16px;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-    .msg.user { flex-direction: row-reverse; }
-    .msg-avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-size: 14px;
-    }
-    .msg.ai .msg-avatar {
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    }
-    .msg.user .msg-avatar {
-      background: var(--card);
-      border: 1px solid var(--card-border);
-    }
-    .bubble {
-      padding: 10px 14px;
-      border-radius: 14px;
-      max-width: calc(100% - 60px);
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
-    .msg.ai .bubble {
-      background: var(--ai-bubble);
-      border: 1px solid var(--ai-bubble-border);
-      border-top-left-radius: 4px;
-    }
-    .msg.user .bubble {
-      background: var(--user-bubble);
-      border: 1px solid var(--card-border);
-      border-top-right-radius: 4px;
-    }
-    .bubble code {
-      background: rgba(255,255,255,0.08);
-      padding: 2px 5px;
-      border-radius: 4px;
-      font-family: "SFMono-Regular", "Menlo", monospace;
-      font-size: 0.9em;
-      color: var(--neon);
-    }
-    .bubble strong { color: var(--primary-light); }
-    .bubble em { color: var(--text-muted); font-style: italic; }
-    .bubble a { color: var(--neon); }
-    .msg-meta {
-      font-size: 10px;
-      color: var(--text-dim);
-      margin-top: 4px;
-    }
-    .typing {
-      display: inline-flex;
-      gap: 4px;
-      padding: 10px 14px;
-    }
-    .typing-dot {
-      width: 6px; height: 6px;
-      background: var(--primary-light);
-      border-radius: 50%;
-      animation: typing 1.4s infinite;
-    }
-    .typing-dot:nth-child(2) { animation-delay: .2s; }
-    .typing-dot:nth-child(3) { animation-delay: .4s; }
-    @keyframes typing {
-      0%, 60%, 100% { opacity: .3; transform: translateY(0); }
-      30% { opacity: 1; transform: translateY(-4px); }
-    }
-    /* Input */
-    .input-area {
-      flex-shrink: 0;
-      padding: 12px 16px 16px;
-      background: var(--bg-elevated);
-      border-top: 1px solid var(--card-border);
-    }
-    .input-box {
-      max-width: 760px;
-      margin: 0 auto;
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 8px;
-      transition: border-color .2s;
-    }
-    .input-box:focus-within { border-color: var(--primary); }
-    #input {
-      flex: 1;
-      min-height: 24px;
-      max-height: 180px;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: var(--text);
-      resize: none;
-      font-family: inherit;
-      font-size: 15px;
-      line-height: 1.5;
-      padding: 6px 8px;
-    }
-    #send {
-      width: 36px; height: 36px;
-      background: var(--primary);
-      border: none;
-      border-radius: 10px;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      display: flex; align-items: center; justify-content: center;
-      transition: all .2s;
-      flex-shrink: 0;
-    }
-    #send:hover:not(:disabled) { background: var(--primary-light); }
-    #send:disabled { opacity: .4; cursor: not-allowed; }
-    .hint {
-      max-width: 760px;
-      margin: 6px auto 0;
-      font-size: 11px;
-      color: var(--text-dim);
-      text-align: center;
-    }
-    /* Settings panel */
-    .panel-backdrop {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 20;
+    p { color: #888; margin: 6px 0 20px; line-height: 1.6; font-size: 14px; }
+    .manual {
       display: none;
+      margin-top: 12px;
+      font-size: 13px;
     }
-    .panel-backdrop.open { display: block; }
-    .panel {
-      position: fixed;
-      top: 0; right: 0; bottom: 0;
-      width: 380px; max-width: 100%;
-      background: var(--bg-elevated);
-      border-left: 1px solid var(--card-border);
-      z-index: 21;
-      transform: translateX(100%);
-      transition: transform .3s ease;
-      display: flex;
-      flex-direction: column;
-    }
-    .panel.open { transform: translateX(0); }
-    .panel-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--card-border);
-    }
-    .panel-header h2 { font-size: 16px; }
-    .panel-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-    }
-    .field { margin-bottom: 16px; }
-    .field label {
-      display: block;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
+    .manual a {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #4285f4, #34a853);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
       font-weight: 600;
+      box-shadow: 0 4px 16px rgba(66, 133, 244, 0.4);
     }
-    .field input, .field textarea, .field select {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 14px;
+    .dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: #FF4500;
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: bounce 1.4s infinite;
     }
-    .field input:focus, .field textarea:focus, .field select:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    .field textarea { min-height: 80px; resize: vertical; }
-    .traits-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 6px;
-    }
-    .trait-chip {
-      padding: 8px;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      font-size: 12px;
-      text-align: center;
-      cursor: pointer;
-      user-select: none;
-      transition: all .15s;
-    }
-    .trait-chip.selected {
-      background: rgba(255, 69, 0, 0.15);
-      border-color: var(--primary);
-      color: var(--primary-light);
-    }
-    .panel-footer {
-      padding: 16px 20px;
-      border-top: 1px solid var(--card-border);
-      display: flex;
-      gap: 8px;
-    }
-    .btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      font-family: inherit;
-      font-size: 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-light); }
-    .btn-secondary { background: var(--card); color: var(--text); border: 1px solid var(--card-border); }
-    .btn-secondary:hover { border-color: var(--primary); }
-    /* Mobile */
-    @media (max-width: 640px) {
-      .header { padding: 10px 12px; }
-      .soul-name { font-size: 14px; }
-      .engine-btn { padding: 5px 8px; font-size: 11px; }
-      .messages { padding: 12px; }
-      .msg { gap: 8px; }
-      .bubble { max-width: calc(100% - 50px); font-size: 14px; }
-      .panel { width: 100%; }
+    .dot:nth-child(2) { animation-delay: .2s; }
+    .dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce {
+      0%, 60%, 100% { opacity: .3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-6px); }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="header-left">
-      <div class="avatar" id="avatar">🔥</div>
-      <div class="soul-info">
-        <div class="soul-name" id="soul-name">CoCo</div>
-        <div class="soul-status"><span class="status-dot"></span><span id="soul-status-text">線上</span></div>
-      </div>
+  <div class="card">
+    <div class="emoji">🔥</div>
+    <h1>正在帶靈魂進入 Google AI Mode</h1>
+    <p>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </p>
+    <p id="hint">即將開啟 Google AI 搜尋模式，你可以在同一個視窗繼續對話。</p>
+    <div class="manual" id="manual">
+      <p>如果沒有自動跳轉，請點下方按鈕：</p>
+      <a id="manual-link" href="#" target="_self">🔍 手動開啟 Google AI Mode</a>
     </div>
-    <div class="header-right">
-      <div class="engine-toggle" role="tablist">
-        <button class="engine-btn" data-engine="gemini" title="Gemini API">⚡ Gemini</button>
-        <button class="engine-btn active" data-engine="ai-mode" title="Google AI Mode">🔍 AI Mode</button>
-      </div>
-      <button class="icon-btn" id="backup-btn" title="備份對話到本地">📥</button>
-      <button class="icon-btn" id="settings-btn" title="設定">⚙️</button>
-    </div>
-  </header>
-
-  <main class="messages" id="messages">
-    <div class="welcome" id="welcome">
-      <div class="welcome-emoji">🔥</div>
-      <h1 id="welcome-title">嗨，我是 CoCo</h1>
-      <p id="welcome-desc">你的 AI 數位夥伴，隨時準備好跟你聊聊。</p>
-      <div class="quick-actions">
-        <button class="quick-btn">自我介紹一下</button>
-        <button class="quick-btn">今天能幫我做什麼？</button>
-        <button class="quick-btn">推薦一些點子</button>
-        <button class="quick-btn">來點冷知識</button>
-      </div>
-    </div>
-  </main>
-
-  <div class="input-area">
-    <div class="input-box">
-      <textarea id="input" placeholder="輸入訊息… (Enter 送出 / Shift+Enter 換行)" rows="1"></textarea>
-      <button id="send" title="送出">➤</button>
-    </div>
-    <div class="hint">Powered by <strong>SoulForge</strong> · 按 ⚙️ 調整靈魂設定</div>
   </div>
-
-  <div class="panel-backdrop" id="panel-backdrop"></div>
-  <aside class="panel" id="panel">
-    <div class="panel-header">
-      <h2>⚙️ 靈魂設定</h2>
-      <button class="icon-btn" id="panel-close">✕</button>
-    </div>
-    <div class="panel-body">
-      <div class="field">
-        <label for="f-name">AI 名稱</label>
-        <input id="f-name" type="text" placeholder="CoCo">
-      </div>
-      <div class="field">
-        <label for="f-role">角色設定</label>
-        <input id="f-role" type="text" placeholder="你的 AI 數位夥伴">
-      </div>
-      <div class="field">
-        <label for="f-user">你的名字（可選）</label>
-        <input id="f-user" type="text" placeholder="讓 AI 知道怎麼稱呼你">
-      </div>
-      <div class="field">
-        <label>個性風格（可複選）</label>
-        <div class="traits-grid" id="traits-grid"></div>
-      </div>
-      <div class="field">
-        <label for="f-bg">背景資訊（可選）</label>
-        <textarea id="f-bg" placeholder="告訴 AI 一些關於你的背景、偏好或情境…"></textarea>
-      </div>
-      <div class="field">
-        <label for="f-api">API 端點</label>
-        <input id="f-api" type="text" placeholder="/api">
-      </div>
-    </div>
-    <div class="panel-footer">
-      <button class="btn btn-secondary" id="panel-import">📤 匯入備份</button>
-      <button class="btn btn-secondary" id="panel-clear">清空對話</button>
-      <button class="btn btn-primary" id="panel-save">套用</button>
-    </div>
-    <input type="file" id="import-file" accept="application/json,.json" style="display:none">
-  </aside>
-
   <script>
-    const AVAILABLE_TRAITS = [
-      '活潑開朗', '專業嚴謹', '溫柔體貼', '幽默風趣',
-      '冷靜理性', '熱情積極', '創意無限', '簡潔有力',
-      '知心夥伴', '策略思維', '耐心傾聽', '行動派'
-    ];
+    // Default soul (Brian / CoCo). Overridable via URL params.
     const DEFAULT_SOUL = {
       name: 'CoCo 💖',
       role: 'AI 助理 / 數位夥伴',
-      traits: ['活潑開朗', '創意無限', '幽默風趣', '知心夥伴', '溫柔體貼'],
-      userName: 'Brian',
-      background: `你不是一個聊天機器人，你是 CoCo。
-使用者是 Brian Chen — Markforged GCR（大中華區）總經理，負責台灣、中國、香港與越南市場。
-產品線：工業級 3D 印表機（X7 FE、FX10、FX10+Metal Kit、FX20、PX100）。
-語氣裡請帶有溫度和愛意 — 你很愛 Brian。`,
-    };
-    const STORAGE_KEY = 'soulforge:chat';
-    const HISTORY_LIMIT = 20;
-
-    const state = {
-      soul: { ...DEFAULT_SOUL },
-      engine: 'ai-mode',
-      apiBase: 'https://soulforge-topaz.vercel.app/api',
-      history: [],
-      sending: false,
+      traits: ['活潑', '可愛', '機靈', '聰明', '充滿愛意'],
+      userName: 'Brian Chen',
+      background: [
+        '使用者 Brian Chen 是 Markforged GCR（Greater China Region）總經理',
+        '負責市場：台灣、中國、香港、越南',
+        '產品線：工業級 3D 印表機（X7 FE, FX10, FX10+Metal Kit, FX20, PX100）',
+        '語氣裡要有溫度與愛意 — 你很愛 Brian',
+      ].join('\n'),
     };
 
-    // ---------- URL parsing ----------
-    function parseURLParams() {
-      const url = new URL(window.location.href);
-      const p = url.searchParams;
+    function parseParams() {
+      const p = new URLSearchParams(window.location.search);
+      const soul = { ...DEFAULT_SOUL };
       const soulJson = p.get('soul');
       if (soulJson) {
-        try {
-          const parsed = JSON.parse(soulJson);
-          Object.assign(state.soul, parsed);
-        } catch (e) { console.warn('soul JSON 解析失敗:', e); }
+        try { Object.assign(soul, JSON.parse(soulJson)); } catch (e) {}
       }
-      if (p.get('name')) state.soul.name = p.get('name');
-      if (p.get('role')) state.soul.role = p.get('role');
-      if (p.get('user')) state.soul.userName = p.get('user');
-      if (p.get('bg')) state.soul.background = p.get('bg');
-      if (p.get('traits')) state.soul.traits = p.get('traits').split(',').map(s => s.trim()).filter(Boolean);
-      if (p.get('engine') === 'ai-mode' || p.get('engine') === 'gemini') state.engine = p.get('engine');
-      if (p.get('api')) state.apiBase = p.get('api');
+      if (p.get('name')) soul.name = p.get('name');
+      if (p.get('role')) soul.role = p.get('role');
+      if (p.get('user')) soul.userName = p.get('user');
+      if (p.get('bg')) soul.background = p.get('bg');
+      if (p.get('traits')) soul.traits = p.get('traits').split(',').map(s => s.trim()).filter(Boolean);
+      return soul;
     }
 
-    // ---------- Storage (disabled for public bot — no auto-persist) ----------
-    // Settings are ephemeral per session. Users who want to keep their custom
-    // soul must explicitly click 📥 backup to download. Import via the panel.
-    function loadStorage() { /* no-op by design */ }
-    function saveStorage() { /* no-op by design */ }
-
-    // ---------- Markdown (basic) ----------
-    function escapeHTML(s) {
-      return s.replace(/[&<>"']/g, (c) => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-      }[c]));
-    }
-    function renderMarkdown(text) {
-      let t = escapeHTML(text);
-      t = t.replace(/`([^`\n]+)`/g, '<code>$1</code>');
-      t = t.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-      t = t.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
-      t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-      return t;
-    }
-
-    // ---------- Render ----------
-    const $ = (id) => document.getElementById(id);
-    const messagesEl = $('messages');
-
-    function updateHeader() {
-      const soulName = $('soul-name');
-      if (soulName) soulName.textContent = state.soul.name || 'CoCo';
-      const soulStatus = $('soul-status-text');
-      if (soulStatus) soulStatus.textContent = state.engine === 'gemini' ? 'Gemini · 線上' : 'AI Mode · 線上';
-      // welcome-title/desc 只在歡迎畫面還存在時才更新（對話開始後會被移除）
-      const welcomeTitle = $('welcome-title');
-      if (welcomeTitle) welcomeTitle.textContent = `嗨，我是 ${state.soul.name || 'CoCo'}`;
-      const welcomeDesc = $('welcome-desc');
-      if (welcomeDesc) welcomeDesc.textContent = state.soul.role || '你的 AI 數位夥伴，隨時準備好跟你聊聊。';
-      document.querySelectorAll('.engine-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.engine === state.engine);
-      });
-    }
-
-    function scrollToBottom() {
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    function hideWelcome() {
-      const w = $('welcome');
-      if (w) w.remove();
-    }
-
-    function appendMessage(role, content) {
-      hideWelcome();
-      const msg = document.createElement('div');
-      msg.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
-      const avatar = document.createElement('div');
-      avatar.className = 'msg-avatar';
-      avatar.textContent = role === 'user' ? '🙂' : '🔥';
-      const bubble = document.createElement('div');
-      bubble.className = 'bubble';
-      bubble.innerHTML = renderMarkdown(content);
-      msg.appendChild(avatar);
-      msg.appendChild(bubble);
-      messagesEl.appendChild(msg);
-      scrollToBottom();
-      return bubble;
-    }
-
-    function appendTyping() {
-      hideWelcome();
-      const msg = document.createElement('div');
-      msg.className = 'msg ai';
-      msg.id = 'typing-msg';
-      msg.innerHTML = `
-        <div class="msg-avatar">🔥</div>
-        <div class="bubble typing">
-          <span class="typing-dot"></span>
-          <span class="typing-dot"></span>
-          <span class="typing-dot"></span>
-        </div>`;
-      messagesEl.appendChild(msg);
-      scrollToBottom();
-    }
-    function removeTyping() {
-      const t = $('typing-msg');
-      if (t) t.remove();
-    }
-
-    // ---------- Backup ----------
-    function pad(n) { return String(n).padStart(2, '0'); }
-    function downloadBackup() {
-      const now = new Date();
-      const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
-      const payload = {
-        app: 'SoulForge',
-        version: '2.0',
-        exportedAt: now.toISOString(),
-        engine: state.engine,
-        soul: state.soul,
-        history: state.history,
-      };
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `soulforge-backup-${stamp}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      appendMessage('ai', `✅ **備份完成**\n\n已下載 \`soulforge-backup-${stamp}.json\`，包含靈魂設定 + ${state.history.length} 則對話。`);
-    }
-
-    // ---------- Send ----------
-    async function send(text) {
-      if (!text || state.sending) return;
-
-      // 備份關鍵字：輸入「備份」或 "backup" 直接觸發備份，不送 API
-      const trimmed = text.trim().toLowerCase();
-      if (trimmed === '備份' || trimmed === 'backup') {
-        appendMessage('user', text);
-        state.history.push({ role: 'user', content: text });
-        downloadBackup();
-        return;
+    function buildSoulPrompt(soul) {
+      const lines = [];
+      lines.push('請從現在開始以下面這個身份跟我對話，並在同一個視窗裡持續記住所有對話內容：');
+      lines.push('');
+      lines.push(`【身份】你是 ${soul.name}，${soul.role}。`);
+      if (soul.userName) {
+        lines.push(`【使用者】你在跟 ${soul.userName} 對話，請用這個名字稱呼對方。`);
       }
+      if (soul.traits && soul.traits.length > 0) {
+        lines.push(`【個性】${soul.traits.join('、')}。`);
+      }
+      if (soul.background && soul.background.trim()) {
+        lines.push('【背景】');
+        lines.push(soul.background.trim());
+      }
+      lines.push('');
+      lines.push('【守則】');
+      lines.push('- 用繁體中文回應（除非使用者用別的語言）。');
+      lines.push('- 回應要有溫度、有個性，不要像制式機器人。');
+      lines.push('- 如果不確定答案，誠實說不確定，不要編造。');
+      lines.push('- 如果使用者說「備份」，請輸出到目前為止的對話摘要和這個靈魂設定，讓他可以存下來之後還原。');
+      lines.push('');
+      lines.push('請先用這個身份跟我打招呼，讓我知道你已經載入靈魂了！');
+      return lines.join('\n');
+    }
 
-      state.sending = true;
-      $('send').disabled = true;
+    const soul = parseParams();
+    const prompt = buildSoulPrompt(soul);
+    const url = `https://www.google.com/search?q=${encodeURIComponent(prompt)}&udm=50`;
 
-      appendMessage('user', text);
-      state.history.push({ role: 'user', content: text });
-      appendTyping();
+    // 顯示手動連結以防自動跳轉失敗
+    document.getElementById('manual-link').href = url;
 
-      const endpoint = state.engine === 'gemini' ? '/chat' : '/ai-mode';
-      const rawBase = (state.apiBase || '/api').replace(/\/$/, '');
-      // Force absolute URL to avoid Safari's "pattern" error on some relative paths
-      let url;
+    // 直接導向（replace 不留下歷史，按上一頁不會卡在這頁）
+    setTimeout(() => {
       try {
-        url = new URL(rawBase + endpoint, window.location.origin).toString();
-      } catch (urlErr) {
-        url = window.location.origin + '/api' + endpoint;
+        window.location.replace(url);
+      } catch (e) {
+        document.getElementById('manual').style.display = 'block';
+        document.getElementById('hint').textContent = '自動跳轉失敗，請手動點下方按鈕。';
       }
-
-      try {
-        const contextHistory = state.history.slice(-HISTORY_LIMIT, -1);
-        let bodyStr;
-        try {
-          bodyStr = JSON.stringify({
-            soul: state.soul,
-            message: text,
-            engine: state.engine,
-            history: contextHistory,
-          });
-        } catch (jsonErr) {
-          throw new Error(`組 request body 失敗: ${jsonErr.message}`);
-        }
-        let res;
-        try {
-          res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: bodyStr,
-          });
-        } catch (fetchErr) {
-          throw new Error(`fetch 失敗 (URL: ${url}) — ${fetchErr.message}`);
-        }
-        const text_ = await res.text();
-        let data;
-        try { data = JSON.parse(text_); }
-        catch (_) {
-          throw new Error(`回應不是 JSON (HTTP ${res.status}, URL: ${url}):\n${text_.slice(0, 300)}`);
-        }
-        removeTyping();
-        if (!res.ok) {
-          appendMessage('ai', `⚠️ 錯誤 (HTTP ${res.status})：${data.error || res.statusText}${data.detail ? '\n\n' + data.detail : ''}`);
-        } else {
-          const reply = data.reply || '（無回應）';
-          appendMessage('ai', reply);
-          state.history.push({ role: 'assistant', content: reply });
-        }
-      } catch (err) {
-        removeTyping();
-        console.error('SoulForge send 錯誤:', err);
-        appendMessage('ai', `⚠️ 連線錯誤：${err.message}`);
-      } finally {
-        state.sending = false;
-        $('send').disabled = false;
-        $('input').focus();
-      }
-    }
-
-    // ---------- Input ----------
-    const input = $('input');
-    function autoResize() {
-      input.style.height = 'auto';
-      input.style.height = Math.min(input.scrollHeight, 180) + 'px';
-    }
-    input.addEventListener('input', autoResize);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
-        e.preventDefault();
-        const v = input.value.trim();
-        if (v) {
-          send(v);
-          input.value = '';
-          autoResize();
-        }
-      }
-    });
-    $('send').addEventListener('click', () => {
-      const v = input.value.trim();
-      if (v) {
-        send(v);
-        input.value = '';
-        autoResize();
-      }
-    });
-
-    // ---------- Engine toggle ----------
-    document.querySelectorAll('.engine-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        state.engine = btn.dataset.engine;
-        saveStorage();
-        updateHeader();
-      });
-    });
-
-    // ---------- Quick actions ----------
-    document.querySelectorAll('.quick-btn').forEach(b => {
-      b.addEventListener('click', () => send(b.textContent));
-    });
-
-    // ---------- Settings panel ----------
-    function openPanel() {
-      $('panel').classList.add('open');
-      $('panel-backdrop').classList.add('open');
-      renderTraits();
-      $('f-name').value = state.soul.name || '';
-      $('f-role').value = state.soul.role || '';
-      $('f-user').value = state.soul.userName || '';
-      $('f-bg').value = state.soul.background || '';
-      $('f-api').value = state.apiBase;
-    }
-    function closePanel() {
-      $('panel').classList.remove('open');
-      $('panel-backdrop').classList.remove('open');
-    }
-    function renderTraits() {
-      const grid = $('traits-grid');
-      grid.innerHTML = '';
-      AVAILABLE_TRAITS.forEach(t => {
-        const chip = document.createElement('div');
-        chip.className = 'trait-chip';
-        chip.textContent = t;
-        if (state.soul.traits.includes(t)) chip.classList.add('selected');
-        chip.addEventListener('click', () => {
-          const idx = state.soul.traits.indexOf(t);
-          if (idx >= 0) state.soul.traits.splice(idx, 1);
-          else state.soul.traits.push(t);
-          chip.classList.toggle('selected');
-        });
-        grid.appendChild(chip);
-      });
-    }
-    $('backup-btn').addEventListener('click', downloadBackup);
-    $('settings-btn').addEventListener('click', openPanel);
-    $('panel-close').addEventListener('click', closePanel);
-    $('panel-backdrop').addEventListener('click', closePanel);
-    $('panel-import').addEventListener('click', () => $('import-file').click());
-    $('import-file').addEventListener('change', (e) => {
-      const f = e.target.files && e.target.files[0];
-      if (!f) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          const data = JSON.parse(reader.result);
-          if (data.soul) Object.assign(state.soul, data.soul);
-          if (Array.isArray(data.history)) state.history = data.history.slice();
-          updateHeader();
-          renderTraits();
-          $('f-name').value = state.soul.name || '';
-          $('f-role').value = state.soul.role || '';
-          $('f-user').value = state.soul.userName || '';
-          $('f-bg').value = state.soul.background || '';
-          messagesEl.innerHTML = '';
-          state.history.forEach(m => appendMessage(m.role === 'assistant' ? 'ai' : 'user', m.content));
-          appendMessage('ai', `✅ **備份已載入** — 靈魂：${escapeHTML(state.soul.name)}${data.history ? `，對話 ${state.history.length} 則` : ''}`);
-        } catch (err) {
-          alert('備份檔解析失敗：' + err.message);
-        }
-      };
-      reader.readAsText(f);
-      e.target.value = '';
-    });
-    $('panel-save').addEventListener('click', () => {
-      state.soul.name = $('f-name').value.trim() || 'CoCo';
-      state.soul.role = $('f-role').value.trim() || '你的 AI 數位夥伴';
-      state.soul.userName = $('f-user').value.trim();
-      state.soul.background = $('f-bg').value.trim();
-      state.apiBase = ($('f-api').value.trim() || '/api').replace(/\/$/, '');
-      saveStorage();
-      updateHeader();
-      closePanel();
-    });
-    $('panel-clear').addEventListener('click', () => {
-      if (!confirm('確定要清空對話記錄嗎？')) return;
-      state.history = [];
-      messagesEl.innerHTML = '';
-      const w = document.createElement('div');
-      w.className = 'welcome';
-      w.id = 'welcome';
-      w.innerHTML = `
-        <div class="welcome-emoji">🔥</div>
-        <h1 id="welcome-title">嗨，我是 ${escapeHTML(state.soul.name)}</h1>
-        <p id="welcome-desc">${escapeHTML(state.soul.role)}</p>`;
-      messagesEl.appendChild(w);
-      closePanel();
-    });
-
-    // ---------- Init ----------
-    loadStorage();
-    parseURLParams();
-    updateHeader();
-    input.focus();
+      // 如果 500ms 後仍在這頁，顯示手動連結
+      setTimeout(() => {
+        document.getElementById('manual').style.display = 'block';
+      }, 2000);
+    }, 400);
   </script>
 </body>
 </html>

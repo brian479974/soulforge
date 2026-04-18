@@ -1,150 +1,55 @@
-# 🔥 SoulForge Bot v2.0
+# 🔥 SoulForge Bot — 帶靈魂進入 Google AI Mode
 
-> AI 靈魂鍛造器 — 現在帶上了後端，可以直接跟你的靈魂對話了。
+這個 repo 有兩個獨立的東西：
 
-[soulforge.markforged.tw](https://soulforge.markforged.tw/) 的後端升級版：把原本只能「生成 System Prompt → 複製貼上」的工作流，升級成「直接在網頁上跟 AI 靈魂對話」。
+1. **主站** [`soulforge.markforged.tw`](https://soulforge.markforged.tw) — 靈魂鍛造器（React app 在 `soulforge-v2/`）
+2. **Bot** [`soulforge-topaz.vercel.app/chat`](https://soulforge-topaz.vercel.app/chat) — 一個**純前端導向頁**：把靈魂打包成系統提示，自動帶進 Google AI 搜尋模式（`udm=50`），使用者在 Google 自己的視窗裡連續對話。
 
-## ✨ 新功能
+## 為什麼不自己做後端？
 
-- **`/chat` 全螢幕聊天頁面** — 沉浸式 AI 對話體驗
-- **嵌入式 Widget** — 一行 `<script>` 嵌入任何網頁
-- **AI 引擎** — Google AI Mode (SERP) 🔍（Gemini API 程式碼已內建但目前停用，可日後開啟）
-- **靈魂即時調整** — 名字、角色、個性、背景通通可改
-- **URL 參數帶入** — `?name=CoCo&user=Brian&engine=gemini`
-- **對話記憶** — 最近 20 則訊息作為上下文
+**Google AI Mode 本身就是最好的聊天後端**：
+- 它是真正的 LLM，有多輪對話、有記憶
+- 整合 Google 搜尋，可以查到最新資訊
+- 完全免費、不用 API key、不用付費 tier
+- 會話狀態由 Google 自己維護，我們完全不用碰
 
-## 📐 架構
+所以我們只做一件事：**把靈魂翻譯成 Google AI Mode 看得懂的開場指令**，剩下讓 Google 處理。
+
+## `/chat` 怎麼用
 
 ```
-soulforge/
-├── api/
-│   ├── chat.js             # Gemini API 端點 (POST /api/chat)
-│   ├── ai-mode.js          # Google AI Mode 端點 (POST /api/ai-mode)
-│   └── lib/
-│       └── soul-engine.js  # 靈魂組裝核心
-├── public/
-│   ├── chat.html           # 全螢幕聊天頁 (/chat)
-│   └── widget.js           # 嵌入式 Widget
-├── vercel.json             # Vercel 部署設定
-└── package.json
+https://soulforge-topaz.vercel.app/chat
+https://soulforge-topaz.vercel.app/chat?name=Alice&user=Brian
+https://soulforge-topaz.vercel.app/chat?soul={"name":"Alice","traits":["幽默風趣"]}
 ```
 
-## 🚀 部署到 Vercel
+進去後 0.4 秒自動跳轉到 Google AI Mode，靈魂已包在第一則查詢裡。使用者接著就在 Google 那個視窗一直問問題。
 
-### 1. Import repo
+## 支援的 URL 參數
 
-到 [vercel.com/new](https://vercel.com/new) import 這個 repo。
-
-### 2. 設定環境變數
-
-在 Vercel Dashboard → Settings → Environment Variables 加上：
-
-| 變數名 | 必填 | 說明 |
+| 參數 | 範例 | 對應 |
 |---|---|---|
-| `SERP_API_KEY` | ✅ | SearchAPI 或 SerpAPI 金鑰（AI Mode 引擎需要） |
-| `SERP_PROVIDER` | 選配 | `searchapi` (預設) 或 `serpapi` |
-| `GEMINI_API_KEY` | ⛔ 停用 | Gemini 端點 (`/api/chat`) 程式碼保留但 UI 隱藏中。日後要重新啟用再填，並把 chat.html / widget.js 的 engine-toggle `display:none` 拿掉即可 |
+| `name` | `CoCo` | AI 名稱 |
+| `role` | `AI 助理` | 角色定位 |
+| `user` | `Brian` | 使用者名字 |
+| `bg` | `Markforged 總經理...` | 背景資訊 |
+| `traits` | `活潑,幽默` | 個性特質（逗號分隔） |
+| `soul` | `{"name":"X",...}` | 完整 JSON 靈魂（覆蓋以上） |
 
-### 3. 部署
+沒帶任何參數時載入 Brian 的預設 CoCo。
 
-push 到 branch → Vercel 自動部署。
+## 部署
 
-### 4. 綁定域名（選配）
+- **主站**：push main → GitHub Actions build `soulforge-v2/` → GH Pages
+- **Bot**：push main → Vercel 自動部署 `chat.html` + `vercel.json`（純靜態，沒 serverless function）
 
-Vercel Dashboard → Settings → Domains。如果要用 `soulforge.markforged.tw`，請先確認 GitHub Pages 的 DNS 已移除。建議用子域名如 `bot.soulforge.markforged.tw` 避免衝突。
+不再需要任何環境變數。可以把 Vercel 上的 `SERP_API_KEY` / `GEMINI_API_KEY` 全部撤掉。
 
-## 💬 使用方式
+## 架構歷史
 
-### A. 直接開 `/chat`
+v2.0 最初做了一個完整的 Serverless Bot 後端（Gemini API + Google AI Mode via SearchAPI），但發現：
+- SearchAPI 單次查詢沒記憶，聊天體驗差
+- Gemini API 雖好但要付費、要管 key
+- 直接用 Google AI Mode 本尊，比我們自己 proxy 任何 API 都強
 
-```
-https://your-domain.com/chat
-https://your-domain.com/chat?name=CoCo&user=Brian&engine=gemini
-https://your-domain.com/chat?soul={"name":"Alice","traits":["幽默風趣"]}
-```
-
-### B. 嵌入 Widget
-
-```html
-<script src="https://your-domain.com/widget.js" data-api="/api"></script>
-```
-
-進階設定：
-
-```html
-<script>
-  window.SOULFORGE_CONFIG = {
-    api: 'https://your-domain.com/api',
-    engine: 'gemini',
-    soul: {
-      name: 'CoCo',
-      role: '你的 AI 數位夥伴',
-      traits: ['活潑開朗', '知心夥伴'],
-      userName: 'Brian',
-      background: '喜歡科技、熱愛設計',
-    }
-  };
-</script>
-<script src="https://your-domain.com/widget.js"></script>
-```
-
-JavaScript API：
-
-```js
-SoulForge.open();                          // 打開 widget
-SoulForge.close();                         // 關閉
-SoulForge.setSoul({ name: 'Alice' });      // 更新靈魂
-SoulForge.setEngine('ai-mode');            // 切換引擎
-```
-
-## 🔌 API
-
-### `POST /api/chat` — Gemini API
-
-```json
-{
-  "soul": { "name": "CoCo", "role": "...", "traits": [...], "userName": "", "background": "" },
-  "message": "你好",
-  "history": [{ "role": "user", "content": "..." }, { "role": "assistant", "content": "..." }]
-}
-```
-
-回應：
-
-```json
-{ "reply": "嗨～", "engine": "gemini", "model": "gemini-2.0-flash" }
-```
-
-### `POST /api/ai-mode` — Google AI Mode (SERP)
-
-同上格式，回應：
-
-```json
-{ "reply": "...", "engine": "ai-mode", "provider": "searchapi" }
-```
-
-## 🧪 本地開發
-
-```bash
-npm i -g vercel
-vercel link
-vercel env pull .env.local
-vercel dev
-```
-
-開 `http://localhost:3000/chat`。
-
-## 📝 版本
-
-- **v2.0.0** — 新增 Web Bot 後端 (Gemini + AI Mode)、全螢幕聊天頁、嵌入式 Widget
-- v1.x — 靜態 System Prompt 生成器（見 [CHANGELOG.md](./CHANGELOG.md)）
-
-## 🔐 隱私
-
-- API Key 全部走 `process.env`，不會出現在前端 bundle
-- 對話記錄只存在使用者瀏覽器 localStorage，伺服器不留存
-- Gemini 和 SERP 供應商有各自的資料使用政策，請自行評估
-
-## 📄 License
-
-MIT — Brian Chen
+v2.1 起，Bot 回歸最簡單的定位：**一個帶靈魂的 Google AI Mode 快速入口**。
