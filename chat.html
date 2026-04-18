@@ -537,10 +537,15 @@
     const messagesEl = $('messages');
 
     function updateHeader() {
-      $('soul-name').textContent = state.soul.name || 'CoCo';
-      $('soul-status-text').textContent = state.engine === 'gemini' ? 'Gemini · 線上' : 'AI Mode · 線上';
-      $('welcome-title').textContent = `嗨，我是 ${state.soul.name || 'CoCo'}`;
-      $('welcome-desc').textContent = state.soul.role || '你的 AI 數位夥伴，隨時準備好跟你聊聊。';
+      const soulName = $('soul-name');
+      if (soulName) soulName.textContent = state.soul.name || 'CoCo';
+      const soulStatus = $('soul-status-text');
+      if (soulStatus) soulStatus.textContent = state.engine === 'gemini' ? 'Gemini · 線上' : 'AI Mode · 線上';
+      // welcome-title/desc 只在歡迎畫面還存在時才更新（對話開始後會被移除）
+      const welcomeTitle = $('welcome-title');
+      if (welcomeTitle) welcomeTitle.textContent = `嗨，我是 ${state.soul.name || 'CoCo'}`;
+      const welcomeDesc = $('welcome-desc');
+      if (welcomeDesc) welcomeDesc.textContent = state.soul.role || '你的 AI 數位夥伴，隨時準備好跟你聊聊。';
       document.querySelectorAll('.engine-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.engine === state.engine);
       });
