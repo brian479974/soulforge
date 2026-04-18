@@ -683,7 +683,10 @@
         }
         removeTyping();
         if (!res.ok) {
-          appendMessage('ai', `⚠️ 錯誤 (HTTP ${res.status})：${data.error || res.statusText}${data.detail ? '\n\n' + data.detail : ''}`);
+          const extra = [];
+          if (data.detail) extra.push(data.detail);
+          if (data.debug) extra.push('DEBUG: ' + JSON.stringify(data.debug));
+          appendMessage('ai', `⚠️ 錯誤 (HTTP ${res.status})：${data.error || res.statusText}${extra.length ? '\n\n' + extra.join('\n\n') : ''}`);
         } else {
           const reply = data.reply || '（無回應）';
           appendMessage('ai', reply);
