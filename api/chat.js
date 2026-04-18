@@ -11,7 +11,16 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: '僅支援 POST 請求' });
 
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY 未設定' });
+  if (!apiKey) {
+    // Diagnostic: 列出此 function 實際看得到的相關 env var key 名（不露值）
+    const seen = Object.keys(process.env).filter(k =>
+      /GEMINI|SERP|API_KEY|TOKEN/i.test(k)
+    );
+    return res.status(500).json({
+      error: 'GEMINI_API_KEY 未設定',
+      debug: { envKeysSeen: seen, functionDeployedAt: new Date().toISOString() },
+    });
+  }
 
   try {
     const { systemPrompt, message, history } = parseSoulFromRequest(req.body);
