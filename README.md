@@ -8,7 +8,7 @@
 
 - **`/chat` 全螢幕聊天頁面** — 沉浸式 AI 對話體驗
 - **嵌入式 Widget** — 一行 `<script>` 嵌入任何網頁
-- **雙引擎切換** — Gemini API 直連 ⚡ / Google AI Mode 🔍
+- **AI 引擎** — Google AI Mode (SERP) 🔍（Gemini API 程式碼已內建但目前停用，可日後開啟）
 - **靈魂即時調整** — 名字、角色、個性、背景通通可改
 - **URL 參數帶入** — `?name=CoCo&user=Brian&engine=gemini`
 - **對話記憶** — 最近 20 則訊息作為上下文
@@ -41,9 +41,9 @@ soulforge/
 
 | 變數名 | 必填 | 說明 |
 |---|---|---|
-| `GEMINI_API_KEY` | ✅ | 從 [aistudio.google.com](https://aistudio.google.com/apikey) 取得 |
-| `SERP_API_KEY` | 選配 | SearchAPI 或 SerpAPI 金鑰（啟用 AI Mode 引擎時需要） |
+| `SERP_API_KEY` | ✅ | SearchAPI 或 SerpAPI 金鑰（AI Mode 引擎需要） |
 | `SERP_PROVIDER` | 選配 | `searchapi` (預設) 或 `serpapi` |
+| `GEMINI_API_KEY` | ⛔ 停用 | Gemini 端點 (`/api/chat`) 程式碼保留但 UI 隱藏中。日後要重新啟用再填，並把 chat.html / widget.js 的 engine-toggle `display:none` 拿掉即可 |
 
 ### 3. 部署
 

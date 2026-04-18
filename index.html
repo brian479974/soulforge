@@ -1129,10 +1129,6 @@
           <button class="btn btn-launch" onclick="launchWithSoul('claude')">&#x1F9E0; Claude</button>
           <button class="btn btn-launch" onclick="launchWithSoul('gemini')">&#x2728; Gemini</button>
           <button class="btn btn-launch" onclick="launchWithSoul('meta')">&#x1F999; Meta AI</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('ernie')">&#x1F9E7; 文心一言</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('tongyi')">&#x1F30A; 通義千問</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('kimi')">&#x1F319; Kimi</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('mistral')">&#x1F32C;&#xFE0F; Mistral</button>
           <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;" data-i18n="btn_export">&#x1F4BE; 匯出靈魂 .json</button>
         </div>
 
@@ -1917,11 +1913,7 @@
       copilot: 'Copilot',
       claude: 'Claude',
       gemini: 'Gemini',
-      meta: 'Meta AI',
-      ernie: '文心一言',
-      tongyi: '通義千問',
-      kimi: 'Kimi',
-      mistral: 'Mistral'
+      meta: 'Meta AI'
     };
 
     function buildPlatformURL(platform, prompt) {
@@ -1945,21 +1937,13 @@
           return `https://gemini.google.com/app?q=${encoded}`;
         case 'meta':
           return `https://www.meta.ai/?q=${encoded}`;
-        case 'ernie':
-          return `https://yiyan.baidu.com/`;
-        case 'tongyi':
-          return `https://tongyi.aliyun.com/qianwen/`;
-        case 'kimi':
-          return `https://kimi.moonshot.cn/`;
-        case 'mistral':
-          return `https://chat.mistral.ai/chat`;
         default:
           return '';
       }
     }
 
     // Platforms that need login (q param may not survive redirect)
-    const CLIPBOARD_FIRST_PLATFORMS = ['doubao','deepseek','gemini','copilot','claude','meta','ernie','tongyi','kimi'];
+    const CLIPBOARD_FIRST_PLATFORMS = ['doubao','deepseek','gemini','copilot','claude','meta'];
 
     function launchWithSoul(platform) {
       const prompt = buildSoulPrompt();

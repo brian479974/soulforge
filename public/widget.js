@@ -7,7 +7,7 @@
   const defaults = {
     api: (script && script.getAttribute('data-api')) || '/api',
     chat: (script && script.getAttribute('data-chat')) || '/chat',
-    engine: (script && script.getAttribute('data-engine')) || 'gemini',
+    engine: (script && script.getAttribute('data-engine')) || 'ai-mode',
     soul: null,
     title: 'SoulForge',
     position: 'bottom-right',
@@ -257,10 +257,11 @@
           </div>
         </div>
         <div class="sf-hr">
-          <div class="sf-toggle" id="sf-toggle">
-            <button class="sf-etab sf-active" data-engine="gemini">⚡</button>
-            <button class="sf-etab" data-engine="ai-mode">🔍</button>
+          <div class="sf-toggle" id="sf-toggle" style="display:none" data-hidden="v2.0">
+            <button class="sf-etab" data-engine="gemini">⚡</button>
+            <button class="sf-etab sf-active" data-engine="ai-mode">🔍</button>
           </div>
+          <button class="sf-icon" id="sf-backup" title="備份對話到本地">📥</button>
           <button class="sf-icon" id="sf-close" title="關閉">✕</button>
         </div>
       </div>
@@ -342,8 +343,41 @@
     if (t) t.remove();
   }
 
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function downloadBackup() {
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const payload = {
+      app: 'SoulForge',
+      version: '2.0',
+      exportedAt: now.toISOString(),
+      engine: state.engine,
+      soul: state.soul,
+      history: state.history,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `soulforge-backup-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    appendMsg('ai', `✅ **備份完成**\n\n已下載 \`soulforge-backup-${stamp}.json\`（${state.history.length} 則對話）`);
+  }
+
   async function send(text) {
     if (!text || state.sending) return;
+
+    const trimmed = text.trim().toLowerCase();
+    if (trimmed === '備份' || trimmed === 'backup') {
+      appendMsg('user', text);
+      state.history.push({ role: 'user', content: text });
+      downloadBackup();
+      return;
+    }
+
     state.sending = true;
     sendBtn.disabled = true;
     appendMsg('user', text);
