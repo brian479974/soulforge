@@ -513,6 +513,40 @@
       box-shadow: 0 0 30px rgba(66, 133, 244, 0.5);
     }
 
+    /* v2.0 — SoulForge Bot 直連聊天 */
+    .btn-soulforge-bot {
+      background: linear-gradient(135deg, #FF4500, #ff8c00);
+      color: #fff;
+      font-size: 1rem;
+      padding: 16px 24px;
+      box-shadow: 0 0 24px rgba(255, 69, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 140, 0, 0.6);
+    }
+    .btn-soulforge-bot:hover {
+      box-shadow: 0 0 36px rgba(255, 69, 0, 0.7);
+      transform: translateY(-1px);
+    }
+    .btn-soulforge-bot::after {
+      content: 'NEW';
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: var(--neon);
+      color: #000;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 3px;
+      letter-spacing: 0.6px;
+      box-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+    }
+    [data-theme="light"] .btn-soulforge-bot {
+      background: linear-gradient(135deg, #FF4500, #ff8c00);
+      color: #fff;
+    }
+
     .btn-danger {
       background: #1a1a1a;
       border: 1px solid #ff3333;
@@ -1083,6 +1117,7 @@
 
         <!-- Launch Buttons -->
         <p class="section-label" data-i18n="launch_label">&#x1F680; 帶靈魂開啟 AI</p>
+        <button class="btn btn-soulforge-bot" style="width:100%; margin-bottom: 12px;" onclick="launchSoulForgeBot()">&#x1F525; 直接跟 SoulForge Bot 對話（Web Bot v2.0）</button>
         <button class="btn btn-google-big" style="width:100%; margin-bottom: 12px;" onclick="launchGoogle()" data-i18n="btn_google">&#x1F50D; 一鍵開啟 Google AI 搜尋模式</button>
         <div class="btn-grid-2">
           <button class="btn btn-launch" onclick="launchWithSoul('chatgpt')">&#x1F30F; ChatGPT</button>
@@ -1094,10 +1129,6 @@
           <button class="btn btn-launch" onclick="launchWithSoul('claude')">&#x1F9E0; Claude</button>
           <button class="btn btn-launch" onclick="launchWithSoul('gemini')">&#x2728; Gemini</button>
           <button class="btn btn-launch" onclick="launchWithSoul('meta')">&#x1F999; Meta AI</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('ernie')">&#x1F9E7; 文心一言</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('tongyi')">&#x1F30A; 通義千問</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('kimi')">&#x1F319; Kimi</button>
-          <button class="btn btn-launch" onclick="launchWithSoul('mistral')">&#x1F32C;&#xFE0F; Mistral</button>
           <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column: 1 / -1;" data-i18n="btn_export">&#x1F4BE; 匯出靈魂 .json</button>
         </div>
 
@@ -1852,6 +1883,26 @@
       window.open(url, '_blank');
     }
 
+    // v2.0 — 打開 SoulForge Bot 聊天頁（/chat），帶入當前靈魂設定
+    function launchSoulForgeBot() {
+      const params = new URLSearchParams();
+      const n = (soulName && soulName.value || '').trim();
+      const r = (soulRole && soulRole.value || '').trim();
+      const u = (userName && userName.value || '').trim();
+      const bg = (companyDesc && companyDesc.value || '').trim();
+      if (n) params.set('name', n);
+      if (r) params.set('role', r);
+      if (u) params.set('user', u);
+      if (bg) params.set('bg', bg);
+      try {
+        if (typeof selectedTraits !== 'undefined' && selectedTraits.size > 0) {
+          params.set('traits', getTraitLabels().join(','));
+        }
+      } catch (e) {}
+      const url = '/chat' + (params.toString() ? '?' + params.toString() : '');
+      window.open(url, '_blank');
+    }
+
     // --- Other Platforms ---
     const AI_LABELS = {
       chatgpt: 'ChatGPT',
@@ -1862,11 +1913,7 @@
       copilot: 'Copilot',
       claude: 'Claude',
       gemini: 'Gemini',
-      meta: 'Meta AI',
-      ernie: '文心一言',
-      tongyi: '通義千問',
-      kimi: 'Kimi',
-      mistral: 'Mistral'
+      meta: 'Meta AI'
     };
 
     function buildPlatformURL(platform, prompt) {
@@ -1890,21 +1937,13 @@
           return `https://gemini.google.com/app?q=${encoded}`;
         case 'meta':
           return `https://www.meta.ai/?q=${encoded}`;
-        case 'ernie':
-          return `https://yiyan.baidu.com/`;
-        case 'tongyi':
-          return `https://tongyi.aliyun.com/qianwen/`;
-        case 'kimi':
-          return `https://kimi.moonshot.cn/`;
-        case 'mistral':
-          return `https://chat.mistral.ai/chat`;
         default:
           return '';
       }
     }
 
     // Platforms that need login (q param may not survive redirect)
-    const CLIPBOARD_FIRST_PLATFORMS = ['doubao','deepseek','gemini','copilot','claude','meta','ernie','tongyi','kimi'];
+    const CLIPBOARD_FIRST_PLATFORMS = ['doubao','deepseek','gemini','copilot','claude','meta'];
 
     function launchWithSoul(platform) {
       const prompt = buildSoulPrompt();
