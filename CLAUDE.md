@@ -29,6 +29,7 @@ Modifying `soulforge-v2/**` changes the live site. Users see those changes. Root
 - **Embedded / cross-origin components use absolute URLs, not relative paths.** `chat.html` and `widget.js` live at Vercel but can be opened from anywhere — relative `/api/...` will 405 on GH Pages.
 - **Bot-specific code stays at repo root** (Vercel needs `api/` at root). Do not move it under `soulforge-v2/` or similar — Vercel won't detect functions.
 - **Don't assume `index.html` at root is what users see.** It is not. The deploy workflow uploads `soulforge-v2/dist`, nothing else.
+- **Do not truncate `systemPrompt` when building API queries.** The Markforged / Brian background info is in the full system prompt — if you `.slice(0, 3 lines)` or similar, CoCo loses all context and the user will call it out. Pass the full prompt up to safe URL/token limits (~1600 chars for Google AI Mode GET).
 
 ### Communication rules (user feedback — "你解決問題不是帶來問題")
 
