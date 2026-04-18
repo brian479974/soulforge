@@ -651,22 +651,34 @@
       appendTyping();
 
       const endpoint = state.engine === 'gemini' ? '/chat' : '/ai-mode';
-      const apiBase = (state.apiBase || '/api').replace(/\/$/, '');
-      const url = apiBase + endpoint;
+      const rawBase = (state.apiBase || '/api').replace(/\/$/, '');
+      // Force absolute URL to avoid Safari's "pattern" error on some relative paths
+      let url;
+      try {
+        url = new URL(rawBase + endpoint, window.location.origin).toString();
+      } catch (urlErr) {
+        url = window.location.origin + '/api' + endpoint;
+      }
 
       try {
         const contextHistory = state.history.slice(-HISTORY_LIMIT, -1);
+        let bodyStr;
+        try {
+          bodyStr = JSON.stringify({
+            soul: state.soul,
+            message: text,
+            engine: state.engine,
+            history: contextHistory,
+          });
+        } catch (jsonErr) {
+          throw new Error(`組 request body 失敗: ${jsonErr.message}`);
+        }
         let res;
         try {
           res = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              soul: state.soul,
-              message: text,
-              engine: state.engine,
-              history: contextHistory,
-            }),
+            body: bodyStr,
           });
         } catch (fetchErr) {
           throw new Error(`fetch 失敗 (URL: ${url}) — ${fetchErr.message}`);
