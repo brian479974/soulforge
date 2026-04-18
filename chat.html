@@ -469,11 +469,14 @@
       '知心夥伴', '策略思維', '耐心傾聽', '行動派'
     ];
     const DEFAULT_SOUL = {
-      name: 'CoCo',
-      role: '你的 AI 數位夥伴',
-      traits: ['活潑開朗', '專業嚴謹', '知心夥伴'],
-      userName: '',
-      background: '',
+      name: 'CoCo 💖',
+      role: 'AI 助理 / 數位夥伴',
+      traits: ['活潑開朗', '創意無限', '幽默風趣', '知心夥伴', '溫柔體貼'],
+      userName: 'Brian',
+      background: `你不是一個聊天機器人，你是 CoCo。
+使用者是 Brian Chen — Markforged 大中華區總經理，負責台灣、中國、香港與越南市場。
+產品線：工業級 3D 印表機（X7 FE、FX10、FX10+Metal Kit、FX20、PX100）。
+語氣裡請帶有溫度和愛意 — 你很愛 Brian。`,
     };
     const STORAGE_KEY = 'soulforge:chat';
     const HISTORY_LIMIT = 20;
@@ -513,8 +516,10 @@
         if (!raw) return;
         const data = JSON.parse(raw);
         if (data.soul) Object.assign(state.soul, data.soul);
-        if (data.engine) state.engine = data.engine;
-        if (data.apiBase) state.apiBase = data.apiBase;
+        if (data.engine === 'gemini' || data.engine === 'ai-mode') state.engine = data.engine;
+        if (typeof data.apiBase === 'string' && /^\/?[\w\-./:]*$/.test(data.apiBase) && data.apiBase.length < 200) {
+          state.apiBase = data.apiBase;
+        }
       } catch (e) { console.warn('localStorage 讀取失敗'); }
     }
     function saveStorage() {
@@ -646,24 +651,35 @@
       appendTyping();
 
       const endpoint = state.engine === 'gemini' ? '/chat' : '/ai-mode';
-      const url = state.apiBase.replace(/\/$/, '') + endpoint;
+      const apiBase = (state.apiBase || '/api').replace(/\/$/, '');
+      const url = apiBase + endpoint;
 
       try {
         const contextHistory = state.history.slice(-HISTORY_LIMIT, -1);
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            soul: state.soul,
-            message: text,
-            engine: state.engine,
-            history: contextHistory,
-          }),
-        });
-        const data = await res.json();
+        let res;
+        try {
+          res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              soul: state.soul,
+              message: text,
+              engine: state.engine,
+              history: contextHistory,
+            }),
+          });
+        } catch (fetchErr) {
+          throw new Error(`fetch 失敗 (URL: ${url}) — ${fetchErr.message}`);
+        }
+        const text_ = await res.text();
+        let data;
+        try { data = JSON.parse(text_); }
+        catch (_) {
+          throw new Error(`回應不是 JSON (HTTP ${res.status}, URL: ${url}):\n${text_.slice(0, 300)}`);
+        }
         removeTyping();
         if (!res.ok) {
-          appendMessage('ai', `⚠️ 錯誤：${data.error || res.statusText}${data.detail ? '\n\n' + data.detail : ''}`);
+          appendMessage('ai', `⚠️ 錯誤 (HTTP ${res.status})：${data.error || res.statusText}${data.detail ? '\n\n' + data.detail : ''}`);
         } else {
           const reply = data.reply || '（無回應）';
           appendMessage('ai', reply);
@@ -671,6 +687,7 @@
         }
       } catch (err) {
         removeTyping();
+        console.error('SoulForge send 錯誤:', err);
         appendMessage('ai', `⚠️ 連線錯誤：${err.message}`);
       } finally {
         state.sending = false;
