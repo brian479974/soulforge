@@ -1,6 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/", "destination": "/chat.html" },
-    { "source": "/chat", "destination": "/chat.html" }
-  ]
-}
