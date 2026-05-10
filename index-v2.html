@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://soulforge.markforged.tw/index-v2.html">
+<title>SoulForge v2 · Forged Intelligence Console</title>
+<meta name="description" content="SoulForge v2 redesign mockup · Forged Intelligence Console · Linear-inspired dark command center with Markforged yellow accent">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sf-black:#08090a;
+  --sf-graphite:#0f1011;
+  --sf-panel:#161718;
+  --sf-elev:#1c1d1f;
+  --sf-border:#2a2d31;
+  --sf-border-soft:#1f2225;
+  --sf-text:#f7f8f8;
+  --sf-text-soft:#d8dadd;
+  --sf-muted:#8a8f98;
+  --sf-faint:#62666d;
+  --sf-forge-yellow:#ffc500;
+  --sf-molten-gold:#f6b800;
+  --sf-ember:#ff7a1a;
+  --sf-success:#3fcf8e;
+  --font-display:'Inter','Noto Sans TC',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-ui:'Inter','Noto Sans TC',-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --r-card:14px;
+  --r-input:8px;
+  --r-pill:9999px;
+  --space-section:72px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;background:var(--sf-black);}
+body{
+  background:var(--sf-black);
+  color:var(--sf-text);
+  font-family:var(--font-ui);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  letter-spacing:-0.005em;
+}
+a{color:inherit;text-decoration:none;}
+
+/* ===== Top Bar ===== */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(8,9,10,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--sf-border-soft);
+}
+.topbar-inner{
+  max-width:1280px;margin:0 auto;
+  padding:14px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+}
+.brand{
+  display:flex;align-items:center;gap:11px;
+  font-weight:600;font-size:16px;letter-spacing:-0.02em;color:var(--sf-text);
+}
+.brand-mark{
+  width:26px;height:26px;border-radius:7px;
+  background:linear-gradient(135deg,var(--sf-forge-yellow) 0%,var(--sf-molten-gold) 50%,var(--sf-ember) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:var(--sf-black);font-size:12px;
+}
+.brand small{font-size:11px;color:var(--sf-muted);font-weight:500;letter-spacing:0.04em;}
+.topbar-tools{display:flex;align-items:center;gap:8px;}
+.tool-btn{
+  background:transparent;color:var(--sf-text-soft);
+  font-family:var(--font-ui);font-size:13px;font-weight:500;
+  padding:8px 14px;border-radius:var(--r-pill);
+  border:1px solid var(--sf-border);cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.tool-btn:hover{background:var(--sf-panel);border-color:var(--sf-muted);color:var(--sf-text);}
+.tool-btn.primary{
+  background:var(--sf-forge-yellow);color:var(--sf-black);border-color:var(--sf-forge-yellow);font-weight:600;
+}
+.tool-btn.primary:hover{background:var(--sf-molten-gold);border-color:var(--sf-molten-gold);}
+.lang-switch{display:flex;gap:2px;background:var(--sf-panel);padding:2px;border-radius:var(--r-pill);border:1px solid var(--sf-border);}
+.lang-switch button{
+  background:transparent;color:var(--sf-muted);
+  font-family:var(--font-ui);font-size:12px;font-weight:500;
+  padding:5px 11px;border-radius:var(--r-pill);border:none;cursor:pointer;
+  transition:background .15s,color .15s;
+}
+.lang-switch button.active{background:var(--sf-elev);color:var(--sf-text);}
+
+/* ===== Hero ===== */
+.hero{
+  padding:80px 28px 64px;
+  max-width:1280px;margin:0 auto;
+  text-align:center;
+  position:relative;
+}
+.hero::before{
+  content:"";position:absolute;
+  top:-50px;left:50%;transform:translateX(-50%);
+  width:800px;height:400px;
+  background:radial-gradient(ellipse,rgba(255,197,0,0.08) 0%,rgba(8,9,10,0) 60%);
+  pointer-events:none;z-index:-1;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--font-mono);font-size:11.5px;font-weight:500;
+  color:var(--sf-forge-yellow);letter-spacing:0.18em;text-transform:uppercase;
+  margin-bottom:24px;
+  padding:7px 16px;
+  background:rgba(255,197,0,0.06);
+  border:1px solid rgba(255,197,0,0.18);
+  border-radius:var(--r-pill);
+}
+.hero-eyebrow .dot{
+  width:6px;height:6px;border-radius:50%;background:var(--sf-forge-yellow);
+  box-shadow:0 0 10px var(--sf-forge-yellow);
+}
+.hero h1{
+  font-family:var(--font-display);
+  font-size:68px;font-weight:600;line-height:1.02;
+  letter-spacing:-0.035em;color:var(--sf-text);
+  max-width:880px;margin:0 auto 24px;
+}
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--sf-forge-yellow) 0%,var(--sf-molten-gold) 60%,var(--sf-ember) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:600;
+}
+.hero-sub{
+  font-size:18px;line-height:1.55;color:var(--sf-text-soft);
+  max-width:620px;margin:0 auto 36px;font-weight:400;
+}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--sf-forge-yellow);color:var(--sf-black);
+  font-family:var(--font-ui);font-size:15px;font-weight:600;
+  padding:14px 28px;border-radius:var(--r-pill);border:none;cursor:pointer;
+  transition:transform .15s,background .15s,box-shadow .15s;
+  box-shadow:0 0 0 0 rgba(255,197,0,0);
+}
+.btn-primary:hover{
+  background:var(--sf-molten-gold);
+  transform:translateY(-1px);
+  box-shadow:0 8px 24px -8px rgba(255,197,0,0.4);
+}
+.btn-secondary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--sf-panel);color:var(--sf-text);
+  font-family:var(--font-ui);font-size:15px;font-weight:500;
+  padding:13px 28px;border-radius:var(--r-pill);
+  border:1px solid var(--sf-border);cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.btn-secondary:hover{background:var(--sf-elev);border-color:var(--sf-muted);}
+
+/* ===== Workspace (2-col) ===== */
+.workspace{
+  max-width:1280px;margin:0 auto;
+  padding:24px 28px var(--space-section);
+  display:grid;grid-template-columns:380px 1fr;gap:24px;
+}
+.panel{
+  background:var(--sf-panel);
+  border:1px solid var(--sf-border-soft);
+  border-radius:var(--r-card);
+  padding:24px;
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;padding-bottom:14px;
+  border-bottom:1px solid var(--sf-border-soft);
+}
+.panel-title{
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
+  color:var(--sf-muted);letter-spacing:0.16em;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-title .seq{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:5px;
+  background:var(--sf-elev);color:var(--sf-forge-yellow);
+  font-size:10px;font-weight:600;font-family:var(--font-mono);
+}
+
+/* === Preview Panel (left) === */
+.preview-panel{position:sticky;top:84px;align-self:start;}
+.soul-card{
+  background:linear-gradient(180deg,var(--sf-elev) 0%,var(--sf-graphite) 100%);
+  border:1px solid var(--sf-border);
+  border-radius:12px;
+  padding:24px;margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+.soul-card::before{
+  content:"";position:absolute;top:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--sf-forge-yellow),transparent);
+}
+.soul-card .name-row{
+  display:flex;align-items:center;gap:14px;margin-bottom:18px;
+}
+.soul-avatar{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,var(--sf-forge-yellow),var(--sf-ember));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--sf-black);
+  flex-shrink:0;
+}
+.soul-name-block{flex:1;min-width:0;}
+.soul-name{font-family:var(--font-display);font-size:20px;font-weight:600;letter-spacing:-0.01em;color:var(--sf-text);margin-bottom:2px;}
+.soul-role{font-size:12.5px;color:var(--sf-muted);}
+.soul-attr{margin-bottom:14px;}
+.soul-attr-label{
+  font-family:var(--font-mono);font-size:10.5px;color:var(--sf-faint);
+  letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px;
+}
+.soul-attr-value{font-size:13.5px;color:var(--sf-text-soft);line-height:1.5;}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{
+  display:inline-flex;align-items:center;
+  background:var(--sf-panel);border:1px solid var(--sf-border);
+  color:var(--sf-text-soft);
+  padding:4px 10px;border-radius:var(--r-pill);
+  font-size:11.5px;font-weight:500;
+}
+.chip.active{background:rgba(255,197,0,0.1);border-color:rgba(255,197,0,0.4);color:var(--sf-forge-yellow);}
+
+/* readiness meter */
+.readiness{margin-top:6px;}
+.readiness-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.readiness-label{font-family:var(--font-mono);font-size:11px;color:var(--sf-muted);letter-spacing:0.12em;text-transform:uppercase;}
+.readiness-value{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--sf-forge-yellow);}
+.readiness-track{height:6px;background:var(--sf-graphite);border-radius:var(--r-pill);overflow:hidden;border:1px solid var(--sf-border-soft);}
+.readiness-fill{height:100%;width:78%;background:linear-gradient(90deg,var(--sf-forge-yellow),var(--sf-molten-gold));border-radius:var(--r-pill);transition:width .4s;}
+
+/* === Forge Stepper (right) === */
+.stepper-nav{
+  display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;
+}
+.stepper-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--sf-graphite);border:1px solid var(--sf-border-soft);
+  color:var(--sf-muted);
+  padding:8px 14px;border-radius:var(--r-pill);
+  font-size:12.5px;font-weight:500;cursor:pointer;
+  transition:all .15s;
+}
+.stepper-pill:hover{border-color:var(--sf-muted);color:var(--sf-text-soft);}
+.stepper-pill.active{background:rgba(255,197,0,0.1);border-color:rgba(255,197,0,0.45);color:var(--sf-forge-yellow);}
+.stepper-pill.done{color:var(--sf-success);border-color:rgba(63,207,142,0.3);}
+.stepper-pill .step-no{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;background:var(--sf-elev);
+  font-family:var(--font-mono);font-size:10px;font-weight:700;
+}
+.stepper-pill.active .step-no{background:var(--sf-forge-yellow);color:var(--sf-black);}
+.stepper-pill.done .step-no{background:var(--sf-success);color:var(--sf-black);}
+
+.step-section{margin-bottom:36px;}
+.step-section:last-child{margin-bottom:0;}
+.step-title{
+  font-family:var(--font-display);font-size:22px;font-weight:600;
+  color:var(--sf-text);letter-spacing:-0.015em;margin-bottom:6px;
+}
+.step-helper{font-size:13.5px;color:var(--sf-muted);margin-bottom:20px;line-height:1.55;}
+
+.field{margin-bottom:18px;}
+.field-label{
+  display:block;font-family:var(--font-mono);font-size:11px;font-weight:500;
+  color:var(--sf-muted);letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.field-input,.field-textarea{
+  width:100%;
+  background:var(--sf-graphite);
+  color:var(--sf-text);
+  font-family:var(--font-ui);font-size:14.5px;
+  padding:12px 14px;
+  border:1px solid var(--sf-border);
+  border-radius:var(--r-input);
+  outline:none;
+  transition:border-color .15s,background .15s;
+}
+.field-input:focus,.field-textarea:focus{
+  border-color:var(--sf-forge-yellow);
+  background:var(--sf-elev);
+}
+.field-input::placeholder,.field-textarea::placeholder{color:var(--sf-faint);}
+.field-textarea{min-height:96px;resize:vertical;line-height:1.55;}
+.field-helper{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:6px;font-size:12px;color:var(--sf-faint);
+}
+
+.tag-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.tag-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--sf-graphite);border:1px solid var(--sf-border);
+  color:var(--sf-text-soft);
+  padding:8px 14px;border-radius:var(--r-pill);
+  font-size:13px;cursor:pointer;
+  transition:all .15s;user-select:none;
+}
+.tag-chip:hover{border-color:var(--sf-muted);}
+.tag-chip.selected{
+  background:rgba(255,197,0,0.1);
+  border-color:rgba(255,197,0,0.5);
+  color:var(--sf-forge-yellow);
+}
+.tag-chip .x{font-size:14px;line-height:1;}
+
+/* === Launch Dock === */
+.launch-dock{
+  background:linear-gradient(180deg,var(--sf-graphite) 0%,var(--sf-panel) 100%);
+  border:1px solid var(--sf-border);
+  border-radius:var(--r-card);
+  padding:28px;
+  margin-bottom:18px;
+}
+.launch-dock-title{
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
+  color:var(--sf-muted);letter-spacing:0.18em;text-transform:uppercase;
+  margin-bottom:16px;display:flex;align-items:center;gap:8px;
+}
+.launch-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;
+}
+.launch-btn{
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
+  background:var(--sf-elev);border:1px solid var(--sf-border);
+  color:var(--sf-text);
+  padding:16px 18px;border-radius:10px;cursor:pointer;
+  transition:all .15s;text-align:left;
+}
+.launch-btn:hover{border-color:var(--sf-forge-yellow);background:var(--sf-panel);}
+.launch-btn-name{font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:-0.01em;}
+.launch-btn-hint{font-size:11.5px;color:var(--sf-muted);line-height:1.4;}
+.launch-secondary{
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.launch-secondary .tool-btn{flex:1;min-width:140px;justify-content:center;}
+
+/* === Trust band === */
+.trust-band{
+  background:var(--sf-graphite);
+  border:1px solid var(--sf-border-soft);
+  border-radius:var(--r-card);
+  padding:22px 24px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+}
+.trust-item{font-size:12.5px;color:var(--sf-text-soft);line-height:1.45;}
+.trust-item-label{font-family:var(--font-mono);font-size:10.5px;color:var(--sf-faint);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:4px;}
+
+/* === Footer === */
+.footer{
+  border-top:1px solid var(--sf-border-soft);
+  padding:32px 28px;
+  background:var(--sf-graphite);
+  margin-top:48px;
+}
+.footer-inner{
+  max-width:1280px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  font-size:12.5px;color:var(--sf-faint);
+}
+.footer a:hover{color:var(--sf-forge-yellow);}
+
+/* ===== Responsive ===== */
+@media (max-width:980px){
+  .workspace{grid-template-columns:1fr;}
+  .preview-panel{position:static;}
+  .hero{padding:56px 20px 40px;}
+  .hero h1{font-size:42px;}
+  .hero-sub{font-size:16px;}
+  .topbar-inner{padding:12px 20px;flex-wrap:wrap;gap:10px;}
+  .lang-switch{order:3;flex-basis:100%;justify-content:center;}
+  .launch-grid{grid-template-columns:1fr;}
+  .trust-band{grid-template-columns:1fr 1fr;}
+  .stepper-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;}
+  .stepper-pill{flex-shrink:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== Top Bar ===== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#" class="brand">
+      <div class="brand-mark">SF</div>
+      <span>SoulForge<small style="display:block">Forged Intelligence Console</small></span>
+    </a>
+
+    <div class="lang-switch" role="tablist" aria-label="Language">
+      <button class="active">繁中</button>
+      <button>简中</button>
+      <button>EN</button>
+      <button>한국어</button>
+      <button>日本語</button>
+    </div>
+
+    <div class="topbar-tools">
+      <button class="tool-btn" title="切換主題">◐ 暗色</button>
+      <button class="tool-btn">↗ 匯入備份</button>
+      <button class="tool-btn primary">⚡ 開始鍛造</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-eyebrow"><span class="dot"></span>OPEN SOURCE · NO ACCOUNT · LOCAL-FIRST</div>
+  <h1>為 AI 鍛造一個<em> 真正像「你的人」</em>的靈魂。</h1>
+  <p class="hero-sub">
+    為它命名，塑造個性，注入背景、規則與記憶——
+    一鍵帶入 ChatGPT、Google AI 或 Grok，靈魂跟著你走。
+  </p>
+  <div class="hero-ctas">
+    <button class="btn-primary">⚡ 開始鍛造</button>
+    <button class="btn-secondary">試用 CoCo 預設靈魂</button>
+  </div>
+</section>
+
+<!-- ===== Workspace ===== -->
+<main class="workspace">
+
+  <!-- Left: Soul Preview Panel -->
+  <aside class="panel preview-panel">
+    <div class="panel-head">
+      <span class="panel-title"><span class="seq">01</span>SOUL PREVIEW</span>
+      <span class="panel-title" style="color:var(--sf-success);">● LIVE</span>
+    </div>
+
+    <div class="soul-card">
+      <div class="name-row">
+        <div class="soul-avatar">C</div>
+        <div class="soul-name-block">
+          <div class="soul-name">CoCo</div>
+          <div class="soul-role">AI 業務助理 · 大中華區</div>
+        </div>
+      </div>
+
+      <div class="soul-attr">
+        <div class="soul-attr-label">Core Tone</div>
+        <div class="chip-row">
+          <span class="chip active">活潑</span>
+          <span class="chip active">機智</span>
+          <span class="chip active">專業</span>
+          <span class="chip">溫暖</span>
+        </div>
+      </div>
+
+      <div class="soul-attr">
+        <div class="soul-attr-label">Memory Depth</div>
+        <div class="soul-attr-value">Standard · 跨對話累積規則與偏好</div>
+      </div>
+
+      <div class="soul-attr">
+        <div class="soul-attr-label">Boundaries</div>
+        <div class="soul-attr-value">對外發信先 draft · 批量操作先做範例 · 對外文件屏蔽內部代號</div>
+      </div>
+
+      <div class="readiness">
+        <div class="readiness-head">
+          <span class="readiness-label">LAUNCH READINESS</span>
+          <span class="readiness-value">78%</span>
+        </div>
+        <div class="readiness-track"><div class="readiness-fill"></div></div>
+      </div>
+    </div>
+
+    <button class="btn-secondary" style="width:100%;justify-content:center;">↻ 重新產生靈魂碼</button>
+  </aside>
+
+  <!-- Right: Forge Steps -->
+  <section class="panel">
+    <div class="panel-head">
+      <span class="panel-title"><span class="seq">02</span>FORGE STEPS</span>
+      <span class="panel-title">3 / 5 完成</span>
+    </div>
+
+    <div class="stepper-nav">
+      <div class="stepper-pill done"><span class="step-no">✓</span>Identity</div>
+      <div class="stepper-pill done"><span class="step-no">✓</span>Personality</div>
+      <div class="stepper-pill done"><span class="step-no">✓</span>Context</div>
+      <div class="stepper-pill active"><span class="step-no">4</span>Rules</div>
+      <div class="stepper-pill"><span class="step-no">5</span>Launch</div>
+    </div>
+
+    <!-- Step 1 Identity -->
+    <div class="step-section">
+      <div class="step-title">1 · Identity｜身份</div>
+      <p class="step-helper">為這個 AI 命名，告訴它怎麼稱呼你，以及你和它的關係。</p>
+
+      <div class="field">
+        <label class="field-label">Your Name｜你怎麼被稱呼</label>
+        <input class="field-input" type="text" id="userName" value="Brian" placeholder="Brian / 老闆 / 中欣...">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Soul Name｜AI 靈魂名稱</label>
+        <input class="field-input" type="text" id="soulName" value="CoCo" placeholder="預設 CoCo · 不填即使用預設靈魂">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Role｜角色定位</label>
+        <input class="field-input" type="text" id="soulRole" value="AI 業務助理 · 大中華區" placeholder="AI 業務助理 / 技術顧問 / 創意夥伴...">
+      </div>
+    </div>
+
+    <!-- Step 2 Personality -->
+    <div class="step-section">
+      <div class="step-title">2 · Personality｜個性</div>
+      <p class="step-helper">挑選 3-6 個個性標籤，或自訂描述。</p>
+
+      <div class="field">
+        <label class="field-label">Personality Chips</label>
+        <div class="tag-grid" id="tagGrid">
+          <span class="tag-chip selected">活潑 ✕</span>
+          <span class="tag-chip selected">機智 ✕</span>
+          <span class="tag-chip selected">專業 ✕</span>
+          <span class="tag-chip">溫暖</span>
+          <span class="tag-chip">幽默</span>
+          <span class="tag-chip">嚴謹</span>
+          <span class="tag-chip">直接</span>
+          <span class="tag-chip">優雅</span>
+          <span class="tag-chip">冷靜</span>
+          <span class="tag-chip">熱情</span>
+          <span class="tag-chip">+ 自訂</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 Context -->
+    <div class="step-section">
+      <div class="step-title">3 · Context｜背景與目標</div>
+      <p class="step-helper">告訴 AI 你的工作、組織、常見任務。寫越具體，靈魂越像你的人。</p>
+
+      <div class="field">
+        <label class="field-label">Background &amp; Common Tasks</label>
+        <textarea class="field-textarea" id="companyDesc" placeholder="例如：我是 Markforged 大中華區國家經理，每天處理跨亞太五國的業務拓展、通路管理、客戶會議...">我是 Markforged 大中華區國家經理，負責 TW/CN/HK/VN/TH 五個市場的業務拓展與通路管理。每天主要任務：客戶 email 草擬、Pipeline 同步、QBR 準備、個案分析、跨境會議準備。</textarea>
+        <div class="field-helper">
+          <span>越具體，靈魂越貼合你的真實情境。</span>
+          <span id="descCharCount">142 / 500</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 Rules (active) -->
+    <div class="step-section">
+      <div class="step-title">4 · Rules｜邊界與規則</div>
+      <p class="step-helper">語氣偏好、禁忌、格式規則。這層讓 AI 在你的情境下不出包。</p>
+
+      <div class="field">
+        <label class="field-label">Tone &amp; Format Preferences</label>
+        <textarea class="field-textarea" placeholder="例如：對話用條列不用表格、繁中為主英文夾雜、寄信先 draft 後寄出..."></textarea>
+      </div>
+    </div>
+
+    <!-- Step 5 Launch (locked preview) -->
+    <div class="step-section">
+      <div class="step-title">5 · Launch｜啟動</div>
+      <p class="step-helper">把靈魂帶入任何 AI 平台，或匯出為備份檔。</p>
+    </div>
+
+  </section>
+</main>
+
+<!-- ===== Launch Dock ===== -->
+<section style="max-width:1280px;margin:0 auto;padding:0 28px;">
+  <div class="launch-dock">
+    <div class="launch-dock-title">
+      <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sf-forge-yellow);box-shadow:0 0 8px var(--sf-forge-yellow);"></span>
+      LAUNCH DOCK · 一鍵帶靈魂進入任何 AI 平台
+    </div>
+    <div class="launch-grid">
+      <button class="launch-btn">
+        <span class="launch-btn-name">▶ 開啟 ChatGPT</span>
+        <span class="launch-btn-hint">Best for long-form companion setup</span>
+      </button>
+      <button class="launch-btn">
+        <span class="launch-btn-name">▶ 開啟 Google AI</span>
+        <span class="launch-btn-hint">Best for search-assisted tasks</span>
+      </button>
+      <button class="launch-btn">
+        <span class="launch-btn-name">▶ 開啟 Grok</span>
+        <span class="launch-btn-hint">Best for fast conversational testing</span>
+      </button>
+    </div>
+    <div class="launch-secondary">
+      <button class="tool-btn">⧉ 複製主提示詞</button>
+      <button class="tool-btn">↓ 匯出靈魂備份</button>
+      <button class="tool-btn">↗ 匯入備份還原</button>
+    </div>
+  </div>
+
+  <!-- Trust band -->
+  <div class="trust-band">
+    <div class="trust-item">
+      <div class="trust-item-label">PRIVACY</div>
+      Local-first · 預設不儲存任何資料
+    </div>
+    <div class="trust-item">
+      <div class="trust-item-label">ACCOUNT</div>
+      No account required · 開瀏覽器即用
+    </div>
+    <div class="trust-item">
+      <div class="trust-item-label">LICENSE</div>
+      Open source · MIT · 免費永久使用
+    </div>
+    <div class="trust-item">
+      <div class="trust-item-label">FORGED BY</div>
+      Brian × CoCo · Markforged GCR
+    </div>
+  </div>
+</section>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div>© 2026 SoulForge · Forged Intelligence Console · Built with Markforged precision.</div>
+    <div style="display:flex;gap:18px;">
+      <a href="#">GitHub</a>
+      <a href="#">Changelog</a>
+      <a href="#">Privacy</a>
+      <a href="#">v2 mockup</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
