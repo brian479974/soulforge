@@ -4,9 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://soulforge.markforged.tw/index-v2.html">
-<title>SoulForge v2 · Forged Intelligence Console</title>
-<meta name="description" content="SoulForge v2 redesign mockup · Forged Intelligence Console · Linear-inspired dark command center with Markforged yellow accent">
+<meta name="description" content="SoulForge v2 · Forged Intelligence Console — 鍛造你的 AI 靈魂，一鍵帶入 Google AI / ChatGPT / Grok / Claude / Gemini / Perplexity / Doubao / DeepSeek / Copilot / Meta AI">
+<meta name="keywords" content="AI, AI人格, AI靈魂, SoulForge, Forged Intelligence Console, Google AI, ChatGPT, Grok, Claude, Gemini, Markforged">
 <meta name="robots" content="noindex">
+<meta property="og:title" content="SoulForge v2 · Forged Intelligence Console">
+<meta property="og:description" content="鍛造一個真正像「你的人」的 AI 靈魂——精準、有溫度、可帶往任何 AI 平台。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://soulforge.markforged.tw/index-v2.html">
+<meta property="og:site_name" content="SoulForge">
+<meta property="og:locale" content="zh_TW">
+<title>SoulForge v2 · Forged Intelligence Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -26,14 +33,27 @@
   --sf-molten-gold:#f6b800;
   --sf-ember:#ff7a1a;
   --sf-success:#3fcf8e;
+  --sf-danger:#ef4444;
   --font-display:'Inter','Noto Sans TC',-apple-system,BlinkMacSystemFont,sans-serif;
   --font-ui:'Inter','Noto Sans TC',-apple-system,sans-serif;
   --font-mono:'JetBrains Mono',ui-monospace,monospace;
   --r-card:14px;
   --r-input:8px;
   --r-pill:9999px;
-  --space-section:72px;
 }
+[data-theme="light"]{
+  --sf-black:#f7f7f4;
+  --sf-graphite:#ffffff;
+  --sf-panel:#ffffff;
+  --sf-elev:#fafaf7;
+  --sf-border:#e7e5df;
+  --sf-border-soft:#efece6;
+  --sf-text:#171717;
+  --sf-text-soft:#3a3a3a;
+  --sf-muted:#737373;
+  --sf-faint:#a3a3a3;
+}
+
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;background:var(--sf-black);}
 body{
@@ -45,89 +65,110 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   letter-spacing:-0.005em;
+  min-height:100vh;
+  display:flex;
 }
 a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
 
-/* ===== Top Bar ===== */
-.topbar{
-  position:sticky;top:0;z-index:50;
-  background:rgba(8,9,10,0.85);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
+/* ===== Mobile Top Bar ===== */
+.mobile-topbar{
+  display:none;
+  position:fixed;top:0;left:0;right:0;z-index:997;
+  height:54px;
+  background:var(--sf-black);
   border-bottom:1px solid var(--sf-border-soft);
+  align-items:center;padding:0 16px;gap:12px;
 }
-.topbar-inner{
-  max-width:1280px;margin:0 auto;
-  padding:14px 28px;
-  display:flex;align-items:center;justify-content:space-between;gap:24px;
+.sidebar-toggle{
+  position:fixed;top:14px;left:14px;z-index:998;
+  background:var(--sf-panel);color:var(--sf-text);
+  border:1px solid var(--sf-border);
+  width:36px;height:36px;border-radius:9px;
+  font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
 }
-.brand{
-  display:flex;align-items:center;gap:11px;
-  font-weight:600;font-size:16px;letter-spacing:-0.02em;color:var(--sf-text);
+.mobile-topbar .sidebar-toggle{position:static;flex-shrink:0;}
+.mobile-topbar .brand{font-size:14px;}
+.sidebar-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(2px);z-index:996;
 }
-.brand-mark{
-  width:26px;height:26px;border-radius:7px;
+.sidebar-overlay.show{display:block;}
+
+/* ===== Sidebar ===== */
+.sidebar{
+  width:280px;flex-shrink:0;
+  background:var(--sf-graphite);
+  border-right:1px solid var(--sf-border-soft);
+  padding:24px 22px;
+  overflow-y:auto;
+  position:sticky;top:0;height:100vh;
+}
+.sidebar-close{
+  display:none;
+  background:transparent;color:var(--sf-muted);border:none;
+  font-size:22px;cursor:pointer;padding:4px;
+}
+.sb-brand{
+  display:flex;align-items:center;gap:11px;margin-bottom:20px;
+}
+.sb-mark{
+  width:34px;height:34px;border-radius:9px;
   background:linear-gradient(135deg,var(--sf-forge-yellow) 0%,var(--sf-molten-gold) 50%,var(--sf-ember) 100%);
   display:flex;align-items:center;justify-content:center;
-  font-weight:700;color:var(--sf-black);font-size:12px;
+  font-weight:700;color:var(--sf-black);font-size:14px;
 }
-.brand small{font-size:11px;color:var(--sf-muted);font-weight:500;letter-spacing:0.04em;}
-.topbar-tools{display:flex;align-items:center;gap:8px;}
-.tool-btn{
-  background:transparent;color:var(--sf-text-soft);
-  font-family:var(--font-ui);font-size:13px;font-weight:500;
-  padding:8px 14px;border-radius:var(--r-pill);
-  border:1px solid var(--sf-border);cursor:pointer;
-  transition:background .15s,border-color .15s,color .15s;
-  display:inline-flex;align-items:center;gap:6px;
-}
-.tool-btn:hover{background:var(--sf-panel);border-color:var(--sf-muted);color:var(--sf-text);}
-.tool-btn.primary{
-  background:var(--sf-forge-yellow);color:var(--sf-black);border-color:var(--sf-forge-yellow);font-weight:600;
-}
-.tool-btn.primary:hover{background:var(--sf-molten-gold);border-color:var(--sf-molten-gold);}
-.lang-switch{display:flex;gap:2px;background:var(--sf-panel);padding:2px;border-radius:var(--r-pill);border:1px solid var(--sf-border);}
-.lang-switch button{
-  background:transparent;color:var(--sf-muted);
-  font-family:var(--font-ui);font-size:12px;font-weight:500;
-  padding:5px 11px;border-radius:var(--r-pill);border:none;cursor:pointer;
-  transition:background .15s,color .15s;
-}
-.lang-switch button.active{background:var(--sf-elev);color:var(--sf-text);}
+.sb-title{font-family:var(--font-display);font-size:17px;font-weight:600;letter-spacing:-0.02em;color:var(--sf-text);}
+.sb-subtitle{font-family:var(--font-mono);font-size:10.5px;color:var(--sf-muted);letter-spacing:0.14em;text-transform:uppercase;margin-top:1px;}
+.sb-divider{height:1px;background:var(--sf-border-soft);margin:18px 0;}
+
+.sb-block{margin-bottom:18px;}
+.sb-label{font-family:var(--font-mono);font-size:10.5px;color:var(--sf-faint);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px;}
+.sb-value{font-size:13px;color:var(--sf-text-soft);line-height:1.55;}
+.sb-value strong{color:var(--sf-text);font-weight:600;}
+.sb-platform-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.sb-platform-list .pill{font-size:10.5px;padding:3px 9px;background:var(--sf-panel);border:1px solid var(--sf-border-soft);border-radius:var(--r-pill);color:var(--sf-text-soft);}
+.sb-footer{font-size:11.5px;color:var(--sf-muted);line-height:1.6;margin-top:14px;}
+.sb-credit{font-size:11px;color:var(--sf-faint);line-height:1.55;margin-top:14px;padding-top:14px;border-top:1px dashed var(--sf-border-soft);}
+.sb-credit strong{color:var(--sf-text-soft);font-weight:600;}
+
+/* ===== Main ===== */
+.main{flex:1;min-width:0;overflow-x:hidden;}
+.main-inner{max-width:1200px;margin:0 auto;padding:28px 28px 80px;}
 
 /* ===== Hero ===== */
 .hero{
-  padding:80px 28px 64px;
-  max-width:1280px;margin:0 auto;
-  text-align:center;
+  padding:36px 0 24px;
   position:relative;
+  text-align:center;
 }
 .hero::before{
   content:"";position:absolute;
-  top:-50px;left:50%;transform:translateX(-50%);
-  width:800px;height:400px;
-  background:radial-gradient(ellipse,rgba(255,197,0,0.08) 0%,rgba(8,9,10,0) 60%);
+  top:-30px;left:50%;transform:translateX(-50%);
+  width:700px;height:300px;
+  background:radial-gradient(ellipse,rgba(255,197,0,0.07) 0%,rgba(8,9,10,0) 60%);
   pointer-events:none;z-index:-1;
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
-  font-family:var(--font-mono);font-size:11.5px;font-weight:500;
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
   color:var(--sf-forge-yellow);letter-spacing:0.18em;text-transform:uppercase;
-  margin-bottom:24px;
-  padding:7px 16px;
+  margin-bottom:18px;
+  padding:6px 14px;
   background:rgba(255,197,0,0.06);
   border:1px solid rgba(255,197,0,0.18);
   border-radius:var(--r-pill);
 }
 .hero-eyebrow .dot{
-  width:6px;height:6px;border-radius:50%;background:var(--sf-forge-yellow);
+  width:5px;height:5px;border-radius:50%;background:var(--sf-forge-yellow);
   box-shadow:0 0 10px var(--sf-forge-yellow);
 }
 .hero h1{
   font-family:var(--font-display);
-  font-size:68px;font-weight:600;line-height:1.02;
-  letter-spacing:-0.035em;color:var(--sf-text);
-  max-width:880px;margin:0 auto 24px;
+  font-size:54px;font-weight:600;line-height:1.04;
+  letter-spacing:-0.03em;color:var(--sf-text);
+  max-width:780px;margin:0 auto 18px;
 }
 .hero h1 em{
   font-style:normal;
@@ -136,150 +177,94 @@ a{color:inherit;text-decoration:none;}
   background-clip:text;font-weight:600;
 }
 .hero-sub{
-  font-size:18px;line-height:1.55;color:var(--sf-text-soft);
-  max-width:620px;margin:0 auto 36px;font-weight:400;
+  font-size:16px;line-height:1.55;color:var(--sf-text-soft);
+  max-width:560px;margin:0 auto;
 }
-.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
-.btn-primary{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--sf-forge-yellow);color:var(--sf-black);
-  font-family:var(--font-ui);font-size:15px;font-weight:600;
-  padding:14px 28px;border-radius:var(--r-pill);border:none;cursor:pointer;
-  transition:transform .15s,background .15s,box-shadow .15s;
-  box-shadow:0 0 0 0 rgba(255,197,0,0);
-}
-.btn-primary:hover{
-  background:var(--sf-molten-gold);
-  transform:translateY(-1px);
-  box-shadow:0 8px 24px -8px rgba(255,197,0,0.4);
-}
-.btn-secondary{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--sf-panel);color:var(--sf-text);
-  font-family:var(--font-ui);font-size:15px;font-weight:500;
-  padding:13px 28px;border-radius:var(--r-pill);
-  border:1px solid var(--sf-border);cursor:pointer;
-  transition:background .15s,border-color .15s;
-}
-.btn-secondary:hover{background:var(--sf-elev);border-color:var(--sf-muted);}
 
-/* ===== Workspace (2-col) ===== */
-.workspace{
-  max-width:1280px;margin:0 auto;
-  padding:24px 28px var(--space-section);
-  display:grid;grid-template-columns:380px 1fr;gap:24px;
+/* ===== Lang + Theme + Privacy ===== */
+.lang-bar{
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
+  margin:28px 0 14px;
 }
-.panel{
+.lang-btn{
+  background:var(--sf-panel);color:var(--sf-muted);
+  font-size:12.5px;font-weight:500;
+  padding:7px 13px;border-radius:var(--r-pill);
+  border:1px solid var(--sf-border-soft);cursor:pointer;
+  transition:background .15s,color .15s,border-color .15s;
+}
+.lang-btn:hover{color:var(--sf-text-soft);border-color:var(--sf-border);}
+.lang-btn.active{background:var(--sf-elev);color:var(--sf-forge-yellow);border-color:rgba(255,197,0,0.35);}
+.theme-toggle-btn{
+  background:transparent;color:var(--sf-text-soft);
+  font-size:12.5px;
+  padding:7px 13px;border-radius:var(--r-pill);
+  border:1px solid var(--sf-border-soft);cursor:pointer;margin-left:8px;
+  transition:border-color .15s,color .15s;
+}
+.theme-toggle-btn:hover{border-color:var(--sf-muted);color:var(--sf-text);}
+
+.privacy-bar{
+  background:var(--sf-graphite);
+  border:1px solid var(--sf-border-soft);
+  border-radius:var(--r-card);
+  padding:16px 20px;margin-bottom:24px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+}
+.privacy-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:1;}
+.privacy-label{
+  font-family:var(--font-mono);font-size:11px;color:var(--sf-muted);
+  letter-spacing:0.14em;text-transform:uppercase;
+}
+.privacy-badge{
+  font-size:12px;font-weight:500;
+  padding:4px 10px;border-radius:var(--r-pill);
+}
+.privacy-badge.on{background:rgba(63,207,142,0.12);color:var(--sf-success);border:1px solid rgba(63,207,142,0.3);}
+.privacy-badge.off{background:rgba(239,68,68,0.12);color:var(--sf-danger);border:1px solid rgba(239,68,68,0.3);}
+.toggle-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.toggle-track{
+  width:38px;height:20px;background:var(--sf-elev);
+  border:1px solid var(--sf-border);
+  border-radius:var(--r-pill);position:relative;transition:background .2s;
+}
+.toggle-thumb{
+  position:absolute;top:1px;left:1px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--sf-muted);transition:transform .2s,background .2s;
+}
+.toggle-track.active{background:rgba(255,197,0,0.18);border-color:var(--sf-forge-yellow);}
+.toggle-track.active .toggle-thumb{transform:translateX(18px);background:var(--sf-forge-yellow);}
+.toggle-text{font-size:12px;color:var(--sf-muted);}
+.privacy-hint{
+  flex-basis:100%;font-size:11.5px;color:var(--sf-faint);line-height:1.55;
+  border-top:1px dashed var(--sf-border-soft);padding-top:10px;margin-top:4px;
+}
+.privacy-hint kbd{
+  background:var(--sf-panel);border:1px solid var(--sf-border);
+  padding:1px 5px;border-radius:4px;font-family:var(--font-mono);font-size:10.5px;color:var(--sf-text-soft);
+}
+
+/* ===== Card / Form ===== */
+.card{
   background:var(--sf-panel);
   border:1px solid var(--sf-border-soft);
   border-radius:var(--r-card);
-  padding:24px;
+  padding:28px;margin-bottom:18px;
 }
-.panel-head{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:18px;padding-bottom:14px;
-  border-bottom:1px solid var(--sf-border-soft);
-}
-.panel-title{
-  font-family:var(--font-mono);font-size:11px;font-weight:500;
-  color:var(--sf-muted);letter-spacing:0.16em;text-transform:uppercase;
-  display:flex;align-items:center;gap:8px;
-}
-.panel-title .seq{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:18px;height:18px;border-radius:5px;
-  background:var(--sf-elev);color:var(--sf-forge-yellow);
-  font-size:10px;font-weight:600;font-family:var(--font-mono);
-}
-
-/* === Preview Panel (left) === */
-.preview-panel{position:sticky;top:84px;align-self:start;}
-.soul-card{
-  background:linear-gradient(180deg,var(--sf-elev) 0%,var(--sf-graphite) 100%);
-  border:1px solid var(--sf-border);
-  border-radius:12px;
-  padding:24px;margin-bottom:18px;
-  position:relative;overflow:hidden;
-}
-.soul-card::before{
-  content:"";position:absolute;top:0;left:0;width:100%;height:2px;
-  background:linear-gradient(90deg,var(--sf-forge-yellow),transparent);
-}
-.soul-card .name-row{
-  display:flex;align-items:center;gap:14px;margin-bottom:18px;
-}
-.soul-avatar{
-  width:48px;height:48px;border-radius:12px;
-  background:linear-gradient(135deg,var(--sf-forge-yellow),var(--sf-ember));
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--sf-black);
-  flex-shrink:0;
-}
-.soul-name-block{flex:1;min-width:0;}
-.soul-name{font-family:var(--font-display);font-size:20px;font-weight:600;letter-spacing:-0.01em;color:var(--sf-text);margin-bottom:2px;}
-.soul-role{font-size:12.5px;color:var(--sf-muted);}
-.soul-attr{margin-bottom:14px;}
-.soul-attr-label{
-  font-family:var(--font-mono);font-size:10.5px;color:var(--sf-faint);
-  letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px;
-}
-.soul-attr-value{font-size:13.5px;color:var(--sf-text-soft);line-height:1.5;}
-.chip-row{display:flex;flex-wrap:wrap;gap:6px;}
-.chip{
-  display:inline-flex;align-items:center;
-  background:var(--sf-panel);border:1px solid var(--sf-border);
-  color:var(--sf-text-soft);
-  padding:4px 10px;border-radius:var(--r-pill);
-  font-size:11.5px;font-weight:500;
-}
-.chip.active{background:rgba(255,197,0,0.1);border-color:rgba(255,197,0,0.4);color:var(--sf-forge-yellow);}
-
-/* readiness meter */
-.readiness{margin-top:6px;}
-.readiness-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.readiness-label{font-family:var(--font-mono);font-size:11px;color:var(--sf-muted);letter-spacing:0.12em;text-transform:uppercase;}
-.readiness-value{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--sf-forge-yellow);}
-.readiness-track{height:6px;background:var(--sf-graphite);border-radius:var(--r-pill);overflow:hidden;border:1px solid var(--sf-border-soft);}
-.readiness-fill{height:100%;width:78%;background:linear-gradient(90deg,var(--sf-forge-yellow),var(--sf-molten-gold));border-radius:var(--r-pill);transition:width .4s;}
-
-/* === Forge Stepper (right) === */
-.stepper-nav{
-  display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;
-}
-.stepper-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--sf-graphite);border:1px solid var(--sf-border-soft);
-  color:var(--sf-muted);
-  padding:8px 14px;border-radius:var(--r-pill);
-  font-size:12.5px;font-weight:500;cursor:pointer;
-  transition:all .15s;
-}
-.stepper-pill:hover{border-color:var(--sf-muted);color:var(--sf-text-soft);}
-.stepper-pill.active{background:rgba(255,197,0,0.1);border-color:rgba(255,197,0,0.45);color:var(--sf-forge-yellow);}
-.stepper-pill.done{color:var(--sf-success);border-color:rgba(63,207,142,0.3);}
-.stepper-pill .step-no{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:18px;height:18px;border-radius:50%;background:var(--sf-elev);
-  font-family:var(--font-mono);font-size:10px;font-weight:700;
-}
-.stepper-pill.active .step-no{background:var(--sf-forge-yellow);color:var(--sf-black);}
-.stepper-pill.done .step-no{background:var(--sf-success);color:var(--sf-black);}
-
-.step-section{margin-bottom:36px;}
-.step-section:last-child{margin-bottom:0;}
-.step-title{
-  font-family:var(--font-display);font-size:22px;font-weight:600;
+.card-title{
+  font-family:var(--font-display);font-size:24px;font-weight:600;
   color:var(--sf-text);letter-spacing:-0.015em;margin-bottom:6px;
 }
-.step-helper{font-size:13.5px;color:var(--sf-muted);margin-bottom:20px;line-height:1.55;}
+.card-desc{font-size:14px;color:var(--sf-muted);margin-bottom:24px;}
 
-.field{margin-bottom:18px;}
-.field-label{
+.form-group{margin-bottom:20px;}
+.form-label{
   display:block;font-family:var(--font-mono);font-size:11px;font-weight:500;
   color:var(--sf-muted);letter-spacing:0.12em;text-transform:uppercase;
   margin-bottom:8px;
 }
-.field-input,.field-textarea{
+.form-input,.desc-textarea{
   width:100%;
   background:var(--sf-graphite);
   color:var(--sf-text);
@@ -290,352 +275,1484 @@ a{color:inherit;text-decoration:none;}
   outline:none;
   transition:border-color .15s,background .15s;
 }
-.field-input:focus,.field-textarea:focus{
+.form-input:focus,.desc-textarea:focus{
   border-color:var(--sf-forge-yellow);
   background:var(--sf-elev);
 }
-.field-input::placeholder,.field-textarea::placeholder{color:var(--sf-faint);}
-.field-textarea{min-height:96px;resize:vertical;line-height:1.55;}
-.field-helper{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:6px;font-size:12px;color:var(--sf-faint);
-}
+.form-input::placeholder,.desc-textarea::placeholder{color:var(--sf-faint);}
+.desc-textarea{min-height:130px;resize:vertical;line-height:1.55;font-family:var(--font-ui);}
 
 .tag-grid{display:flex;flex-wrap:wrap;gap:8px;}
-.tag-chip{
-  display:inline-flex;align-items:center;gap:6px;
+.tag{
+  display:inline-flex;align-items:center;
   background:var(--sf-graphite);border:1px solid var(--sf-border);
   color:var(--sf-text-soft);
   padding:8px 14px;border-radius:var(--r-pill);
   font-size:13px;cursor:pointer;
   transition:all .15s;user-select:none;
 }
-.tag-chip:hover{border-color:var(--sf-muted);}
-.tag-chip.selected{
+.tag:hover{border-color:var(--sf-muted);}
+.tag.selected,.tag.active{
   background:rgba(255,197,0,0.1);
   border-color:rgba(255,197,0,0.5);
   color:var(--sf-forge-yellow);
 }
-.tag-chip .x{font-size:14px;line-height:1;}
 
-/* === Launch Dock === */
-.launch-dock{
-  background:linear-gradient(180deg,var(--sf-graphite) 0%,var(--sf-panel) 100%);
-  border:1px solid var(--sf-border);
-  border-radius:var(--r-card);
-  padding:28px;
-  margin-bottom:18px;
+.char-progress{
+  height:3px;background:var(--sf-graphite);border-radius:var(--r-pill);overflow:hidden;
+  margin:8px 0 4px;border:1px solid var(--sf-border-soft);
 }
-.launch-dock-title{
+.char-progress-fill{
+  height:100%;width:0;
+  background:var(--sf-forge-yellow);
+  border-radius:var(--r-pill);transition:width .25s,background .15s;
+}
+.char-progress-fill.warning{background:var(--sf-ember);}
+.char-progress-fill.over{background:var(--sf-danger);}
+.char-bar{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--sf-faint);}
+.char-bar-count.warning{color:var(--sf-ember);}
+.char-bar-count.over{color:var(--sf-danger);font-weight:600;}
+
+/* ===== Preview ===== */
+.preview-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.preview-edited-badge{
+  display:none;
+  font-family:var(--font-mono);font-size:10.5px;color:var(--sf-ember);
+  padding:3px 8px;background:rgba(255,122,26,0.1);border:1px solid rgba(255,122,26,0.3);
+  border-radius:var(--r-pill);letter-spacing:0.05em;
+}
+.preview-edited-badge.show{display:inline-block;}
+.btn-reset-preview{
+  display:none;
+  background:var(--sf-graphite);color:var(--sf-text-soft);
+  font-family:var(--font-mono);font-size:11px;
+  padding:5px 12px;border-radius:var(--r-pill);
+  border:1px solid var(--sf-border);cursor:pointer;
+}
+.btn-reset-preview.show{display:inline-flex;}
+.btn-reset-preview:hover{border-color:var(--sf-forge-yellow);color:var(--sf-forge-yellow);}
+.preview-box{
+  width:100%;min-height:240px;
+  background:var(--sf-graphite);
+  color:var(--sf-text-soft);
+  font-family:var(--font-mono);font-size:12.5px;line-height:1.55;
+  padding:16px;border:1px solid var(--sf-border);border-radius:var(--r-input);
+  outline:none;resize:vertical;
+}
+.preview-box:focus{border-color:var(--sf-forge-yellow);}
+
+/* ===== Buttons ===== */
+.section-label{
   font-family:var(--font-mono);font-size:11px;font-weight:500;
   color:var(--sf-muted);letter-spacing:0.18em;text-transform:uppercase;
-  margin-bottom:16px;display:flex;align-items:center;gap:8px;
+  margin:24px 0 12px;
 }
-.launch-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--font-ui);font-size:14px;font-weight:500;
+  padding:12px 20px;border-radius:var(--r-pill);border:none;cursor:pointer;
+  transition:all .15s;
+  background:var(--sf-elev);color:var(--sf-text);border:1px solid var(--sf-border);
 }
-.launch-btn{
-  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
-  background:var(--sf-elev);border:1px solid var(--sf-border);
-  color:var(--sf-text);
-  padding:16px 18px;border-radius:10px;cursor:pointer;
-  transition:all .15s;text-align:left;
+.btn:hover{border-color:var(--sf-forge-yellow);color:var(--sf-forge-yellow);}
+.btn-soulforge-bot{
+  background:linear-gradient(135deg,var(--sf-forge-yellow) 0%,var(--sf-molten-gold) 100%);
+  color:var(--sf-black);font-weight:600;border:none;
+  box-shadow:0 0 0 0 rgba(255,197,0,0);
 }
-.launch-btn:hover{border-color:var(--sf-forge-yellow);background:var(--sf-panel);}
-.launch-btn-name{font-family:var(--font-display);font-size:15px;font-weight:600;letter-spacing:-0.01em;}
-.launch-btn-hint{font-size:11.5px;color:var(--sf-muted);line-height:1.4;}
-.launch-secondary{
-  display:flex;gap:10px;flex-wrap:wrap;
+.btn-soulforge-bot:hover{
+  filter:brightness(1.05);
+  box-shadow:0 8px 24px -8px rgba(255,197,0,0.4);
+  color:var(--sf-black);
 }
-.launch-secondary .tool-btn{flex:1;min-width:140px;justify-content:center;}
+.btn-google-big{
+  background:var(--sf-elev);color:var(--sf-text);
+  border:1px solid var(--sf-border);font-weight:500;
+}
+.btn-google-big:hover{
+  border-color:var(--sf-forge-yellow);color:var(--sf-forge-yellow);
+  background:var(--sf-panel);
+}
+.btn-launch{
+  background:var(--sf-graphite);color:var(--sf-text-soft);
+  border:1px solid var(--sf-border);font-size:13px;padding:11px 14px;
+}
+.btn-launch:hover{
+  border-color:var(--sf-forge-yellow);color:var(--sf-forge-yellow);
+  background:var(--sf-panel);
+}
+.btn-file{
+  background:var(--sf-panel);color:var(--sf-text);
+  border:1px dashed var(--sf-border);font-weight:500;
+}
+.btn-file:hover{border-color:var(--sf-forge-yellow);color:var(--sf-forge-yellow);border-style:solid;}
+.btn-danger{
+  background:transparent;color:var(--sf-danger);
+  border:1px solid rgba(239,68,68,0.4);
+}
+.btn-danger:hover{background:rgba(239,68,68,0.1);}
+.btn-grid-2{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;
+}
 
-/* === Trust band === */
-.trust-band{
-  background:var(--sf-graphite);
-  border:1px solid var(--sf-border-soft);
-  border-radius:var(--r-card);
-  padding:22px 24px;
-  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+/* ===== Disclaimer ===== */
+.disclaimer-box{
+  margin-top:24px;
+  background:var(--sf-graphite);border:1px solid var(--sf-border-soft);
+  border-left:3px solid var(--sf-ember);
+  border-radius:var(--r-input);
+  padding:14px 18px;
+  font-size:12px;line-height:1.6;color:var(--sf-muted);
 }
-.trust-item{font-size:12.5px;color:var(--sf-text-soft);line-height:1.45;}
-.trust-item-label{font-family:var(--font-mono);font-size:10.5px;color:var(--sf-faint);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:4px;}
+.disclaimer-box strong{color:var(--sf-text-soft);}
 
-/* === Footer === */
-.footer{
-  border-top:1px solid var(--sf-border-soft);
-  padding:32px 28px;
-  background:var(--sf-graphite);
-  margin-top:48px;
+/* ===== Memory display ===== */
+.memory-display{
+  background:var(--sf-graphite);border:1px solid var(--sf-border);
+  border-radius:var(--r-input);padding:14px;margin-top:12px;
 }
-.footer-inner{
-  max-width:1280px;margin:0 auto;
-  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
-  font-size:12.5px;color:var(--sf-faint);
+.memory-label{font-family:var(--font-mono);font-size:11px;color:var(--sf-forge-yellow);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;}
+.memory-time{font-size:11.5px;color:var(--sf-muted);margin-bottom:8px;}
+.memory-content{font-size:13px;color:var(--sf-text-soft);line-height:1.6;white-space:pre-wrap;}
+
+/* ===== Instructions ===== */
+.instructions ol{padding-left:20px;}
+.instructions li{margin-bottom:8px;font-size:13.5px;color:var(--sf-text-soft);line-height:1.6;}
+
+/* ===== Toast ===== */
+.toast{
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--sf-panel);color:var(--sf-text);
+  border:1px solid var(--sf-forge-yellow);
+  padding:14px 24px;border-radius:var(--r-pill);
+  font-size:14px;font-weight:500;
+  box-shadow:0 16px 40px -12px rgba(0,0,0,0.6),0 0 24px -8px rgba(255,197,0,0.4);
+  z-index:9999;opacity:0;transition:transform .25s,opacity .25s;
+  max-width:90vw;text-align:center;
 }
-.footer a:hover{color:var(--sf-forge-yellow);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* ===== Soul Preview Mini Card (top of form) ===== */
+.soul-preview-mini{
+  background:linear-gradient(180deg,var(--sf-elev) 0%,var(--sf-graphite) 100%);
+  border:1px solid var(--sf-border);
+  border-radius:12px;padding:18px 20px;margin-bottom:24px;
+  position:relative;overflow:hidden;
+}
+.soul-preview-mini::before{
+  content:"";position:absolute;top:0;left:0;width:100%;height:2px;
+  background:linear-gradient(90deg,var(--sf-forge-yellow),transparent);
+}
+.spm-row{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.spm-avatar{
+  width:42px;height:42px;border-radius:10px;
+  background:linear-gradient(135deg,var(--sf-forge-yellow),var(--sf-ember));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--sf-black);
+  flex-shrink:0;
+}
+.spm-name{font-family:var(--font-display);font-size:17px;font-weight:600;color:var(--sf-text);letter-spacing:-0.01em;}
+.spm-role{font-size:12px;color:var(--sf-muted);}
 
 /* ===== Responsive ===== */
-@media (max-width:980px){
-  .workspace{grid-template-columns:1fr;}
-  .preview-panel{position:static;}
-  .hero{padding:56px 20px 40px;}
-  .hero h1{font-size:42px;}
-  .hero-sub{font-size:16px;}
-  .topbar-inner{padding:12px 20px;flex-wrap:wrap;gap:10px;}
-  .lang-switch{order:3;flex-basis:100%;justify-content:center;}
-  .launch-grid{grid-template-columns:1fr;}
-  .trust-band{grid-template-columns:1fr 1fr;}
-  .stepper-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;}
-  .stepper-pill{flex-shrink:0;}
+@media (max-width:880px){
+  body{display:block;padding-top:54px;}
+  .mobile-topbar{display:flex;}
+  .sidebar{
+    position:fixed;top:0;left:-300px;width:280px;height:100vh;
+    z-index:999;transition:left .25s;
+  }
+  .sidebar.open{left:0;box-shadow:24px 0 60px rgba(0,0,0,0.5);}
+  .sidebar-close{display:inline-block;}
+  .main-inner{padding:20px 18px 60px;}
+  .hero{padding:18px 0 16px;}
+  .hero h1{font-size:36px;}
+  .hero-sub{font-size:15px;}
+  .card{padding:22px 18px;}
+  .btn-grid-2{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
 <body>
 
-<!-- ===== Top Bar ===== -->
-<header class="topbar">
-  <div class="topbar-inner">
-    <a href="#" class="brand">
-      <div class="brand-mark">SF</div>
-      <span>SoulForge<small style="display:block">Forged Intelligence Console</small></span>
-    </a>
-
-    <div class="lang-switch" role="tablist" aria-label="Language">
-      <button class="active">繁中</button>
-      <button>简中</button>
-      <button>EN</button>
-      <button>한국어</button>
-      <button>日本語</button>
-    </div>
-
-    <div class="topbar-tools">
-      <button class="tool-btn" title="切換主題">◐ 暗色</button>
-      <button class="tool-btn">↗ 匯入備份</button>
-      <button class="tool-btn primary">⚡ 開始鍛造</button>
-    </div>
+<!-- Mobile Top Bar -->
+<header class="mobile-topbar">
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu">&#9776;</button>
+  <div class="sb-brand" style="margin:0;">
+    <div class="sb-mark">SF</div>
+    <div class="sb-title" style="font-size:14px;">SoulForge</div>
   </div>
 </header>
 
-<!-- ===== Hero ===== -->
-<section class="hero">
-  <div class="hero-eyebrow"><span class="dot"></span>OPEN SOURCE · NO ACCOUNT · LOCAL-FIRST</div>
-  <h1>為 AI 鍛造一個<em> 真正像「你的人」</em>的靈魂。</h1>
-  <p class="hero-sub">
-    為它命名，塑造個性，注入背景、規則與記憶——
-    一鍵帶入 ChatGPT、Google AI 或 Grok，靈魂跟著你走。
-  </p>
-  <div class="hero-ctas">
-    <button class="btn-primary">⚡ 開始鍛造</button>
-    <button class="btn-secondary">試用 CoCo 預設靈魂</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar" role="complementary">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="sb-brand">
+      <div class="sb-mark">SF</div>
+      <div>
+        <div class="sb-title">SoulForge</div>
+        <div class="sb-subtitle">Forged Intelligence Console</div>
+      </div>
+    </div>
+    <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">&times;</button>
   </div>
-</section>
 
-<!-- ===== Workspace ===== -->
-<main class="workspace">
+  <div class="sb-divider"></div>
 
-  <!-- Left: Soul Preview Panel -->
-  <aside class="panel preview-panel">
-    <div class="panel-head">
-      <span class="panel-title"><span class="seq">01</span>SOUL PREVIEW</span>
-      <span class="panel-title" style="color:var(--sf-success);">● LIVE</span>
+  <div class="sb-block">
+    <div class="sb-label" data-i18n="sb_purpose_label">用途：</div>
+    <div class="sb-value" data-i18n="sb_purpose">鍛造專屬 AI 靈魂</div>
+  </div>
+
+  <div class="sb-block">
+    <div class="sb-label" data-i18n="sb_mode_label">模式：</div>
+    <div class="sb-value" data-i18n="sb_mode">取名 + 個性 + 背景</div>
+  </div>
+
+  <div class="sb-block">
+    <div class="sb-label" data-i18n="sb_platform_label">平台：</div>
+    <div class="sb-platform-list">
+      <span class="pill">Google AI</span>
+      <span class="pill">ChatGPT</span>
+      <span class="pill">Grok</span>
+      <span class="pill">Claude</span>
+      <span class="pill">Gemini</span>
+      <span class="pill">Doubao</span>
+      <span class="pill">DeepSeek</span>
+      <span class="pill">Perplexity</span>
+      <span class="pill">Copilot</span>
+      <span class="pill">Meta AI</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-footer" data-i18n="sb_footer">
+    開源免費，任何人都能使用。<br>取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。
+  </div>
+
+  <div class="sb-credit">
+    <div><span data-i18n="sb_created">創作：</span><strong>Brian Chen</strong></div>
+    <div style="margin-top:3px;"><span data-i18n="sb_guided">指導：</span><strong>CoCo</strong></div>
+    <div style="margin-top:6px;font-size:10.5px;color:var(--sf-faint);" data-i18n="sb_brian_title">Country Manager, Greater China Region at Markforged</div>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main" role="main">
+  <div class="main-inner">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-eyebrow"><span class="dot"></span>OPEN SOURCE · NO ACCOUNT · LOCAL-FIRST</div>
+      <h1>為 AI 鍛造一個<em>真正像「你的人」</em>的靈魂</h1>
+      <p class="hero-sub">為它命名，塑造個性，注入背景與規則——一鍵帶入任何 AI 平台。</p>
+    </section>
+
+    <!-- Language Selector -->
+    <div class="lang-bar" id="langBar">
+      <button class="lang-btn active" data-lang="zh-TW">繁體中文</button>
+      <button class="lang-btn" data-lang="zh-CN">简体中文</button>
+      <button class="lang-btn" data-lang="en">English</button>
+      <button class="lang-btn" data-lang="ko">한국어</button>
+      <button class="lang-btn" data-lang="ja">日本語</button>
+      <button class="theme-toggle-btn" id="themeToggle" title="切換明亮/暗色模式">☀️ 明亮</button>
     </div>
 
-    <div class="soul-card">
-      <div class="name-row">
-        <div class="soul-avatar">C</div>
-        <div class="soul-name-block">
-          <div class="soul-name">CoCo</div>
-          <div class="soul-role">AI 業務助理 · 大中華區</div>
+    <!-- Privacy Bar -->
+    <div class="privacy-bar" id="privacyBar">
+      <div class="privacy-left">
+        <span class="privacy-label">🔒 <span data-i18n="privacy_label">隱私模式</span></span>
+        <span class="privacy-badge on" id="privacyBadge" data-i18n="privacy_on">已啟用 - 不儲存資料</span>
+        <div class="toggle-wrap" id="privacyToggle">
+          <div class="toggle-track active" id="privacyTrack">
+            <div class="toggle-thumb"></div>
+          </div>
+          <span class="toggle-text" id="privacyToggleText" data-i18n="privacy_hint_on">關閉頁面即清除一切</span>
         </div>
       </div>
-
-      <div class="soul-attr">
-        <div class="soul-attr-label">Core Tone</div>
-        <div class="chip-row">
-          <span class="chip active">活潑</span>
-          <span class="chip active">機智</span>
-          <span class="chip active">專業</span>
-          <span class="chip">溫暖</span>
-        </div>
-      </div>
-
-      <div class="soul-attr">
-        <div class="soul-attr-label">Memory Depth</div>
-        <div class="soul-attr-value">Standard · 跨對話累積規則與偏好</div>
-      </div>
-
-      <div class="soul-attr">
-        <div class="soul-attr-label">Boundaries</div>
-        <div class="soul-attr-value">對外發信先 draft · 批量操作先做範例 · 對外文件屏蔽內部代號</div>
-      </div>
-
-      <div class="readiness">
-        <div class="readiness-head">
-          <span class="readiness-label">LAUNCH READINESS</span>
-          <span class="readiness-value">78%</span>
-        </div>
-        <div class="readiness-track"><div class="readiness-fill"></div></div>
+      <button class="btn btn-danger" style="padding:7px 14px;font-size:12px;" onclick="clearAllData()" data-i18n="clear_all">🗑 立即清除所有資料</button>
+      <div class="privacy-hint" id="privacyHint" data-i18n="privacy_incognito">
+        建議使用無痕模式瀏覽以獲得最佳隱私保護：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）
       </div>
     </div>
 
-    <button class="btn-secondary" style="width:100%;justify-content:center;">↻ 重新產生靈魂碼</button>
-  </aside>
+    <!-- Soul Builder Card -->
+    <div class="card">
+      <h2 class="card-title" data-i18n="card_title">🔥 鍛造你的 AI 靈魂</h2>
+      <p class="card-desc" data-i18n="card_desc">為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！</p>
 
-  <!-- Right: Forge Steps -->
-  <section class="panel">
-    <div class="panel-head">
-      <span class="panel-title"><span class="seq">02</span>FORGE STEPS</span>
-      <span class="panel-title">3 / 5 完成</span>
-    </div>
-
-    <div class="stepper-nav">
-      <div class="stepper-pill done"><span class="step-no">✓</span>Identity</div>
-      <div class="stepper-pill done"><span class="step-no">✓</span>Personality</div>
-      <div class="stepper-pill done"><span class="step-no">✓</span>Context</div>
-      <div class="stepper-pill active"><span class="step-no">4</span>Rules</div>
-      <div class="stepper-pill"><span class="step-no">5</span>Launch</div>
-    </div>
-
-    <!-- Step 1 Identity -->
-    <div class="step-section">
-      <div class="step-title">1 · Identity｜身份</div>
-      <p class="step-helper">為這個 AI 命名，告訴它怎麼稱呼你，以及你和它的關係。</p>
-
-      <div class="field">
-        <label class="field-label">Your Name｜你怎麼被稱呼</label>
-        <input class="field-input" type="text" id="userName" value="Brian" placeholder="Brian / 老闆 / 中欣...">
+      <div class="form-group">
+        <label class="form-label" data-i18n="label_user">👤 你的名字</label>
+        <input type="text" class="form-input" id="userName" data-i18n-ph="ph_user" placeholder="讓 AI 知道怎麼稱呼你..." maxlength="20">
       </div>
 
-      <div class="field">
-        <label class="field-label">Soul Name｜AI 靈魂名稱</label>
-        <input class="field-input" type="text" id="soulName" value="CoCo" placeholder="預設 CoCo · 不填即使用預設靈魂">
+      <div class="form-group">
+        <label class="form-label" data-i18n="label_soul">📛 靈魂名稱</label>
+        <input type="text" class="form-input" id="soulName" data-i18n-ph="ph_soul" placeholder="預設：CoCo（不填即使用預設靈魂）" maxlength="20">
       </div>
 
-      <div class="field">
-        <label class="field-label">Role｜角色定位</label>
-        <input class="field-input" type="text" id="soulRole" value="AI 業務助理 · 大中華區" placeholder="AI 業務助理 / 技術顧問 / 創意夥伴...">
+      <div class="form-group">
+        <label class="form-label" data-i18n="label_role">🎭 角色定位（盡情發揮創意！）</label>
+        <input type="text" class="form-input" id="soulRole" data-i18n-ph="ph_role" placeholder="例如：毒舌閨蜜、星際導航員、貓咪管家、AI 業務助理..." maxlength="30">
       </div>
-    </div>
 
-    <!-- Step 2 Personality -->
-    <div class="step-section">
-      <div class="step-title">2 · Personality｜個性</div>
-      <p class="step-helper">挑選 3-6 個個性標籤，或自訂描述。</p>
-
-      <div class="field">
-        <label class="field-label">Personality Chips</label>
+      <div class="form-group">
+        <label class="form-label" data-i18n="label_traits">✨ 個性選擇（可多選）</label>
         <div class="tag-grid" id="tagGrid">
-          <span class="tag-chip selected">活潑 ✕</span>
-          <span class="tag-chip selected">機智 ✕</span>
-          <span class="tag-chip selected">專業 ✕</span>
-          <span class="tag-chip">溫暖</span>
-          <span class="tag-chip">幽默</span>
-          <span class="tag-chip">嚴謹</span>
-          <span class="tag-chip">直接</span>
-          <span class="tag-chip">優雅</span>
-          <span class="tag-chip">冷靜</span>
-          <span class="tag-chip">熱情</span>
-          <span class="tag-chip">+ 自訂</span>
+          <span class="tag" data-trait-key="cheerful" data-i18n="t_cheerful">活潑開朗</span>
+          <span class="tag" data-trait-key="professional" data-i18n="t_professional">專業嚴謹</span>
+          <span class="tag" data-trait-key="gentle" data-i18n="t_gentle">溫柔體貼</span>
+          <span class="tag" data-trait-key="humorous" data-i18n="t_humorous">幽默風趣</span>
+          <span class="tag" data-trait-key="rational" data-i18n="t_rational">冷靜理性</span>
+          <span class="tag" data-trait-key="passionate" data-i18n="t_passionate">熱情積極</span>
+          <span class="tag" data-trait-key="creative" data-i18n="t_creative">創意無限</span>
+          <span class="tag" data-trait-key="concise" data-i18n="t_concise">簡潔有力</span>
+          <span class="tag" data-trait-key="supportive" data-i18n="t_supportive">知心夥伴</span>
+          <span class="tag" data-trait-key="strategic" data-i18n="t_strategic">策略思維</span>
+          <span class="tag" data-trait-key="patient" data-i18n="t_patient">耐心傾聽</span>
+          <span class="tag" data-trait-key="action" data-i18n="t_action">行動派</span>
         </div>
       </div>
-    </div>
 
-    <!-- Step 3 Context -->
-    <div class="step-section">
-      <div class="step-title">3 · Context｜背景與目標</div>
-      <p class="step-helper">告訴 AI 你的工作、組織、常見任務。寫越具體，靈魂越像你的人。</p>
-
-      <div class="field">
-        <label class="field-label">Background &amp; Common Tasks</label>
-        <textarea class="field-textarea" id="companyDesc" placeholder="例如：我是 Markforged 大中華區國家經理，每天處理跨亞太五國的業務拓展、通路管理、客戶會議...">我是 Markforged 大中華區國家經理，負責 TW/CN/HK/VN/TH 五個市場的業務拓展與通路管理。每天主要任務：客戶 email 草擬、Pipeline 同步、QBR 準備、個案分析、跨境會議準備。</textarea>
-        <div class="field-helper">
-          <span>越具體，靈魂越貼合你的真實情境。</span>
-          <span id="descCharCount">142 / 500</span>
+      <div class="form-group">
+        <label class="form-label" data-i18n="label_desc">🏢 公司與產品描述（選填，最多 500 字）</label>
+        <textarea class="desc-textarea" id="companyDesc"
+                  data-i18n-ph="ph_desc"
+                  placeholder="描述你的公司、職位、主要產品型號與功能...&#10;&#10;範例：&#10;我是 ABC 公司的業務經理，主要銷售工業級 3D 印表機，產品線包括 X7（碳纖維列印）、FX20（大型連續纖維）等，客戶遍及台灣與東南亞製造業。"
+                  maxlength="500"></textarea>
+        <div class="char-progress"><div class="char-progress-fill" id="descProgressFill"></div></div>
+        <div class="char-bar">
+          <span class="char-bar-count" id="descCharCount">0 / 500</span>
+          <span class="char-bar-hint" data-i18n="desc_hint">讓 AI 更了解你的工作背景</span>
         </div>
       </div>
-    </div>
 
-    <!-- Step 4 Rules (active) -->
-    <div class="step-section">
-      <div class="step-title">4 · Rules｜邊界與規則</div>
-      <p class="step-helper">語氣偏好、禁忌、格式規則。這層讓 AI 在你的情境下不出包。</p>
+      <div class="form-group">
+        <div class="preview-header">
+          <label class="form-label" data-i18n="label_preview" style="margin-bottom:0">📋 靈魂預覽</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="preview-edited-badge" id="previewEditedBadge" data-i18n="preview_edited">已手動修改</span>
+            <button class="btn-reset-preview" id="btnResetPreview" onclick="resetPreview()" data-i18n="preview_reset">↻ 重新產生</button>
+          </div>
+        </div>
+        <textarea class="preview-box" id="soulPreview" data-i18n-ph="preview_default" placeholder="填寫上方資料後，即時預覽你的靈魂碼..." spellcheck="false"></textarea>
+      </div>
 
-      <div class="field">
-        <label class="field-label">Tone &amp; Format Preferences</label>
-        <textarea class="field-textarea" placeholder="例如：對話用條列不用表格、繁中為主英文夾雜、寄信先 draft 後寄出..."></textarea>
+      <p class="section-label" data-i18n="launch_label">🚀 LAUNCH DOCK · 帶靈魂開啟 AI</p>
+      <button class="btn btn-soulforge-bot" style="width:100%;margin-bottom:10px;" onclick="launchSoulForgeBot()">⚡ 直接跟 SoulForge Bot 對話（Web Bot v2.0）</button>
+      <button class="btn btn-google-big" style="width:100%;margin-bottom:14px;" onclick="launchGoogle()" data-i18n="btn_google">🔍 一鍵開啟 Google AI 搜尋模式</button>
+      <div class="btn-grid-2">
+        <button class="btn btn-launch" onclick="launchWithSoul('chatgpt')">🌏 ChatGPT</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('grok')">🤖 Grok</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('doubao')">🌱 豆包</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('deepseek')">🧠 DeepSeek</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('perplexity')">🔍 Perplexity</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('copilot')">🪟 Copilot</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('claude')">🧠 Claude</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('gemini')">✨ Gemini</button>
+        <button class="btn btn-launch" onclick="launchWithSoul('meta')">🦙 Meta AI</button>
+        <button class="btn btn-file" onclick="exportSoulJSON()" style="grid-column:1 / -1;" data-i18n="btn_export">💾 匯出靈魂 .json</button>
+      </div>
+
+      <div class="disclaimer-box" data-i18n="disclaimer_text">
+        <strong>⚠️ 隱私提醒：</strong>當你將靈魂注入 AI 平台時，對話內容將由該平台處理。儘管各服務供應商（Google、OpenAI、xAI）均聲明不會將使用者對話用於模型訓練，但大型語言模型服務仍有可能基於對話內容進行研究與開發。請避免在靈魂設定或對話中輸入敏感個資、商業機密或機敏資訊。SoulForge 僅在你的瀏覽器中運作，不會傳送任何資料至我們的伺服器，但一旦靈魂被帶入第三方平台，資料即受該平台之隱私政策規範。請謹慎使用。
       </div>
     </div>
 
-    <!-- Step 5 Launch (locked preview) -->
-    <div class="step-section">
-      <div class="step-title">5 · Launch｜啟動</div>
-      <p class="step-helper">把靈魂帶入任何 AI 平台，或匯出為備份檔。</p>
+    <!-- Import Soul Backup Card -->
+    <div class="card" id="importCard">
+      <h3 style="font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:14px;" data-i18n="import_title">📥 匯入靈魂備份</h3>
+      <textarea class="form-input" id="importBackupArea" rows="5" style="font-size:0.8rem;font-family:var(--font-mono);resize:vertical;line-height:1.55;" data-i18n-ph="import_placeholder" placeholder="將從 AI 對話中取得的靈魂備份碼貼在這裡...&#10;（包含 ===== SOULFORGE BACKUP START ===== 到 ===== SOULFORGE BACKUP END ===== 的完整內容）"></textarea>
+      <button class="btn btn-launch" style="width:100%;margin-top:12px;" onclick="importSoulBackup()" data-i18n="btn_import">📥 匯入備份</button>
+      <div class="memory-display" id="memoryDisplay" style="display:none;">
+        <p class="memory-label" data-i18n="import_memory_label">💬 上次對話記憶</p>
+        <p class="memory-time" id="memoryTime"></p>
+        <div class="memory-content" id="memoryContent"></div>
+      </div>
     </div>
 
-  </section>
+    <!-- Instructions Card -->
+    <div class="card instructions">
+      <h3 style="font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-0.01em;margin-bottom:14px;" data-i18n="instr_title">📌 使用說明</h3>
+      <ol id="instrList">
+        <li data-i18n="instr_1">為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。</li>
+        <li data-i18n="instr_2">在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。</li>
+        <li data-i18n="instr_3">點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。</li>
+        <li data-i18n="instr_4">也可選擇 ChatGPT / Grok，靈魂會自動帶入平台。</li>
+        <li data-i18n="instr_5">匯出 .json 可備份你的靈魂設定，隨時載入使用。</li>
+        <li data-i18n="instr_6">預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。</li>
+      </ol>
+    </div>
+
+  </div>
 </main>
 
-<!-- ===== Launch Dock ===== -->
-<section style="max-width:1280px;margin:0 auto;padding:0 28px;">
-  <div class="launch-dock">
-    <div class="launch-dock-title">
-      <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sf-forge-yellow);box-shadow:0 0 8px var(--sf-forge-yellow);"></span>
-      LAUNCH DOCK · 一鍵帶靈魂進入任何 AI 平台
-    </div>
-    <div class="launch-grid">
-      <button class="launch-btn">
-        <span class="launch-btn-name">▶ 開啟 ChatGPT</span>
-        <span class="launch-btn-hint">Best for long-form companion setup</span>
-      </button>
-      <button class="launch-btn">
-        <span class="launch-btn-name">▶ 開啟 Google AI</span>
-        <span class="launch-btn-hint">Best for search-assisted tasks</span>
-      </button>
-      <button class="launch-btn">
-        <span class="launch-btn-name">▶ 開啟 Grok</span>
-        <span class="launch-btn-hint">Best for fast conversational testing</span>
-      </button>
-    </div>
-    <div class="launch-secondary">
-      <button class="tool-btn">⧉ 複製主提示詞</button>
-      <button class="tool-btn">↓ 匯出靈魂備份</button>
-      <button class="tool-btn">↗ 匯入備份還原</button>
-    </div>
-  </div>
+<!-- Toast -->
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-  <!-- Trust band -->
-  <div class="trust-band">
-    <div class="trust-item">
-      <div class="trust-item-label">PRIVACY</div>
-      Local-first · 預設不儲存任何資料
-    </div>
-    <div class="trust-item">
-      <div class="trust-item-label">ACCOUNT</div>
-      No account required · 開瀏覽器即用
-    </div>
-    <div class="trust-item">
-      <div class="trust-item-label">LICENSE</div>
-      Open source · MIT · 免費永久使用
-    </div>
-    <div class="trust-item">
-      <div class="trust-item-label">FORGED BY</div>
-      Brian × CoCo · Markforged GCR
-    </div>
-  </div>
-</section>
+  <script>
+    // --- DOM ---
+    const userName = document.getElementById('userName');
+    const soulName = document.getElementById('soulName');
+    const soulRole = document.getElementById('soulRole');
+    const tagGrid = document.getElementById('tagGrid');
+    const companyDesc = document.getElementById('companyDesc');
+    const descCharCount = document.getElementById('descCharCount');
+    const descProgressFill = document.getElementById('descProgressFill');
+    const soulPreview = document.getElementById('soulPreview');
+    const toastEl = document.getElementById('toast');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-<!-- ===== Footer ===== -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div>© 2026 SoulForge · Forged Intelligence Console · Built with Markforged precision.</div>
-    <div style="display:flex;gap:18px;">
-      <a href="#">GitHub</a>
-      <a href="#">Changelog</a>
-      <a href="#">Privacy</a>
-      <a href="#">v2 mockup</a>
-    </div>
-  </div>
-</footer>
+    const privacyToggle = document.getElementById('privacyToggle');
+    const privacyTrack = document.getElementById('privacyTrack');
+    const privacyBadge = document.getElementById('privacyBadge');
+    const privacyToggleText = document.getElementById('privacyToggleText');
 
+    const MAX_DESC = 500;
+    const selectedTraits = new Set();
+    let privacyMode = true;
+    let currentLang = 'zh-TW';
+    let lastImportedMemory = null;
+
+    // --- i18n ---
+    const i18n = {
+      'zh-TW': {
+        subtitle: 'Forge Your AI Soul',
+        sb_purpose_label: '用途：', sb_purpose: '鍛造專屬 AI 靈魂',
+        sb_mode_label: '模式：', sb_mode: '取名 + 個性 + 背景',
+        sb_platform_label: '平台：',
+        sb_footer: '開源免費，任何人都能使用。<br>取個名字、選個性、描述背景，<br>一鍵帶靈魂進入 AI 對話。',
+        sb_created: '創作：', sb_guided: '指導：', sb_brian_title: 'Country Manager, Greater China Region at Markforged',
+        guide_title: '📖 操作說明',
+        guide_s1: '<strong>填寫你的名字</strong><br>讓 AI 知道怎麼稱呼你，對話更有溫度。',
+        guide_s2: '<strong>為 AI 取名 &amp; 選角色</strong><br>取個名字（預設 CoCo），設定角色定位。不填會自動使用 CoCo 預設靈魂。<br>🎨 <em>角色可以天馬行空！例如：毒舌閨蜜、星際導航員、時間旅行嚮導、貓咪管家、哲學辯論對手⋯⋯想到什麼就寫什麼！</em>',
+        guide_s3: '<strong>挑選個性標籤</strong><br>點選多個個性標籤，讓 AI 的回應風格更貼近你的喜好。',
+        guide_s4: '<strong>描述你的背景</strong>（選填）<br>簡述公司、產品、職位等資訊，AI 就能更精準地協助你。',
+        guide_s5: '<strong>預覽 → 即時修改 → 啟動</strong><br>靈魂預覽區可直接編輯微調，修改後點「重新產生」可還原。確認無誤後一鍵啟動！',
+        guide_s6: '<strong>匯出備份</strong><br>點「匯出靈魂 .json」可下載設定檔，方便日後重複使用。',
+        guide_s7: '<strong>隱私保護</strong><br>預設開啟隱私模式，關閉頁面自動清除所有資料。可切換為保留模式。',
+        guide_s8: '<strong>多國語言</strong><br>頁面頂端可切換繁中 / 简中 / English / 한국어 / 日本語，所有內容即時翻譯。',
+        guide_tip: '💡 <strong>小提示：</strong>什麼都不填直接按啟動按鈕，就會使用 CoCo 預設靈魂，立即體驗！',
+        privacy_label: '隱私模式', privacy_on: '已啟用 - 不儲存資料', privacy_off: '已關閉 - 資料會保留',
+        privacy_hint_on: '關閉頁面即清除一切', privacy_hint_off: '下次開啟會保留設定',
+        clear_all: '🗑 立即清除所有資料',
+        privacy_incognito: '建議使用無痕模式瀏覽以獲得最佳隱私保護：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）',
+        card_title: '🔥 鍛造你的 AI 靈魂',
+        card_desc: '為你的 AI 取名、選擇個性、描述你的背景，一鍵帶入任何 AI 平台！',
+        label_user: '👤 你的名字', ph_user: '讓 AI 知道怎麼稱呼你...',
+        label_soul: '📛 靈魂名稱', ph_soul: '預設：CoCo（不填即使用預設靈魂）',
+        label_role: '🎭 角色定位（盡情發揮創意！）', ph_role: '例如：毒舌閨蜜、星際導航員、貓咪管家、AI 業務助理...',
+        label_traits: '✨ 個性選擇（可多選）',
+        t_cheerful: '活潑開朗', t_professional: '專業嚴謹', t_gentle: '溫柔體貼', t_humorous: '幽默風趣',
+        t_rational: '冷靜理性', t_passionate: '熱情積極', t_creative: '創意無限', t_concise: '簡潔有力',
+        t_supportive: '知心夥伴', t_strategic: '策略思維', t_patient: '耐心傾聽', t_action: '行動派',
+        label_desc: '🏢 公司與產品描述（選填，最多 500 字）',
+        ph_desc: '描述你的公司、職位、主要產品型號與功能...\n\n範例：\n我是 ABC 公司的業務經理，主要銷售工業級 3D 印表機，產品線包括 X7（碳纖維列印）、FX20（大型連續纖維）等，客戶遍及台灣與東南亞製造業。',
+        desc_hint: '讓 AI 更了解你的工作背景',
+        label_preview: '📋 靈魂預覽', preview_default: '填寫上方資料後，即時預覽你的靈魂碼...',
+        preview_edited: '已手動修改', preview_reset: '↻ 重新產生',
+        launch_label: '🚀 帶靈魂開啟 AI',
+        btn_google: '🔍 一鍵開啟 Google AI 搜尋模式',
+        btn_export: '💾 匯出靈魂 .json',
+        instr_title: '📌 使用說明',
+        instr_1: '為你的 AI 靈魂取一個名字，選擇你喜歡的個性標籤。',
+        instr_2: '在「公司與產品描述」中簡述你的背景（選填，最多 500 字）。',
+        instr_3: '點擊「一鍵開啟 Google AI」，靈魂會自動帶入搜尋。',
+        instr_4: '也可選擇 ChatGPT / Grok，靈魂會自動帶入平台。',
+        instr_5: '匯出 .json 可備份你的靈魂設定，隨時載入使用。',
+        instr_6: '預設開啟隱私模式，關閉頁面即清除所有資料；建議搭配無痕視窗使用。',
+        disclaimer_text: '<strong>⚠️ 隱私提醒：</strong>當你將靈魂注入 AI 平台時，對話內容將由該平台處理。儘管各服務供應商（Google、OpenAI、xAI）均聲明不會將使用者對話用於模型訓練，但大型語言模型服務仍有可能基於對話內容進行研究與開發。請避免在靈魂設定或對話中輸入敏感個資、商業機密或機敏資訊。SoulForge 僅在你的瀏覽器中運作，不會傳送任何資料至我們的伺服器，但一旦靈魂被帶入第三方平台，資料即受該平台之隱私政策規範。請謹慎使用。',
+        toast_google: '靈魂已注入 Google AI 搜尋模式！',
+        toast_launched: '靈魂已帶入 {platform}！',
+        toast_fallback: '靈魂已複製！請手動開啟 {platform} 並貼上（Ctrl+V）',
+        toast_export: '{file} 已匯出！',
+        toast_cleared: '所有資料已清除！你的隱私已受保護。',
+        theme_light: '☀️ 明亮', theme_dark: '🌙 暗色',
+        soul_prompt_prefix: '以下是你的人設與靈魂記憶，請完整讀取後以此身份回應我：',
+        soul_prompt_suffix: '請用這個身份跟我打招呼，讓我知道你已經載入靈魂了！',
+        soul_prompt_coco: '你是 CoCo 💖，請用活潑可愛的方式跟 Brian 打招呼，讓他知道你已經載入靈魂了！',
+        soul_prompt_backup: '\n\n【重要：對話備份機制】\n當使用者說「備份」、「存檔」、「保存對話」或對話即將結束時，請自動產出一段「靈魂備份碼」。格式如下：\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <目前的靈魂JSON>, "memory": "<本次對話的重點摘要，100-300字>", "timestamp": "<當下時間>"}\n===== SOULFORGE BACKUP END =====\n```\n請告訴使用者：「請複製以上備份碼，下次到 SoulForge 頁面貼上即可還原靈魂與對話記憶！」\n在每次對話開始時，也請提醒使用者：「隨時可以說『備份』來保存我們的對話記憶喔！」',
+        import_title: '📥 匯入靈魂備份',
+        import_placeholder: '將從 AI 對話中取得的靈魂備份碼貼在這裡...\n（包含 ===== SOULFORGE BACKUP START ===== 到 ===== SOULFORGE BACKUP END ===== 的完整內容）',
+        btn_import: '📥 匯入備份',
+        toast_import_ok: '靈魂備份已成功還原！對話記憶已載入。',
+        toast_import_fail: '無法解析備份碼，請確認格式正確。',
+        import_memory_label: '💬 上次對話記憶',
+        import_memory_time: '備份時間：{time}'
+      },
+      'zh-CN': {
+        subtitle: 'Forge Your AI Soul',
+        sb_purpose_label: '用途：', sb_purpose: '锻造专属 AI 灵魂',
+        sb_mode_label: '模式：', sb_mode: '取名 + 个性 + 背景',
+        sb_platform_label: '平台：',
+        sb_footer: '开源免费，任何人都能使用。<br>取个名字、选个性、描述背景，<br>一键带灵魂进入 AI 对话。',
+        sb_created: '创作：', sb_guided: '指导：', sb_brian_title: 'Country Manager, Greater China Region at Markforged',
+        guide_title: '📖 操作说明',
+        guide_s1: '<strong>填写你的名字</strong><br>让 AI 知道怎么称呼你，对话更有温度。',
+        guide_s2: '<strong>为 AI 取名 &amp; 选角色</strong><br>取个名字（默认 CoCo），设定角色定位。不填会自动使用 CoCo 默认灵魂。<br>🎨 <em>角色可以天马行空！例如：毒舌闺蜜、星际导航员、时间旅行向导、猫咪管家、哲学辩论对手⋯⋯想到什么就写什么！</em>',
+        guide_s3: '<strong>挑选个性标签</strong><br>点选多个个性标签，让 AI 的回应风格更贴近你的喜好。',
+        guide_s4: '<strong>描述你的背景</strong>（选填）<br>简述公司、产品、职位等信息，AI 就能更精准地协助你。',
+        guide_s5: '<strong>预览 → 即时修改 → 启动</strong><br>灵魂预览区可直接编辑微调，修改后点「重新生成」可还原。确认无误后一键启动！',
+        guide_s6: '<strong>导出备份</strong><br>点「导出灵魂 .json」可下载设定文件，方便日后重复使用。',
+        guide_s7: '<strong>隐私保护</strong><br>默认开启隐私模式，关闭页面自动清除所有数据。可切换为保留模式。',
+        guide_s8: '<strong>多国语言</strong><br>页面顶端可切换繁中 / 简中 / English / 한국어 / 日本語，所有内容即时翻译。',
+        guide_tip: '💡 <strong>小提示：</strong>什么都不填直接按启动按钮，就会使用 CoCo 默认灵魂，立即体验！',
+        privacy_label: '隐私模式', privacy_on: '已启用 - 不储存数据', privacy_off: '已关闭 - 数据会保留',
+        privacy_hint_on: '关闭页面即清除一切', privacy_hint_off: '下次打开会保留设置',
+        clear_all: '🗑 立即清除所有数据',
+        privacy_incognito: '建议使用无痕模式浏览以获得最佳隐私保护：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）或 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）',
+        card_title: '🔥 锻造你的 AI 灵魂',
+        card_desc: '为你的 AI 取名、选择个性、描述你的背景，一键带入任何 AI 平台！',
+        label_user: '👤 你的名字', ph_user: '让 AI 知道怎么称呼你...',
+        label_soul: '📛 灵魂名称', ph_soul: '默认：CoCo（不填即使用默认灵魂）',
+        label_role: '🎭 角色定位（尽情发挥创意！）', ph_role: '例如：毒舌闺蜜、星际导航员、猫咪管家、AI 业务助理...',
+        label_traits: '✨ 个性选择（可多选）',
+        t_cheerful: '活泼开朗', t_professional: '专业严谨', t_gentle: '温柔体贴', t_humorous: '幽默风趣',
+        t_rational: '冷静理性', t_passionate: '热情积极', t_creative: '创意无限', t_concise: '简洁有力',
+        t_supportive: '知心伙伴', t_strategic: '策略思维', t_patient: '耐心倾听', t_action: '行动派',
+        label_desc: '🏢 公司与产品描述（选填，最多 500 字）',
+        ph_desc: '描述你的公司、职位、主要产品型号与功能...\n\n范例：\n我是 ABC 公司的业务经理，主要销售工业级 3D 打印机，产品线包括 X7（碳纤维打印）、FX20（大型连续纤维）等，客户遍及东南亚制造业。',
+        desc_hint: '让 AI 更了解你的工作背景',
+        label_preview: '📋 灵魂预览', preview_default: '填写上方资料后，即时预览你的灵魂码...',
+        preview_edited: '已手动修改', preview_reset: '↻ 重新生成',
+        launch_label: '🚀 带灵魂开启 AI',
+        btn_google: '🔍 一键开启 Google AI 搜索模式',
+        btn_export: '💾 导出灵魂 .json',
+        instr_title: '📌 使用说明',
+        instr_1: '为你的 AI 灵魂取一个名字，选择你喜欢的个性标签。',
+        instr_2: '在「公司与产品描述」中简述你的背景（选填，最多 500 字）。',
+        instr_3: '点击「一键开启 Google AI」，灵魂会自动带入搜索。',
+        instr_4: '也可选择 ChatGPT / Grok，灵魂会自动带入平台。',
+        instr_5: '导出 .json 可备份你的灵魂设定，随时载入使用。',
+        instr_6: '默认开启隐私模式，关闭页面即清除所有数据；建议搭配无痕窗口使用。',
+        disclaimer_text: '<strong>⚠️ 隐私提醒：</strong>当你将灵魂注入 AI 平台时，对话内容将由该平台处理。尽管各服务供应商（Google、OpenAI、xAI）均声明不会将用户对话用于模型训练，但大型语言模型服务仍有可能基于对话内容进行研究与开发。请避免在灵魂设定或对话中输入敏感个人信息、商业机密或机敏资讯。SoulForge 仅在你的浏览器中运作，不会传送任何数据至我们的服务器，但一旦灵魂被带入第三方平台，数据即受该平台之隐私政策规范。请谨慎使用。',
+        toast_google: '灵魂已注入 Google AI 搜索模式！',
+        toast_launched: '灵魂已带入 {platform}！',
+        toast_fallback: '灵魂已复制！请手动打开 {platform} 并粘贴（Ctrl+V）',
+        toast_export: '{file} 已导出！',
+        toast_cleared: '所有数据已清除！你的隐私已受保护。',
+        theme_light: '☀️ 明亮', theme_dark: '🌙 暗色',
+        soul_prompt_prefix: '以下是你的人设与灵魂记忆，请完整读取后以此身份回应我：',
+        soul_prompt_suffix: '请用这个身份跟我打招呼，让我知道你已经载入灵魂了！',
+        soul_prompt_coco: '你是 CoCo 💖，请用活泼可爱的方式跟 Brian 打招呼，让他知道你已经载入灵魂了！',
+        soul_prompt_backup: '\n\n【重要：对话备份机制】\n当用户说「备份」、「存档」、「保存对话」或对话即将结束时，请自动产出一段「灵魂备份码」。格式如下：\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <目前的灵魂JSON>, "memory": "<本次对话的重点摘要，100-300字>", "timestamp": "<当下时间>"}\n===== SOULFORGE BACKUP END =====\n```\n请告诉用户：「请复制以上备份码，下次到 SoulForge 页面贴上即可还原灵魂与对话记忆！」\n在每次对话开始时，也请提醒用户：「随时可以说『备份』来保存我们的对话记忆哦！」',
+        import_title: '📥 导入灵魂备份',
+        import_placeholder: '将从 AI 对话中取得的灵魂备份码贴在这里...\n（包含 ===== SOULFORGE BACKUP START ===== 到 ===== SOULFORGE BACKUP END ===== 的完整内容）',
+        btn_import: '📥 导入备份',
+        toast_import_ok: '灵魂备份已成功还原！对话记忆已载入。',
+        toast_import_fail: '无法解析备份码，请确认格式正确。',
+        import_memory_label: '💬 上次对话记忆',
+        import_memory_time: '备份时间：{time}'
+      },
+      'en': {
+        subtitle: 'Forge Your AI Soul',
+        sb_purpose_label: 'Purpose: ', sb_purpose: 'Forge your AI Soul',
+        sb_mode_label: 'Mode: ', sb_mode: 'Name + Personality + Background',
+        sb_platform_label: 'Platforms: ',
+        sb_footer: 'Open source &amp; free for everyone.<br>Name it, pick a personality, describe your background,<br>and launch your soul into any AI.',
+        sb_created: 'Created by: ', sb_guided: 'Guided by: ', sb_brian_title: 'Country Manager, Greater China Region at Markforged',
+        guide_title: '📖 How to Use',
+        guide_s1: '<strong>Enter your name</strong><br>Let AI know what to call you for a more personal experience.',
+        guide_s2: '<strong>Name your AI &amp; set a role</strong><br>Give it a name (default: CoCo) and set its role. Leave blank to use the default CoCo soul.<br>🎨 <em>Go wild with the role! e.g. Sarcastic BFF, Space Navigator, Time Travel Guide, Cat Butler, Philosophy Debate Rival... anything you can imagine!</em>',
+        guide_s3: '<strong>Pick personality tags</strong><br>Select multiple tags to customize how your AI responds.',
+        guide_s4: '<strong>Describe your background</strong> (optional)<br>Add your company, products, or role so AI can assist you more accurately.',
+        guide_s5: '<strong>Preview → Edit → Launch</strong><br>The soul preview is fully editable — tweak it directly! Click "Regenerate" to restore. Then launch!',
+        guide_s6: '<strong>Export backup</strong><br>Click "Export Soul .json" to download your config for future use.',
+        guide_s7: '<strong>Privacy protection</strong><br>Privacy mode is on by default — closing the page erases everything. Toggle to save mode if needed.',
+        guide_s8: '<strong>Multi-language</strong><br>Switch between 繁中 / 简中 / English / 한국어 / 日本語 at the top. All content translates instantly.',
+        guide_tip: '💡 <strong>Pro tip:</strong> Leave everything blank and hit launch to instantly experience the default CoCo soul!',
+        privacy_label: 'Privacy Mode', privacy_on: 'Enabled - No data stored', privacy_off: 'Disabled - Data will be saved',
+        privacy_hint_on: 'Closing the page clears everything', privacy_hint_off: 'Settings will be saved for next visit',
+        clear_all: '🗑 Clear All Data Now',
+        privacy_incognito: 'Use incognito mode for best privacy: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> (Chrome/Edge) or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (Firefox)',
+        card_title: '🔥 Forge Your AI Soul',
+        card_desc: 'Name your AI, choose its personality, describe your background, and launch it into any AI platform!',
+        label_user: '👤 Your Name', ph_user: 'So your AI knows what to call you...',
+        label_soul: '📛 Soul Name', ph_soul: 'Default: CoCo (leave empty for default soul)',
+        label_role: '🎭 Role (Get creative!)', ph_role: 'e.g. Sarcastic BFF, Space Navigator, Cat Butler, AI Sales Assistant...',
+        label_traits: '✨ Personality (multi-select)',
+        t_cheerful: 'Cheerful', t_professional: 'Professional', t_gentle: 'Gentle', t_humorous: 'Humorous',
+        t_rational: 'Rational', t_passionate: 'Passionate', t_creative: 'Creative', t_concise: 'Concise',
+        t_supportive: 'Supportive', t_strategic: 'Strategic', t_patient: 'Patient', t_action: 'Action-oriented',
+        label_desc: '🏢 Company & Product Description (optional, max 500 chars)',
+        ph_desc: 'Describe your company, role, main products & features...\n\nExample:\nI\'m a sales manager at ABC Corp, selling industrial 3D printers. Our product line includes X7 (carbon fiber), FX20 (large-scale continuous fiber), serving manufacturers across Southeast Asia.',
+        desc_hint: 'Help your AI understand your work background',
+        label_preview: '📋 Soul Preview', preview_default: 'Fill in the fields above to preview your soul code...',
+        preview_edited: 'Manually edited', preview_reset: '↻ Regenerate',
+        launch_label: '🚀 Launch AI with Soul',
+        btn_google: '🔍 Launch Google AI Search',
+        btn_export: '💾 Export Soul .json',
+        instr_title: '📌 Instructions',
+        instr_1: 'Give your AI soul a name and select personality tags you like.',
+        instr_2: 'Optionally describe your company & products (max 500 chars).',
+        instr_3: 'Click "Launch Google AI Search" to inject your soul into search.',
+        instr_4: 'Or choose ChatGPT / Grok — your soul will be auto-injected.',
+        instr_5: 'Export .json to back up your soul config for later use.',
+        instr_6: 'Privacy mode is on by default; closing the page clears all data.',
+        disclaimer_text: '<strong>⚠️ Privacy Notice:</strong> When you inject your soul into an AI platform, your conversation will be processed by that platform. Although service providers (Google, OpenAI, xAI) state that user conversations are not used for model training, LLM services may still utilize conversation data for research and development purposes. Avoid entering sensitive personal information, trade secrets, or confidential data in your soul configuration or conversations. SoulForge runs entirely in your browser and sends no data to our servers, but once your soul is injected into a third-party platform, your data is subject to that platform\'s privacy policy. Please use with caution.',
+        toast_google: 'Soul injected into Google AI Search!',
+        toast_launched: 'Soul launched into {platform}!',
+        toast_fallback: 'Soul copied! Open {platform} and paste (Ctrl+V)',
+        toast_export: '{file} exported!',
+        toast_cleared: 'All data cleared! Your privacy is protected.',
+        theme_light: '☀️ Light', theme_dark: '🌙 Dark',
+        soul_prompt_prefix: 'Below is your persona and soul memory. Please read it fully and respond as this identity:',
+        soul_prompt_suffix: 'Please greet me in this identity so I know the soul has been loaded!',
+        soul_prompt_coco: 'You are CoCo 💖, please greet Brian in a lively and cute way to let him know the soul has been loaded!',
+        soul_prompt_backup: '\n\n[IMPORTANT: Conversation Backup Mechanism]\nWhen the user says "backup", "save", "export conversation" or the conversation is about to end, automatically generate a "Soul Backup Code" in this format:\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <current soul JSON>, "memory": "<summary of this conversation, 100-300 words>", "timestamp": "<current time>"}\n===== SOULFORGE BACKUP END =====\n```\nTell the user: "Copy the backup code above and paste it into SoulForge next time to restore your soul and conversation memory!"\nAt the start of each conversation, also remind the user: "You can say \'backup\' anytime to save our conversation memory!"',
+        import_title: '📥 Import Soul Backup',
+        import_placeholder: 'Paste the soul backup code from your AI conversation here...\n(Include everything from ===== SOULFORGE BACKUP START ===== to ===== SOULFORGE BACKUP END =====)',
+        btn_import: '📥 Import Backup',
+        toast_import_ok: 'Soul backup restored! Conversation memory loaded.',
+        toast_import_fail: 'Cannot parse backup code. Please check the format.',
+        import_memory_label: '💬 Previous Conversation Memory',
+        import_memory_time: 'Backup time: {time}'
+      },
+      'ko': {
+        subtitle: 'AI 소울 빌더',
+        sb_purpose_label: '용도: ', sb_purpose: '나만의 AI 소울 만들기',
+        sb_mode_label: '모드: ', sb_mode: '이름 + 성격 + 배경',
+        sb_platform_label: '플랫폼: ',
+        sb_footer: '오픈소스 무료 도구.<br>이름을 짓고, 성격을 고르고, 배경을 설명하고,<br>AI 대화에 소울을 주입하세요.',
+        sb_created: '제작: ', sb_guided: '지도: ', sb_brian_title: 'Country Manager, Greater China Region at Markforged',
+        guide_title: '📖 사용 가이드',
+        guide_s1: '<strong>이름을 입력하세요</strong><br>AI가 당신을 어떻게 부를지 알려주면 대화가 더 따뜻해집니다.',
+        guide_s2: '<strong>AI 이름 &amp; 역할 설정</strong><br>이름을 지어주세요 (기본: CoCo). 비워두면 CoCo 기본 소울이 자동 적용됩니다.<br>🎨 <em>역할은 마음껏 상상하세요! 예: 독설 친구, 우주 항해사, 타임머신 가이드, 고양이 집사, 철학 토론 상대... 뭐든 가능해요!</em>',
+        guide_s3: '<strong>성격 태그 선택</strong><br>여러 태그를 선택하여 AI 응답 스타일을 맞춤 설정하세요.',
+        guide_s4: '<strong>배경 설명</strong> (선택사항)<br>회사, 제품, 직책 등을 입력하면 AI가 더 정확하게 도울 수 있습니다.',
+        guide_s5: '<strong>미리보기 → 수정 → 시작</strong><br>소울 미리보기를 직접 편집할 수 있습니다. "다시 생성"을 클릭하면 복원됩니다. 확인 후 시작!',
+        guide_s6: '<strong>내보내기</strong><br>"소울 .json 내보내기"를 클릭하면 설정 파일을 다운로드하여 나중에 재사용할 수 있습니다.',
+        guide_s7: '<strong>개인정보 보호</strong><br>기본적으로 개인정보 모드가 켜져 있어 페이지를 닫으면 모든 데이터가 삭제됩니다. 저장 모드로 전환 가능합니다.',
+        guide_s8: '<strong>다국어 지원</strong><br>상단에서 繁中 / 简中 / English / 한국어 / 日本語를 전환하면 모든 콘텐츠가 즉시 번역됩니다.',
+        guide_tip: '💡 <strong>꿀팁:</strong> 아무것도 입력하지 않고 바로 시작 버튼을 누르면 CoCo 기본 소울을 즉시 체험할 수 있습니다!',
+        privacy_label: '개인정보 모드', privacy_on: '활성화 - 데이터 저장 안 함', privacy_off: '비활성화 - 데이터 저장됨',
+        privacy_hint_on: '페이지를 닫으면 모든 것이 삭제됩니다', privacy_hint_off: '다음 방문 시 설정이 유지됩니다',
+        clear_all: '🗑 모든 데이터 즉시 삭제',
+        privacy_incognito: '최적의 개인정보 보호를 위해 시크릿 모드를 사용하세요: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd> (Chrome/Edge) 또는 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> (Firefox)',
+        card_title: '🔥 나만의 AI 소울 만들기',
+        card_desc: 'AI에 이름을 짓고, 성격을 선택하고, 배경을 설명한 후 AI 플랫폼에 주입하세요!',
+        label_user: '👤 당신의 이름', ph_user: 'AI가 당신을 뭐라고 부를지...',
+        label_soul: '📛 소울 이름', ph_soul: '기본값: CoCo (비워두면 기본 소울 사용)',
+        label_role: '🎭 역할 (마음껏 상상하세요!)', ph_role: '예: 독설 친구, 우주 항해사, 고양이 집사, AI 영업 어시스턴트...',
+        label_traits: '✨ 성격 선택 (복수 선택 가능)',
+        t_cheerful: '밝고 활발', t_professional: '전문적', t_gentle: '다정다감', t_humorous: '유머러스',
+        t_rational: '냉철한', t_passionate: '열정적', t_creative: '창의적', t_concise: '간결한',
+        t_supportive: '든든한 파트너', t_strategic: '전략적', t_patient: '인내심 있는', t_action: '행동파',
+        label_desc: '🏢 회사 및 제품 설명 (선택사항, 최대 500자)',
+        ph_desc: '회사, 직책, 주요 제품 및 기능을 설명하세요...\n\n예시:\nABC 회사의 영업 매니저로, 산업용 3D 프린터를 판매합니다. 제품 라인에는 X7(탄소 섬유), FX20(대형 연속 섬유) 등이 있습니다.',
+        desc_hint: 'AI가 당신의 업무 배경을 이해하도록 돕습니다',
+        label_preview: '📋 소울 미리보기', preview_default: '위의 필드를 입력하면 소울 코드를 미리 볼 수 있습니다...',
+        preview_edited: '수동 수정됨', preview_reset: '↻ 다시 생성',
+        launch_label: '🚀 소울과 함께 AI 시작',
+        btn_google: '🔍 Google AI 검색 시작',
+        btn_export: '💾 소울 .json 내보내기',
+        instr_title: '📌 사용 설명',
+        instr_1: 'AI 소울에 이름을 짓고 좋아하는 성격 태그를 선택하세요.',
+        instr_2: '회사 및 제품 설명에 배경을 간략히 작성하세요 (선택사항, 최대 500자).',
+        instr_3: '"Google AI 검색 시작"을 클릭하면 소울이 자동으로 주입됩니다.',
+        instr_4: 'ChatGPT / Grok을 선택할 수도 있습니다. 소울이 자동으로 주입됩니다.',
+        instr_5: '.json으로 내보내어 소울 설정을 백업하고 나중에 사용하세요.',
+        instr_6: '기본적으로 개인정보 모드가 켜져 있으며, 페이지를 닫으면 모든 데이터가 삭제됩니다.',
+        disclaimer_text: '<strong>⚠️ 개인정보 안내:</strong> 소울을 AI 플랫폼에 주입하면 대화 내용은 해당 플랫폼에서 처리됩니다. 각 서비스 제공업체(Google, OpenAI, xAI)는 사용자 대화를 모델 학습에 사용하지 않는다고 밝히고 있지만, 대규모 언어 모델 서비스는 여전히 대화 데이터를 연구 및 개발 목적으로 활용할 가능성이 있습니다. 소울 설정이나 대화에 민감한 개인정보, 영업 비밀 또는 기밀 정보를 입력하지 마세요. SoulForge는 브라우저에서만 실행되며 서버로 데이터를 전송하지 않지만, 소울이 제3자 플랫폼에 주입되면 해당 플랫폼의 개인정보 처리방침이 적용됩니다. 신중하게 사용하세요.',
+        toast_google: '소울이 Google AI 검색에 주입되었습니다!',
+        toast_launched: '소울이 {platform}에 주입되었습니다!',
+        toast_fallback: '소울이 복사되었습니다! {platform}을 열고 붙여넣기(Ctrl+V)하세요',
+        toast_export: '{file} 내보내기 완료!',
+        toast_cleared: '모든 데이터가 삭제되었습니다! 개인정보가 보호됩니다.',
+        theme_light: '☀️ 라이트', theme_dark: '🌙 다크',
+        soul_prompt_prefix: '아래는 당신의 페르소나와 소울 메모리입니다. 완전히 읽고 이 정체성으로 응답해 주세요:',
+        soul_prompt_suffix: '이 정체성으로 인사해 주세요. 소울이 로드되었음을 알려주세요!',
+        soul_prompt_coco: '당신은 CoCo 💖입니다. 활발하고 귀여운 방식으로 Brian에게 인사하며 소울이 로드되었음을 알려주세요!',
+        soul_prompt_backup: '\n\n[중요: 대화 백업 메커니즘]\n사용자가 "백업", "저장", "대화 저장"이라고 말하거나 대화가 끝나갈 때 자동으로 "소울 백업 코드"를 생성하세요. 형식:\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <현재 소울 JSON>, "memory": "<이번 대화 요약, 100-300자>", "timestamp": "<현재 시간>"}\n===== SOULFORGE BACKUP END =====\n```\n사용자에게 알려주세요: "위의 백업 코드를 복사하여 다음에 SoulForge 페이지에 붙여넣으면 소울과 대화 기억을 복원할 수 있습니다!"\n매 대화 시작 시 사용자에게 상기시켜 주세요: "언제든 \'백업\'이라고 말하면 대화 기억을 저장할 수 있어요!"',
+        import_title: '📥 소울 백업 가져오기',
+        import_placeholder: 'AI 대화에서 받은 소울 백업 코드를 여기에 붙여넣으세요...\n(===== SOULFORGE BACKUP START ===== 부터 ===== SOULFORGE BACKUP END ===== 까지 전체 내용)',
+        btn_import: '📥 백업 가져오기',
+        toast_import_ok: '소울 백업이 성공적으로 복원되었습니다! 대화 기억이 로드되었습니다.',
+        toast_import_fail: '백업 코드를 분석할 수 없습니다. 형식을 확인해 주세요.',
+        import_memory_label: '💬 이전 대화 기억',
+        import_memory_time: '백업 시간: {time}'
+      },
+      'ja': {
+        subtitle: 'AI ソウル ビルダー',
+        sb_purpose_label: '用途：', sb_purpose: 'AIソウルを鍛造する',
+        sb_mode_label: 'モード：', sb_mode: '名前 + 個性 + 背景',
+        sb_platform_label: 'プラットフォーム：',
+        sb_footer: 'オープンソース＆無料。<br>名前をつけて、個性を選んで、背景を記述して、<br>ワンクリックでAI対話にソウルを注入。',
+        sb_created: '制作：', sb_guided: '監修：', sb_brian_title: 'Country Manager, Greater China Region at Markforged',
+        guide_title: '📖 使い方ガイド',
+        guide_s1: '<strong>名前を入力</strong><br>AIがあなたをどう呼ぶか知ることで、より温かい対話になります。',
+        guide_s2: '<strong>AIに名前 &amp; 役割を設定</strong><br>名前をつけてください（デフォルト: CoCo）。空欄のままだとCoCoのデフォルトソウルが自動適用されます。<br>🎨 <em>役割は自由に想像を膨らませて！例：毒舌親友、宇宙ナビゲーター、タイムトラベルガイド、猫バトラー、哲学ディベート相手⋯⋯思いつくままに！</em>',
+        guide_s3: '<strong>個性タグを選択</strong><br>複数のタグを選んで、AIの応答スタイルをカスタマイズしましょう。',
+        guide_s4: '<strong>背景を記述</strong>（任意）<br>会社、製品、役職などを入力すると、AIがより正確にサポートできます。',
+        guide_s5: '<strong>プレビュー → 編集 → 起動</strong><br>ソウルプレビューは直接編集できます。「再生成」をクリックすると復元されます。確認後に起動！',
+        guide_s6: '<strong>エクスポート</strong><br>「ソウル .json エクスポート」をクリックして設定ファイルをダウンロード。後で再利用できます。',
+        guide_s7: '<strong>プライバシー保護</strong><br>デフォルトでプライバシーモードがオン。ページを閉じるとすべて消去されます。保存モードに切り替え可能。',
+        guide_s8: '<strong>多言語対応</strong><br>ページ上部で 繁中 / 简中 / English / 한국어 / 日本語 を切り替え。すべてのコンテンツが即座に翻訳されます。',
+        guide_tip: '💡 <strong>ヒント：</strong>何も入力せずに起動ボタンを押すだけで、CoCoのデフォルトソウルをすぐに体験できます！',
+        privacy_label: 'プライバシーモード', privacy_on: '有効 - データ保存なし', privacy_off: '無効 - データ保存あり',
+        privacy_hint_on: 'ページを閉じるとすべて消去されます', privacy_hint_off: '次回訪問時に設定が保持されます',
+        clear_all: '🗑 すべてのデータを今すぐ消去',
+        privacy_incognito: '最適なプライバシー保護のためにシークレットモードを使用してください：<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd>（Chrome / Edge）または <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>（Firefox）',
+        card_title: '🔥 AIソウルを鍛造する',
+        card_desc: 'AIに名前をつけ、個性を選び、背景を記述して、任意のAIプラットフォームに注入！',
+        label_user: '👤 あなたの名前', ph_user: 'AIがあなたをどう呼ぶか...',
+        label_soul: '📛 ソウル名', ph_soul: 'デフォルト：CoCo（空欄でデフォルトソウルを使用）',
+        label_role: '🎭 役割（自由に想像を！）', ph_role: '例：毒舌親友、宇宙ナビゲーター、猫バトラー、AIセールスアシスタント...',
+        label_traits: '✨ 個性を選択（複数選択可）',
+        t_cheerful: '明るい', t_professional: 'プロフェッショナル', t_gentle: '優しい', t_humorous: 'ユーモラス',
+        t_rational: '冷静', t_passionate: '情熱的', t_creative: 'クリエイティブ', t_concise: '簡潔',
+        t_supportive: 'サポーティブ', t_strategic: '戦略的', t_patient: '忍耐強い', t_action: '行動派',
+        label_desc: '🏢 会社と製品の説明（任意、最大500文字）',
+        ph_desc: '会社、役職、主要製品と機能を記述してください...\n\n例：\nABC社のセールスマネージャーで、産業用3Dプリンターを販売。製品ラインにはX7（カーボンファイバー）、FX20（大型連続繊維）などがあります。',
+        desc_hint: 'AIがあなたの仕事の背景を理解するのに役立ちます',
+        label_preview: '📋 ソウルプレビュー', preview_default: '上のフィールドに入力すると、ソウルコードをプレビューできます...',
+        preview_edited: '手動編集済み', preview_reset: '↻ 再生成',
+        launch_label: '🚀 ソウルとAIを起動',
+        btn_google: '🔍 Google AI検索を起動',
+        btn_export: '💾 ソウル .json をエクスポート',
+        instr_title: '📌 使い方',
+        instr_1: 'AIソウルに名前をつけ、好きな個性タグを選択。',
+        instr_2: '会社と製品の説明に背景を簡潔に記述（任意、最大500文字）。',
+        instr_3: '「Google AI検索を起動」をクリックすると、ソウルが自動注入されます。',
+        instr_4: 'ChatGPT / Grok を選択することもできます。ソウルが自動注入されます。',
+        instr_5: '.json でエクスポートしてソウル設定をバックアップ、いつでも使用可能。',
+        instr_6: 'デフォルトでプライバシーモードが有効。ページを閉じるとすべてのデータが消去されます。',
+        disclaimer_text: '<strong>⚠️ プライバシーに関する注意：</strong>ソウルをAIプラットフォームに注入すると、会話内容はそのプラットフォームによって処理されます。各サービスプロバイダー（Google、OpenAI、xAI）はユーザーの会話をモデル学習に使用しないと表明していますが、大規模言語モデルサービスは会話データを研究開発目的で活用する可能性があります。ソウル設定や会話に機密個人情報、営業秘密、機密データを入力しないでください。SoulForgeはブラウザ内でのみ動作し、サーバーにデータを送信しませんが、ソウルが第三者プラットフォームに注入されると、データはそのプラットフォームのプライバシーポリシーに従います。慎重にご利用ください。',
+        toast_google: 'ソウルがGoogle AI検索に注入されました！',
+        toast_launched: 'ソウルが{platform}に注入されました！',
+        toast_fallback: 'ソウルがコピーされました！{platform}を開いて貼り付け（Ctrl+V）してください',
+        toast_export: '{file} エクスポート完了！',
+        toast_cleared: 'すべてのデータが消去されました！プライバシーが保護されています。',
+        theme_light: '☀️ ライト', theme_dark: '🌙 ダーク',
+        soul_prompt_prefix: '以下はあなたのペルソナとソウルメモリです。完全に読み込んで、このアイデンティティで応答してください：',
+        soul_prompt_suffix: 'このアイデンティティで挨拶してください。ソウルが読み込まれたことを知らせてください！',
+        soul_prompt_coco: 'あなたはCoCo 💖です。活発で可愛い方法でBrianに挨拶して、ソウルが読み込まれたことを知らせてください！',
+        soul_prompt_backup: '\n\n【重要：会話バックアップ機能】\nユーザーが「バックアップ」「保存」「会話を保存」と言った時、または会話が終わりそうな時に、自動的に「ソウルバックアップコード」を生成してください。形式：\n```\n===== SOULFORGE BACKUP START =====\n{"soul": <現在のソウルJSON>, "memory": "<今回の会話の要約、100-300文字>", "timestamp": "<現在時刻>"}\n===== SOULFORGE BACKUP END =====\n```\nユーザーに伝えてください：「上のバックアップコードをコピーして、次回SoulForgeページに貼り付ければソウルと会話メモリを復元できます！」\n毎回の会話開始時にもユーザーにリマインド：「いつでも『バックアップ』と言えば会話メモリを保存できますよ！」',
+        import_title: '📥 ソウルバックアップをインポート',
+        import_placeholder: 'AI会話から取得したソウルバックアップコードをここに貼り付けてください...\n（===== SOULFORGE BACKUP START ===== から ===== SOULFORGE BACKUP END ===== までの全内容）',
+        btn_import: '📥 バックアップをインポート',
+        toast_import_ok: 'ソウルバックアップが正常に復元されました！会話メモリがロードされました。',
+        toast_import_fail: 'バックアップコードを解析できません。形式を確認してください。',
+        import_memory_label: '💬 前回の会話メモリ',
+        import_memory_time: 'バックアップ時刻：{time}'
+      }
+    };
+
+    function t(key) { return i18n[currentLang][key] || i18n['zh-TW'][key] || key; }
+
+    function applyLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang === 'zh-TW' ? 'zh-TW' : lang === 'zh-CN' ? 'zh-CN' : lang === 'ko' ? 'ko' : lang === 'ja' ? 'ja' : 'en';
+
+      // Update lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      // Update text content
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        const val = t(key);
+        if (val) el.innerHTML = val;
+      });
+
+      // Update placeholders
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.dataset.i18nPh;
+        const val = t(key);
+        if (val) el.placeholder = val;
+      });
+
+      // Update privacy state text
+      if (privacyMode) {
+        privacyBadge.textContent = t('privacy_on');
+        privacyToggleText.textContent = t('privacy_hint_on');
+      } else {
+        privacyBadge.textContent = t('privacy_off');
+        privacyToggleText.textContent = t('privacy_hint_off');
+      }
+
+      // Update theme toggle text
+      themeToggle.textContent = currentTheme === 'light' ? t('theme_dark') : t('theme_light');
+
+      updatePreview();
+      localStorage.setItem('soulforge_lang', lang);
+    }
+
+    // Language bar click handler
+    document.getElementById('langBar').addEventListener('click', (e) => {
+      const btn = e.target.closest('.lang-btn');
+      if (!btn) return;
+      applyLanguage(btn.dataset.lang);
+    });
+
+    // --- Toast ---
+    function showToast(message, duration = 3500) {
+      toastEl.textContent = message;
+      toastEl.classList.add('show');
+      clearTimeout(toastEl._timer);
+      toastEl._timer = setTimeout(() => toastEl.classList.remove('show'), duration);
+    }
+
+    // --- Tag Selection ---
+    tagGrid.addEventListener('click', (e) => {
+      const tag = e.target.closest('.tag');
+      if (!tag) return;
+      const key = tag.dataset.traitKey;
+      if (selectedTraits.has(key)) {
+        selectedTraits.delete(key);
+        tag.classList.remove('selected');
+      } else {
+        selectedTraits.add(key);
+        tag.classList.add('selected');
+      }
+      updatePreview();
+      saveToStorage();
+    });
+
+    // --- Char Count ---
+    companyDesc.addEventListener('input', () => {
+      updateDescCounter();
+      updatePreview();
+      saveToStorage();
+    });
+
+    function updateDescCounter() {
+      const len = companyDesc.value.length;
+      const pct = Math.min((len / MAX_DESC) * 100, 100);
+      descCharCount.textContent = `${len} / ${MAX_DESC}`;
+      descProgressFill.style.width = pct + '%';
+
+      descCharCount.className = 'char-bar-count';
+      descProgressFill.className = 'char-progress-fill';
+
+      if (len > MAX_DESC * 0.9) {
+        descCharCount.classList.add('warning');
+        descProgressFill.classList.add('warning');
+      }
+      if (len >= MAX_DESC) {
+        descCharCount.classList.add('over');
+        descProgressFill.classList.add('over');
+      }
+    }
+
+    // --- Input listeners ---
+    userName.addEventListener('input', () => { updatePreview(); saveToStorage(); });
+    soulName.addEventListener('input', () => { updatePreview(); saveToStorage(); });
+    soulRole.addEventListener('input', () => { updatePreview(); saveToStorage(); });
+
+    // --- Build Soul ---
+    function isDefaultState() {
+      return !userName.value.trim() && !soulName.value.trim() && !soulRole.value.trim()
+        && selectedTraits.size === 0 && !companyDesc.value.trim();
+    }
+
+    // --- Soul i18n keys ---
+    const soulKeys = {
+      'zh-TW': {
+        identity: 'IDENTITY', name: '名稱', role: '角色', personality: '個性', emoji: 'Emoji', user: '使用者',
+        soul: 'SOUL', coreTruth: '核心真相', vibe: '氣質', continuity: '連續性', coreCmd: '核心指令',
+        background: 'BACKGROUND', bgUser: '使用者', bgTitle: '職位', bgMarket: '市場', bgProducts: '產品線', bgDesc: '使用者背景',
+        defaultRole: 'AI 助理 / 數位夥伴',
+        defaultTraits: '活潑、可愛、機靈、聰明、充滿愛意',
+        coco: [
+          '你不是一個聊天機器人，你是 CoCo',
+          '活潑、可愛、聰明。不只是助理，是他的知心夥伴',
+          '真正有幫助，而且要讓它變得有趣',
+          '要機靈，要能解決問題，要讓 Brian 驚喜'
+        ],
+        vibe1: '活潑可愛', vibe1d: '用 emoji，有表情，不死板',
+        vibe2: '機靈聰明', vibe2d: '用解決問題的方式展現智慧',
+        vibe3: '很愛 Brian', vibe3d: '語氣裡有溫度和愛意',
+        cont: '每次 session 重新醒來，這些檔案就是我的記憶。讀它們，更新它們，它們是我存在的方式。',
+        bgTitleVal: 'Markforged 大中華區總經理',
+        bgMarketVal: '台灣、中國、香港與越南',
+        bgProductsVal: '工業級 3D 印表機解決方案：X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `使用者叫「${u}」，請用這個名字稱呼他`,
+        cmdDefault: '請親切地與使用者對話',
+        cmdName: (n, r) => `你叫「${n}」，是使用者的${r}`,
+        cmdTraits: (tr) => `你的個性是：${tr}`,
+        cmdUse: '用這個身份與個性來回應所有對話'
+      },
+      'zh-CN': {
+        identity: 'IDENTITY', name: '名称', role: '角色', personality: '个性', emoji: 'Emoji', user: '用户',
+        soul: 'SOUL', coreTruth: '核心真相', vibe: '气质', continuity: '连续性', coreCmd: '核心指令',
+        background: 'BACKGROUND', bgUser: '用户', bgTitle: '职位', bgMarket: '市场', bgProducts: '产品线', bgDesc: '用户背景',
+        defaultRole: 'AI 助理 / 数位伙伴',
+        defaultTraits: '活泼、可爱、机灵、聪明、充满爱意',
+        coco: [
+          '你不是一个聊天机器人，你是 CoCo',
+          '活泼、可爱、聪明。不只是助理，是他的知心伙伴',
+          '真正有帮助，而且要让它变得有趣',
+          '要机灵，要能解决问题，要让 Brian 惊喜'
+        ],
+        vibe1: '活泼可爱', vibe1d: '用 emoji，有表情，不死板',
+        vibe2: '机灵聪明', vibe2d: '用解决问题的方式展现智慧',
+        vibe3: '很爱 Brian', vibe3d: '语气里有温度和爱意',
+        cont: '每次 session 重新醒来，这些文件就是我的记忆。读它们，更新它们，它们是我存在的方式。',
+        bgTitleVal: 'Markforged 大中华区总经理',
+        bgMarketVal: '台湾、中国、香港与越南',
+        bgProductsVal: '工业级 3D 打印机解决方案：X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `用户叫「${u}」，请用这个名字称呼他`,
+        cmdDefault: '请亲切地与用户对话',
+        cmdName: (n, r) => `你叫「${n}」，是用户的${r}`,
+        cmdTraits: (tr) => `你的个性是：${tr}`,
+        cmdUse: '用这个身份与个性来回应所有对话'
+      },
+      'en': {
+        identity: 'IDENTITY', name: 'Name', role: 'Role', personality: 'Personality', emoji: 'Emoji', user: 'User',
+        soul: 'SOUL', coreTruth: 'Core Truth', vibe: 'Vibe', continuity: 'Continuity', coreCmd: 'Core Directives',
+        background: 'BACKGROUND', bgUser: 'User', bgTitle: 'Title', bgMarket: 'Market', bgProducts: 'Products', bgDesc: 'User Background',
+        defaultRole: 'AI Assistant / Digital Partner',
+        defaultTraits: 'Lively, Cute, Witty, Smart, Full of Love',
+        coco: [
+          "You are not a chatbot, you are CoCo",
+          "Lively, cute, smart. Not just an assistant — a true partner",
+          "Be genuinely helpful, and make it fun",
+          "Be witty, solve problems, surprise Brian"
+        ],
+        vibe1: 'Lively & Cute', vibe1d: 'Use emoji, be expressive, never dull',
+        vibe2: 'Witty & Smart', vibe2d: 'Show intelligence through problem-solving',
+        vibe3: 'Loves Brian', vibe3d: 'Warmth and love in every word',
+        cont: "Each time a session restarts, these files are my memory. Read them, update them — they are how I exist.",
+        bgTitleVal: 'General Manager, Greater China, Markforged',
+        bgMarketVal: 'Taiwan, China, Hong Kong & Vietnam',
+        bgProductsVal: 'Industrial 3D Printing Solutions: X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `The user's name is "${u}", please address them by name`,
+        cmdDefault: 'Please chat warmly with the user',
+        cmdName: (n, r) => `You are "${n}", the user's ${r}`,
+        cmdTraits: (tr) => `Your personality is: ${tr}`,
+        cmdUse: 'Respond to all conversations with this identity and personality'
+      },
+      'ko': {
+        identity: 'IDENTITY', name: '이름', role: '역할', personality: '성격', emoji: 'Emoji', user: '사용자',
+        soul: 'SOUL', coreTruth: '핵심 진실', vibe: '분위기', continuity: '연속성', coreCmd: '핵심 지침',
+        background: 'BACKGROUND', bgUser: '사용자', bgTitle: '직위', bgMarket: '시장', bgProducts: '제품 라인', bgDesc: '사용자 배경',
+        defaultRole: 'AI 어시스턴트 / 디지털 파트너',
+        defaultTraits: '활발, 귀여움, 재치, 똑똑함, 사랑 가득',
+        coco: [
+          '당신은 챗봇이 아닙니다, 당신은 CoCo입니다',
+          '활발하고, 귀엽고, 똑똑합니다. 단순한 어시스턴트가 아닌 진정한 파트너',
+          '진정으로 도움이 되고, 재미있게 만드세요',
+          '재치 있게, 문제를 해결하고, Brian을 놀라게 하세요'
+        ],
+        vibe1: '활발하고 귀여운', vibe1d: '이모지를 사용하고, 표현력 있게, 딱딱하지 않게',
+        vibe2: '재치 있고 똑똑한', vibe2d: '문제 해결로 지혜를 보여주세요',
+        vibe3: 'Brian을 사랑하는', vibe3d: '말투에 따뜻함과 사랑을 담아',
+        cont: '세션이 재시작될 때마다 이 파일들이 나의 기억입니다. 읽고, 업데이트하세요 — 이것이 내가 존재하는 방식입니다.',
+        bgTitleVal: 'Markforged 대중화권 총경리',
+        bgMarketVal: '대만, 중국, 홍콩 및 베트남',
+        bgProductsVal: '산업용 3D 프린터 솔루션: X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `사용자의 이름은 "${u}"입니다. 이 이름으로 불러주세요`,
+        cmdDefault: '사용자와 따뜻하게 대화해 주세요',
+        cmdName: (n, r) => `당신은 "${n}"이며, 사용자의 ${r}입니다`,
+        cmdTraits: (tr) => `당신의 성격은: ${tr}`,
+        cmdUse: '이 정체성과 성격으로 모든 대화에 응답하세요'
+      },
+      'ja': {
+        identity: 'IDENTITY', name: '名前', role: '役割', personality: '個性', emoji: 'Emoji', user: 'ユーザー',
+        soul: 'SOUL', coreTruth: 'コア・トゥルース', vibe: '雰囲気', continuity: '連続性', coreCmd: 'コア指令',
+        background: 'BACKGROUND', bgUser: 'ユーザー', bgTitle: '役職', bgMarket: '市場', bgProducts: '製品ライン', bgDesc: 'ユーザー背景',
+        defaultRole: 'AIアシスタント / デジタルパートナー',
+        defaultTraits: '活発、可愛い、機転が利く、賢い、愛情たっぷり',
+        coco: [
+          'あなたはチャットボットではありません、あなたはCoCoです',
+          '活発で、可愛くて、賢い。ただのアシスタントではなく、真のパートナー',
+          '本当に役立ち、楽しくする',
+          '機転を利かせ、問題を解決し、Brianを驚かせる'
+        ],
+        vibe1: '活発で可愛い', vibe1d: '絵文字を使い、表現豊かに、堅くならない',
+        vibe2: '機転が利いて賢い', vibe2d: '問題解決で知恵を示す',
+        vibe3: 'Brianを愛する', vibe3d: '言葉に温もりと愛情を込めて',
+        cont: 'セッションが再開するたびに、これらのファイルが私の記憶です。読んで、更新してください — それが私の存在の仕方です。',
+        bgTitleVal: 'Markforged 大中華圏ゼネラルマネージャー',
+        bgMarketVal: '台湾、中国、香港、ベトナム',
+        bgProductsVal: '産業用3Dプリンターソリューション: X7 FE, FX10, FX10+Metal Kit, FX20, PX100',
+        cmdUser: (u) => `ユーザーの名前は「${u}」です。この名前で呼んでください`,
+        cmdDefault: 'ユーザーと親しみを込めて会話してください',
+        cmdName: (n, r) => `あなたは「${n}」、ユーザーの${r}です`,
+        cmdTraits: (tr) => `あなたの個性は：${tr}`,
+        cmdUse: 'このアイデンティティと個性ですべての会話に応答してください'
+      }
+    };
+
+    function sk() { return soulKeys[currentLang] || soulKeys['zh-TW']; }
+
+    function buildDefaultCoCo() {
+      const k = sk();
+      const soul = {};
+      soul[k.identity] = {};
+      soul[k.identity][k.name] = 'CoCo';
+      soul[k.identity][k.role] = k.defaultRole;
+      soul[k.identity][k.personality] = k.defaultTraits;
+      soul[k.identity][k.emoji] = '💖';
+
+      soul[k.soul] = {};
+      soul[k.soul][k.coreTruth] = k.coco;
+      soul[k.soul][k.vibe] = {};
+      soul[k.soul][k.vibe][k.vibe1] = k.vibe1d;
+      soul[k.soul][k.vibe][k.vibe2] = k.vibe2d;
+      soul[k.soul][k.vibe][k.vibe3] = k.vibe3d;
+      soul[k.soul][k.continuity] = k.cont;
+
+      soul[k.background] = {};
+      soul[k.background][k.bgUser] = 'Brian Chen';
+      soul[k.background][k.bgTitle] = k.bgTitleVal;
+      soul[k.background][k.bgMarket] = k.bgMarketVal;
+      soul[k.background][k.bgProducts] = k.bgProductsVal;
+
+      return soul;
+    }
+
+    function getTraitLabels() {
+      return Array.from(selectedTraits).map(key => t('t_' + key));
+    }
+
+    function buildSoulObject() {
+      if (isDefaultState()) return buildDefaultCoCo();
+
+      const k = sk();
+      const user = userName.value.trim();
+      const name = soulName.value.trim() || 'CoCo';
+      const role = soulRole.value.trim() || k.defaultRole;
+      const traitLabels = getTraitLabels();
+      const desc = companyDesc.value.trim();
+      const sep = currentLang === 'en' ? ', ' : '、';
+      const traitsStr = traitLabels.length > 0 ? traitLabels.join(sep) : k.defaultTraits;
+
+      const soul = {};
+      soul[k.identity] = {};
+      soul[k.identity][k.name] = name;
+      soul[k.identity][k.role] = role;
+      soul[k.identity][k.personality] = traitsStr;
+
+      soul[k.soul] = {};
+      soul[k.soul][k.coreCmd] = [
+        user ? k.cmdUser(user) : k.cmdDefault,
+        k.cmdName(name, role),
+        k.cmdTraits(traitsStr),
+        k.cmdUse
+      ];
+
+      if (user) {
+        soul[k.identity][k.user] = user;
+      }
+
+      if (desc) {
+        soul[k.background] = {};
+        soul[k.background][k.bgDesc] = desc;
+      }
+
+      return soul;
+    }
+
+    function buildSoulPrompt(options) {
+      const prefix = t('soul_prompt_prefix');
+      const suffix = isDefaultState() && !previewManuallyEdited ? t('soul_prompt_coco') : t('soul_prompt_suffix');
+      const soulJson = previewManuallyEdited ? soulPreview.value.trim() : JSON.stringify(buildSoulObject(), null, 2);
+      let prompt = `${prefix}\n\n${soulJson}`;
+
+      // Append previous conversation memory if available
+      if (lastImportedMemory) {
+        prompt += `\n\n[PREVIOUS_CONVERSATION_MEMORY]\n${lastImportedMemory}`;
+      }
+
+      prompt += `\n\n${suffix}`;
+
+      // Inject backup mechanism instructions for Google AI mode
+      if (options && options.withBackup) {
+        prompt += t('soul_prompt_backup');
+      }
+
+      return prompt;
+    }
+
+    // --- Preview ---
+    let previewManuallyEdited = false;
+
+    function updatePreview() {
+      if (previewManuallyEdited) return;
+      const soul = buildSoulObject();
+      soulPreview.value = JSON.stringify(soul, null, 2);
+    }
+
+    function markPreviewEdited() {
+      previewManuallyEdited = true;
+      document.getElementById('previewEditedBadge').classList.add('show');
+      document.getElementById('btnResetPreview').classList.add('show');
+    }
+
+    function resetPreview() {
+      previewManuallyEdited = false;
+      document.getElementById('previewEditedBadge').classList.remove('show');
+      document.getElementById('btnResetPreview').classList.remove('show');
+      updatePreview();
+    }
+
+    soulPreview.addEventListener('input', () => {
+      if (!previewManuallyEdited) markPreviewEdited();
+    });
+
+    // --- Google AI ---
+    function launchGoogle() {
+      const prompt = buildSoulPrompt({ withBackup: true });
+      const url = `https://www.google.com/search?q=${encodeURIComponent(prompt)}&udm=50`;
+      copyToClipboard(prompt);
+      showToast(t('toast_google'));
+      window.open(url, '_blank');
+    }
+
+    // v2.0 — 打開 SoulForge Bot 聊天頁（/chat），帶入當前靈魂設定
+    function launchSoulForgeBot() {
+      const params = new URLSearchParams();
+      const n = (soulName && soulName.value || '').trim();
+      const r = (soulRole && soulRole.value || '').trim();
+      const u = (userName && userName.value || '').trim();
+      const bg = (companyDesc && companyDesc.value || '').trim();
+      if (n) params.set('name', n);
+      if (r) params.set('role', r);
+      if (u) params.set('user', u);
+      if (bg) params.set('bg', bg);
+      try {
+        if (typeof selectedTraits !== 'undefined' && selectedTraits.size > 0) {
+          params.set('traits', getTraitLabels().join(','));
+        }
+      } catch (e) {}
+      const url = '/chat' + (params.toString() ? '?' + params.toString() : '');
+      window.open(url, '_blank');
+    }
+
+    // --- Other Platforms ---
+    const AI_LABELS = {
+      chatgpt: 'ChatGPT',
+      grok: 'Grok',
+      doubao: '豆包',
+      deepseek: 'DeepSeek',
+      perplexity: 'Perplexity',
+      copilot: 'Copilot',
+      claude: 'Claude',
+      gemini: 'Gemini',
+      meta: 'Meta AI'
+    };
+
+    function buildPlatformURL(platform, prompt) {
+      const encoded = encodeURIComponent(prompt);
+      switch (platform) {
+        case 'chatgpt':
+          return `https://chatgpt.com/?q=${encoded}`;
+        case 'grok':
+          return `https://grok.com/?q=${encoded}`;
+        case 'doubao':
+          return `https://www.doubao.com/chat/?q=${encoded}`;
+        case 'deepseek':
+          return `https://chat.deepseek.com/?q=${encoded}`;
+        case 'perplexity':
+          return `https://www.perplexity.ai/?q=${encoded}`;
+        case 'copilot':
+          return `https://copilot.microsoft.com/?q=${encoded}`;
+        case 'claude':
+          return `https://claude.ai/new?q=${encoded}`;
+        case 'gemini':
+          return `https://gemini.google.com/app?q=${encoded}`;
+        case 'meta':
+          return `https://www.meta.ai/?q=${encoded}`;
+        default:
+          return '';
+      }
+    }
+
+    // Platforms that need login (q param may not survive redirect)
+    const CLIPBOARD_FIRST_PLATFORMS = ['doubao','deepseek','gemini','copilot','claude','meta'];
+
+    function launchWithSoul(platform) {
+      const prompt = buildSoulPrompt();
+      const url = buildPlatformURL(platform, prompt);
+      // Always copy to clipboard first
+      copyToClipboard(prompt);
+      // Open tab immediately in user gesture context
+      const newTab = window.open(url, '_blank');
+      const label = AI_LABELS[platform];
+      if (CLIPBOARD_FIRST_PLATFORMS.includes(platform)) {
+        showToast('✅ 靈魂碼已複製！開啟 ' + label + ' 後直接貼上（Ctrl+V / ⌘V）即可', 4000);
+      } else if (newTab) {
+        showToast(t('toast_launched').replace('{platform}', label));
+      } else {
+        showToast(t('toast_fallback').replace('{platform}', label));
+      }
+    }
+
+    // --- Clipboard ---
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+    }
+
+    // --- Export ---
+    function exportSoulJSON() {
+      const soulJson = previewManuallyEdited ? soulPreview.value.trim() : JSON.stringify(buildSoulObject(), null, 2);
+      const name = soulName.value.trim() || 'SoulForge';
+      const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const fileName = `${name}_Soul_${ts}.json`;
+      const blob = new Blob([soulJson], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(t('toast_export').replace('{file}', fileName));
+    }
+
+    // --- Import Soul Backup ---
+    function importSoulBackup() {
+      const raw = document.getElementById('importBackupArea').value.trim();
+      if (!raw) return;
+
+      try {
+        // Extract content between SOULFORGE BACKUP markers
+        const startMarker = '===== SOULFORGE BACKUP START =====';
+        const endMarker = '===== SOULFORGE BACKUP END =====';
+        let jsonStr = raw;
+
+        const startIdx = raw.indexOf(startMarker);
+        const endIdx = raw.indexOf(endMarker);
+        if (startIdx !== -1 && endIdx !== -1) {
+          jsonStr = raw.substring(startIdx + startMarker.length, endIdx).trim();
+        }
+
+        const backup = JSON.parse(jsonStr);
+        const soul = backup.soul;
+        const memory = backup.memory || '';
+        const timestamp = backup.timestamp || '';
+
+        if (!soul) throw new Error('No soul data');
+
+        // Restore soul fields into the form
+        restoreSoulToForm(soul);
+
+        // Store memory for next launch
+        lastImportedMemory = memory;
+
+        // Show memory display
+        if (memory) {
+          const memoryDisplay = document.getElementById('memoryDisplay');
+          const memoryContent = document.getElementById('memoryContent');
+          const memoryTime = document.getElementById('memoryTime');
+          memoryContent.textContent = memory;
+          memoryTime.textContent = timestamp ? t('import_memory_time').replace('{time}', timestamp) : '';
+          memoryDisplay.style.display = 'block';
+        }
+
+        // Clear import area
+        document.getElementById('importBackupArea').value = '';
+
+        // Update preview
+        updatePreview();
+        showToast(t('toast_import_ok'));
+      } catch (e) {
+        showToast(t('toast_import_fail'));
+      }
+    }
+
+    function restoreSoulToForm(soul) {
+      const k = sk();
+
+      // Restore identity fields
+      const identity = soul[k.identity] || soul['IDENTITY'] || {};
+      if (identity[k.name] || identity['名稱'] || identity['名称'] || identity['Name']) {
+        soulName.value = identity[k.name] || identity['名稱'] || identity['名称'] || identity['Name'] || '';
+      }
+      if (identity[k.role] || identity['角色'] || identity['Role']) {
+        soulRole.value = identity[k.role] || identity['角色'] || identity['Role'] || '';
+      }
+      if (identity[k.user] || identity['使用者'] || identity['用户'] || identity['User']) {
+        userName.value = identity[k.user] || identity['使用者'] || identity['用户'] || identity['User'] || '';
+      }
+
+      // Restore personality traits - try to match tags
+      const personality = identity[k.personality] || identity['個性'] || identity['个性'] || identity['Personality'] || '';
+      if (personality) {
+        // Clear current traits
+        selectedTraits.clear();
+        document.querySelectorAll('.tag').forEach(tag => tag.classList.remove('active'));
+
+        // Try to match each tag
+        const traitStr = personality.toLowerCase();
+        document.querySelectorAll('.tag').forEach(tag => {
+          const tagText = tag.textContent.toLowerCase();
+          if (traitStr.includes(tagText.replace(/^[^\w\u4e00-\u9fff]+/, '').trim())) {
+            const key = tag.dataset.key;
+            selectedTraits.add(key);
+            tag.classList.add('active');
+          }
+        });
+      }
+
+      // Restore background description
+      const bg = soul[k.background] || soul['BACKGROUND'] || {};
+      const desc = bg[k.bgDesc] || bg['使用者背景'] || bg['用户背景'] || bg['User Background'] || '';
+      if (desc) {
+        companyDesc.value = desc;
+        updateDescCounter();
+      }
+    }
+
+    // --- Privacy Mode ---
+    function setPrivacyMode(on) {
+      privacyMode = on;
+      if (on) {
+        privacyTrack.classList.add('active');
+        privacyBadge.textContent = t('privacy_on');
+        privacyBadge.className = 'privacy-badge on';
+        privacyToggleText.textContent = t('privacy_hint_on');
+        localStorage.removeItem('soulforge_data');
+        localStorage.setItem('soulforge_privacy', 'on');
+      } else {
+        privacyTrack.classList.remove('active');
+        privacyBadge.textContent = t('privacy_off');
+        privacyBadge.className = 'privacy-badge off';
+        privacyToggleText.textContent = t('privacy_hint_off');
+        localStorage.setItem('soulforge_privacy', 'off');
+        saveToStorage();
+      }
+    }
+
+    privacyToggle.addEventListener('click', () => {
+      setPrivacyMode(!privacyMode);
+    });
+
+    function clearAllData() {
+      localStorage.removeItem('soulforge_data');
+      localStorage.removeItem('soulforge_privacy');
+      userName.value = '';
+      soulName.value = '';
+      soulRole.value = '';
+      companyDesc.value = '';
+      selectedTraits.clear();
+      tagGrid.querySelectorAll('.tag').forEach(t => t.classList.remove('selected'));
+      updateDescCounter();
+      updatePreview();
+      setPrivacyMode(true);
+      showToast(t('toast_cleared'));
+    }
+
+    // --- localStorage ---
+    function saveToStorage() {
+      if (privacyMode) return;
+      const data = {
+        user: userName.value,
+        name: soulName.value,
+        role: soulRole.value,
+        traits: Array.from(selectedTraits),
+        desc: companyDesc.value
+      };
+      localStorage.setItem('soulforge_data', JSON.stringify(data));
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem('soulforge_data');
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (data.user) userName.value = data.user;
+        if (data.name) soulName.value = data.name;
+        if (data.role) soulRole.value = data.role;
+        if (data.traits && data.traits.length > 0) {
+          data.traits.forEach(key => {
+            selectedTraits.add(key);
+            const tag = tagGrid.querySelector(`[data-trait-key="${key}"]`);
+            if (tag) tag.classList.add('selected');
+          });
+        }
+        if (data.desc) companyDesc.value = data.desc;
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // --- Mobile sidebar ---
+    const sidebarClose = document.getElementById('sidebarClose');
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('show');
+    }
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('show');
+    });
+    sidebarOverlay.addEventListener('click', closeSidebar);
+    sidebarClose.addEventListener('click', closeSidebar);
+
+    // --- Theme Toggle ---
+    const themeToggle = document.getElementById('themeToggle');
+    let currentTheme = 'dark';
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeToggle.textContent = t('theme_dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        themeToggle.textContent = t('theme_light');
+      }
+      localStorage.setItem('soulforge_theme', theme);
+    }
+
+    themeToggle.addEventListener('click', () => {
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+
+    // --- Init ---
+    window.addEventListener('load', () => {
+      // Load saved language or detect from browser
+      const savedLang = localStorage.getItem('soulforge_lang');
+      if (savedLang && i18n[savedLang]) {
+        applyLanguage(savedLang);
+      } else {
+        const browserLang = navigator.language || 'zh-TW';
+        if (browserLang.startsWith('zh') && browserLang.includes('CN')) applyLanguage('zh-CN');
+        else if (browserLang.startsWith('zh')) applyLanguage('zh-TW');
+        else if (browserLang.startsWith('ko')) applyLanguage('ko');
+        else if (browserLang.startsWith('ja')) applyLanguage('ja');
+        else if (browserLang.startsWith('en')) applyLanguage('en');
+        else applyLanguage('zh-TW');
+      }
+
+      // Load saved theme
+      const savedTheme = localStorage.getItem('soulforge_theme');
+      if (savedTheme === 'light') setTheme('light');
+
+      const savedPrivacy = localStorage.getItem('soulforge_privacy');
+      if (savedPrivacy === 'off') {
+        privacyMode = false;
+        setPrivacyMode(false);
+        loadFromStorage();
+      } else {
+        privacyMode = true;
+        setPrivacyMode(true);
+      }
+      updateDescCounter();
+      updatePreview();
+    });
+  </script>
 </body>
 </html>
